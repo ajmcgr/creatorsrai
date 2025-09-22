@@ -115,7 +115,7 @@ const About = () => {
               <ul className="space-y-2">
                 <li>
                   <a 
-                    href="https://discord.gg/Cet49cDcSr" 
+                    href="https://discord.gg/zH5GjPDT" 
                     target="_blank" 
                     rel="noopener noreferrer"
                     className="text-gray-600 hover:text-primary transition-colors"
