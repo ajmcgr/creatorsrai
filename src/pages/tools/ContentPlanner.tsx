@@ -249,10 +249,10 @@ export default function ContentPlanner() {
                 <li><Link to="/tools/engagement-calculator" className="text-gray-600 hover:text-primary transition-colors">Engagement Calculator</Link></li>
                 <li><Link to="/tools/hashtag-generator" className="text-gray-600 hover:text-primary transition-colors">Hashtag Generator</Link></li>
                 <li><Link to="/tools/content-planner" className="text-gray-600 hover:text-primary transition-colors">Content Planner</Link></li>
-                <li><Link to="/tools/influencer-finder" className="text-gray-600 hover:text-primary transition-colors">Influencer Finder</Link></li>
+                <li><Link to="/tools/influencer-rate-calculator" className="text-gray-600 hover:text-primary transition-colors">Influencer Rate Calculator</Link></li>
                 <li><Link to="/tools/roi-calculator" className="text-gray-600 hover:text-primary transition-colors">ROI Calculator</Link></li>
-                <li><Link to="/tools/growth-tracker" className="text-gray-600 hover:text-primary transition-colors">Growth Tracker</Link></li>
-                <li><Link to="/tools/brand-mention-tracker" className="text-gray-600 hover:text-primary transition-colors">Brand Mention Tracker</Link></li>
+                <li><Link to="/tools/audience-demographics" className="text-gray-600 hover:text-primary transition-colors">Audience Demographics</Link></li>
+                <li><Link to="/tools/campaign-tracker" className="text-gray-600 hover:text-primary transition-colors">Campaign Tracker</Link></li>
               </ul>
             </div>
             

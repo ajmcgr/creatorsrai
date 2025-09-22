@@ -12,10 +12,10 @@ import NotFound from "./pages/NotFound";
 import EngagementCalculator from "./pages/tools/EngagementCalculator";
 import HashtagGenerator from "./pages/tools/HashtagGenerator";
 import ContentPlanner from "./pages/tools/ContentPlanner";
-import InfluencerFinder from "./pages/tools/InfluencerFinder";
+import InfluencerRateCalculator from "./pages/tools/InfluencerRateCalculator";
 import ROICalculator from "./pages/tools/ROICalculator";
-import GrowthTracker from "./pages/tools/GrowthTracker";
-import BrandMentionTracker from "./pages/tools/BrandMentionTracker";
+import AudienceDemographics from "./pages/tools/AudienceDemographics";
+import CampaignTracker from "./pages/tools/CampaignTracker";
 
 const queryClient = new QueryClient();
 
@@ -34,10 +34,10 @@ const App = () => (
             <Route path="/tools/engagement-calculator" element={<EngagementCalculator />} />
             <Route path="/tools/hashtag-generator" element={<HashtagGenerator />} />
             <Route path="/tools/content-planner" element={<ContentPlanner />} />
-            <Route path="/tools/influencer-finder" element={<InfluencerFinder />} />
+            <Route path="/tools/influencer-rate-calculator" element={<InfluencerRateCalculator />} />
             <Route path="/tools/roi-calculator" element={<ROICalculator />} />
-            <Route path="/tools/growth-tracker" element={<GrowthTracker />} />
-            <Route path="/tools/brand-mention-tracker" element={<BrandMentionTracker />} />
+            <Route path="/tools/audience-demographics" element={<AudienceDemographics />} />
+            <Route path="/tools/campaign-tracker" element={<CampaignTracker />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
