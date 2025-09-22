@@ -13,6 +13,34 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Reckless Fonts -->
+    <link rel="preload" href="/Reckless-Regular.ttf" as="font" type="font/ttf" crossorigin>
+    <link rel="preload" href="/Reckless-Bold.ttf" as="font" type="font/ttf" crossorigin>
+    <link rel="preload" href="/Reckless-Medium.otf" as="font" type="font/opentype" crossorigin>
+    
+    <style>
+      @font-face {
+        font-family: 'Reckless';
+        src: url('/Reckless-Regular.ttf') format('truetype'),
+             url('/Reckless-Regular.otf') format('opentype');
+        font-weight: 400;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: 'Reckless';
+        src: url('/Reckless-Medium.otf') format('opentype');
+        font-weight: 500;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: 'Reckless';
+        src: url('/Reckless-Bold.ttf') format('truetype'),
+             url('/Reckless-Bold.otf') format('opentype');
+        font-weight: 700;
+        font-display: swap;
+      }
+    </style>
 
     <meta property="og:title" content="RankedPeople - Top Social Media Leaderboard" />
     <meta property="og:description" content="Discover the most talked-about people online. Weekly updated leaderboard tracking growth across social platforms." />

@@ -6,8 +6,8 @@ const About = () => {
     <div className="min-h-screen bg-white">
       <Header />
       
-      <main className="container mx-auto px-4 py-12 max-w-4xl">
-        <div className="prose prose-lg mx-auto">
+      <main className="container mx-auto px-4 py-12 max-w-2xl">
+        <div className="border border-[#e3e4e5] p-8 bg-white">
           <h1 className="font-display text-4xl font-bold mb-8 text-gray-900">About</h1>
           
           <section className="mb-12">
@@ -18,13 +18,12 @@ const About = () => {
           </section>
 
           <section className="mb-12">
-            <h2 className="font-display text-2xl font-bold mb-4 text-gray-900">About me</h2>
             <div className="flex flex-col md:flex-row gap-8 items-start">
               <div className="md:w-48 flex-shrink-0">
                 <img 
                   src={alexPortrait} 
                   alt="Alex MacGregor" 
-                  className="w-full rounded-lg shadow-lg"
+                  className="w-full shadow-lg"
                 />
               </div>
               <div className="flex-1">
@@ -55,7 +54,7 @@ const About = () => {
         </div>
       </main>
       
-      <footer className="border-t bg-gray-50 py-12 mt-20">
+      <footer className="border-t bg-white py-12 mt-20">
         <div className="container mx-auto px-4 text-center">
           <p className="text-sm text-gray-600">
             Copyright © 2025 Works App, Inc. Built with ♥️ by{" "}

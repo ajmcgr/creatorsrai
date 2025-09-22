@@ -1,5 +1,7 @@
+import { useEffect, useState } from "react";
 import { Header } from "@/components/Header";
 import { Leaderboard } from "@/components/Leaderboard";
+import "@/utils/refreshData.js";
 
 const Index = () => {
   return (
@@ -19,7 +21,7 @@ const Index = () => {
         <Leaderboard />
       </main>
       
-      <footer className="border-t bg-gray-50 py-12 mt-20">
+      <footer className="border-t bg-white py-12 mt-20">
         <div className="container mx-auto px-4 text-center">
           <p className="text-sm text-gray-600">
             Copyright © 2025 Works App, Inc. Built with ♥️ by{" "}
