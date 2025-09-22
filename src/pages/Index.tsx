@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Header } from "@/components/Header";
+import { Link } from "react-router-dom";
 import { Leaderboard } from "@/components/Leaderboard";
 import "@/utils/refreshData.js";
 
@@ -121,17 +122,31 @@ const Index = () => {
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
             <div>
-              <h3 className="font-semibold text-gray-900 mb-4">Community</h3>
+              <h3 className="font-semibold text-gray-900 mb-4">About</h3>
               <ul className="space-y-2">
                 <li>
-                  <a 
-                    href="https://discord.gg/Cet49cDcSr" 
-                    target="_blank" 
-                    rel="noopener noreferrer"
+                  <Link 
+                    to="/about" 
                     className="text-gray-600 hover:text-primary transition-colors"
                   >
-                    Discord
-                  </a>
+                    About
+                  </Link>
+                </li>
+                <li>
+                  <Link 
+                    to="/terms" 
+                    className="text-gray-600 hover:text-primary transition-colors"
+                  >
+                    Terms
+                  </Link>
+                </li>
+                <li>
+                  <Link 
+                    to="/privacy" 
+                    className="text-gray-600 hover:text-primary transition-colors"
+                  >
+                    Privacy
+                  </Link>
                 </li>
               </ul>
             </div>
@@ -150,6 +165,16 @@ const Index = () => {
             <div>
               <h3 className="font-semibold text-gray-900 mb-4">Connect</h3>
               <ul className="space-y-2">
+                <li>
+                  <a 
+                    href="https://discord.gg/Cet49cDcSr" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="text-gray-600 hover:text-primary transition-colors"
+                  >
+                    Discord
+                  </a>
+                </li>
                 <li>
                   <a 
                     href="http://x.com/alexmacgregor__/" 
