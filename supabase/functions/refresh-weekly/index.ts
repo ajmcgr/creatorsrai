@@ -15,13 +15,11 @@ const SB_CLIENT_ID = Deno.env.get("SB_CLIENT_ID")!;
 const SB_TOKEN = Deno.env.get("SB_TOKEN")!;
 const ADMIN_REFRESH_SECRET = Deno.env.get("ADMIN_REFRESH_SECRET")!;
 
-const PLATFORMS = ["youtube", "instagram", "tiktok", "twitch", "facebook"];
+const PLATFORMS = ["youtube", "instagram", "tiktok"];
 const PRIMARY_METRIC: Record<string,string> = {
   youtube: "subscribers",
   instagram: "followers", 
-  tiktok: "followers",
-  twitch: "followers",
-  facebook: "followers"
+  tiktok: "followers"
 };
 
 function weekStartUTC(d = new Date()): string {

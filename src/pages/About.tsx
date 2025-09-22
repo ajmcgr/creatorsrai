@@ -9,15 +9,15 @@ const About = () => {
       <main className="container mx-auto px-4 py-12 max-w-2xl">
         <div className="border border-[#e3e4e5] p-8 bg-white">
           <section className="mb-12">
-            <h2 className="text-2xl font-bold mb-4 text-gray-900 text-center">Our Story</h2>
-            <p className="text-gray-700 leading-relaxed mb-4">
+            <h2 className="text-4xl font-bold mb-6 text-gray-900 text-center">Our Story</h2>
+            <p className="text-xl text-gray-700 leading-relaxed mb-4">
               I started this leaderboard to help people quickly understand who's trending on socials.
             </p>
           </section>
 
           <section className="mb-12">
             <p className="text-gray-700 leading-relaxed mb-4">
-              Hello there!
+              <strong>Hello there!</strong>
             </p>
             <p className="text-gray-700 leading-relaxed mb-4">
               I'm Alex MacGregor, a PR strategist who has spent the last decade relying on enterprise suites like Meltwater, Cision, and Muck Rack to get coverage for tech brands across Asia-Pacific.
@@ -26,11 +26,11 @@ const About = () => {
               Now, I'm building the future of PR & Influence.
             </p>
             
-            <div className="flex justify-center mb-6">
+            <div className="mb-6">
               <img 
                 src={alexPortrait} 
                 alt="Alex MacGregor" 
-                className="w-32 h-32 object-cover"
+                className="w-24 h-24 object-cover"
               />
             </div>
             

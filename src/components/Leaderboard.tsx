@@ -37,18 +37,6 @@ const PLATFORM_CONFIG = {
     icon: Video, 
     color: "bg-black", 
     metric: "followers" 
-  },
-  twitch: { 
-    name: "Twitch", 
-    icon: MessageCircle, 
-    color: "bg-purple-500", 
-    metric: "followers" 
-  },
-  facebook: { 
-    name: "Facebook", 
-    icon: Users, 
-    color: "bg-blue-600", 
-    metric: "followers" 
   }
 };
 
