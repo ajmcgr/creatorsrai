@@ -4,20 +4,20 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
-import { TrendingUp, TrendingDown, Users, Play, Camera, Video, MessageCircle } from "lucide-react";
+import { Play, Camera, Video, Users } from "lucide-react";
 import { formatNumber } from "@/lib/formatNumber";
 
-interface LeaderboardEntry {
+type Platform = 'youtube' | 'tiktok' | 'instagram';
+type TopItem = {
+  rank: number;
   id: string;
-  username: string;
   displayName: string;
-  avatar: string;
-  platform: string;
-  currentValue: number;
-  previousValue: number;
-  growth: number;
-  growthPercentage: number;
-}
+  username?: string;
+  avatar?: string;
+  followers: number;
+  platform: Platform;
+};
+type TopResponse = { fetched_at: string; items: TopItem[] };
 
 const PLATFORM_CONFIG = {
   youtube: { 
@@ -41,61 +41,63 @@ const PLATFORM_CONFIG = {
 };
 
 export function Leaderboard() {
-  const [data, setData] = useState<LeaderboardEntry[]>([]);
+  const [data, setData] = useState<TopItem[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedPlatform, setSelectedPlatform] = useState<string>('all');
+  const [selectedPlatform, setSelectedPlatform] = useState<Platform>('youtube');
+  const [lastUpdated, setLastUpdated] = useState<string | null>(null);
 
-  useEffect(() => {
-    fetchLeaderboardData();
-  }, []);
-
-  const fetchLeaderboardData = async () => {
+  const fetchData = async (platform: Platform) => {
     setLoading(true);
     try {
-      console.log("Fetching leaderboard data...");
+      console.log(`Fetching ${platform} data from API...`);
       
-      const { data: leaderboardData, error } = await supabase
-        .from('top_cache_latest_with_delta')
-        .select('*')
-        .order('current_value', { ascending: false })
-        .limit(100);
-
-      if (error) {
-        console.error("Error fetching data:", error);
-        return;
-      }
-
-      if (!leaderboardData || leaderboardData.length === 0) {
-        console.log("No data available");
+      // Call the top API endpoint directly with platform parameter
+      const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/top?platform=${platform}`, {
+        headers: {
+          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      if (!response.ok) {
+        console.error('API request failed:', response.status);
         setData([]);
+        setLastUpdated(null);
         return;
       }
 
-      const formattedData: LeaderboardEntry[] = leaderboardData.map((item) => ({
-        id: item.person_id || item.username || '',
-        username: item.username || '',
-        displayName: item.display_name || item.username || '',
-        avatar: item.avatar || '',
-        platform: item.platform || '',
-        currentValue: item.current_value || 0,
-        previousValue: item.prev_value || 0,
-        growth: item.diff_value || 0,
-        growthPercentage: item.prev_value > 0 ? ((item.diff_value || 0) / item.prev_value) * 100 : 0
-      }));
+      const result: TopResponse = await response.json();
+      setData(result.items || []);
+      setLastUpdated(result.fetched_at);
+      console.log(`Successfully fetched ${result.items?.length || 0} items for ${platform}`);
 
-      setData(formattedData);
     } catch (error) {
-      console.error("Error fetching leaderboard data:", error);
+      console.error('Error fetching data:', error);
+      setData([]);
+      setLastUpdated(null);
     } finally {
       setLoading(false);
     }
   };
 
-  const filteredData = selectedPlatform === 'all' 
-    ? data 
-    : data.filter(entry => entry.platform === selectedPlatform);
+  useEffect(() => {
+    fetchData(selectedPlatform);
+  }, [selectedPlatform]);
 
-  const platforms = ['all', ...Object.keys(PLATFORM_CONFIG)];
+  const platforms: Platform[] = ['youtube', 'instagram', 'tiktok'];
+
+  const formatTimeAgo = (dateString: string | null) => {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffInHours = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60));
+    
+    if (diffInHours < 1) return 'just now';
+    if (diffInHours < 24) return `${diffInHours} hours ago`;
+    
+    const diffInDays = Math.floor(diffInHours / 24);
+    return `${diffInDays} days ago`;
+  };
 
   if (loading) {
     return (
@@ -121,9 +123,7 @@ export function Leaderboard() {
       {/* Platform Filter */}
       <div className="flex flex-wrap gap-2">
         {platforms.map((platform) => {
-          const config = platform === 'all' 
-            ? { name: 'All Platforms', color: 'bg-primary' }
-            : PLATFORM_CONFIG[platform as keyof typeof PLATFORM_CONFIG];
+          const config = PLATFORM_CONFIG[platform];
           
           return (
             <button
@@ -141,15 +141,18 @@ export function Leaderboard() {
         })}
       </div>
 
+      {/* Last Updated Info */}
+      {lastUpdated && (
+        <div className="text-sm text-gray-500 text-center">
+          Updated {formatTimeAgo(lastUpdated)}
+        </div>
+      )}
+
       {/* Leaderboard */}
       <div className="space-y-3">
-        {filteredData.map((entry, index) => {
-          const config = PLATFORM_CONFIG[entry.platform as keyof typeof PLATFORM_CONFIG];
+        {data.map((entry, index) => {
+          const config = PLATFORM_CONFIG[entry.platform];
           const Icon = config?.icon || Users;
-          const isGrowing = entry.growth > 0;
-          const growthPercentage = entry.previousValue 
-            ? ((entry.growth / entry.previousValue) * 100).toFixed(1)
-            : '0';
 
           return (
             <Card 
@@ -162,7 +165,7 @@ export function Leaderboard() {
                   {/* Rank */}
                   <div className="flex-shrink-0 w-8 text-center">
                     <span className="text-2xl font-bold text-gray-500">
-                      {index + 1}
+                      {entry.rank}
                     </span>
                   </div>
 
@@ -170,23 +173,25 @@ export function Leaderboard() {
                   <Avatar className="h-12 w-12 ring-2 ring-gray-200">
                     <AvatarImage src={entry.avatar} alt={entry.displayName} />
                     <AvatarFallback>
-                      {entry.displayName?.charAt(0) || entry.username?.charAt(0) || '?'}
+                      {entry.displayName?.charAt(0) || '?'}
                     </AvatarFallback>
                   </Avatar>
 
                   {/* Info */}
                   <div className="flex-1 min-w-0">
                     <h3 className="font-semibold text-lg truncate text-gray-900">
-                      {entry.displayName || entry.username}
+                      {entry.displayName}
                     </h3>
                     <div className="flex items-center space-x-2">
                       <Badge variant="secondary" className="text-xs">
                         <Icon className="w-3 h-3 mr-1" />
                         {config?.name || entry.platform}
                       </Badge>
-                      <span className="text-sm text-gray-500">
-                        @{entry.username}
-                      </span>
+                      {entry.username && (
+                        <span className="text-sm text-gray-500">
+                          @{entry.username}
+                        </span>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -194,26 +199,11 @@ export function Leaderboard() {
                 {/* Stats */}
                 <div className="text-right space-y-1">
                   <div className="font-bold text-xl text-gray-900">
-                    {formatNumber(entry.currentValue)}
+                    {formatNumber(entry.followers)}
                   </div>
-                  
-                  {entry.growth !== 0 && (
-                    <div className={`flex items-center justify-end space-x-1 text-sm ${
-                      isGrowing ? 'text-green-600' : 'text-red-600'
-                    }`}>
-                      {isGrowing ? (
-                        <TrendingUp className="w-4 h-4" />
-                      ) : (
-                        <TrendingDown className="w-4 h-4" />
-                      )}
-                      <span className="font-medium">
-                        {isGrowing ? '+' : ''}{formatNumber(entry.growth)}
-                      </span>
-                      <span className="text-gray-500">
-                        ({isGrowing ? '+' : ''}{growthPercentage}%)
-                      </span>
-                    </div>
-                  )}
+                  <div className="text-sm text-gray-500">
+                    {config?.metric || 'followers'}
+                  </div>
                 </div>
               </div>
             </Card>
@@ -221,7 +211,7 @@ export function Leaderboard() {
         })}
       </div>
 
-      {filteredData.length === 0 && !loading && (
+      {data.length === 0 && !loading && (
         <Card className="p-12 text-center bg-gradient-surface">
           <div className="text-muted-foreground">
             <Users className="w-12 h-12 mx-auto mb-4 opacity-50" />
