@@ -19,6 +19,102 @@ const Index = () => {
         </div>
         
         <Leaderboard />
+        
+        <div className="mt-16">
+          <h2 className="text-3xl font-bold mb-8 text-gray-900">
+            Frequently Asked Questions
+          </h2>
+          
+          <div className="space-y-4">
+            <div className="border border-gray-200 rounded-lg">
+              <details className="group">
+                <summary className="flex justify-between items-center p-6 cursor-pointer hover:bg-gray-50">
+                  <span className="font-medium text-gray-900">How often is the leaderboard updated?</span>
+                  <span className="text-gray-500 group-open:rotate-90 transition-transform">▶</span>
+                </summary>
+                <div className="px-6 pb-6 text-gray-700">
+                  The leaderboard refreshes once per week by default, pulling directly from Social Blade's official creator rankings. This ensures you're seeing accurate, consistent data without burning through unnecessary API credits.
+                </div>
+              </details>
+            </div>
+            
+            <div className="border border-gray-200 rounded-lg">
+              <details className="group">
+                <summary className="flex justify-between items-center p-6 cursor-pointer hover:bg-gray-50">
+                  <span className="font-medium text-gray-900">How do you verify the information?</span>
+                  <span className="text-gray-500 group-open:rotate-90 transition-transform">▶</span>
+                </summary>
+                <div className="px-6 pb-6 text-gray-700">
+                  All numbers (subscribers, followers, views) come directly from the Social Blade Business API, which tracks creators across YouTube, TikTok, and Instagram. We don't manually edit or inflate any figures — everything you see is what Social Blade reports.
+                </div>
+              </details>
+            </div>
+            
+            <div className="border border-gray-200 rounded-lg">
+              <details className="group">
+                <summary className="flex justify-between items-center p-6 cursor-pointer hover:bg-gray-50">
+                  <span className="font-medium text-gray-900">Which platforms are included?</span>
+                  <span className="text-gray-500 group-open:rotate-90 transition-transform">▶</span>
+                </summary>
+                <div className="px-6 pb-6 text-gray-700">
+                  Right now, we focus on the three biggest creator ecosystems: YouTube, TikTok, and Instagram. More platforms (Twitch, Facebook, X) may be added later depending on demand.
+                </div>
+              </details>
+            </div>
+            
+            <div className="border border-gray-200 rounded-lg">
+              <details className="group">
+                <summary className="flex justify-between items-center p-6 cursor-pointer hover:bg-gray-50">
+                  <span className="font-medium text-gray-900">Why only the Top 100?</span>
+                  <span className="text-gray-500 group-open:rotate-90 transition-transform">▶</span>
+                </summary>
+                <div className="px-6 pb-6 text-gray-700">
+                  The Social Blade API provides results in pages of 100. For simplicity and cost-efficiency, we display the top page (the 100 biggest creators per platform).
+                </div>
+              </details>
+            </div>
+            
+            <div className="border border-gray-200 rounded-lg">
+              <details className="group">
+                <summary className="flex justify-between items-center p-6 cursor-pointer hover:bg-gray-50">
+                  <span className="font-medium text-gray-900">Can I suggest a creator or channel to add?</span>
+                  <span className="text-gray-500 group-open:rotate-90 transition-transform">▶</span>
+                </summary>
+                <div className="px-6 pb-6 text-gray-700">
+                  The rankings come straight from Social Blade's data, so you can't "submit" someone to appear. If a creator is active and large enough, they'll naturally show up in Social Blade's top lists.
+                </div>
+              </details>
+            </div>
+            
+            <div className="border border-gray-200 rounded-lg">
+              <details className="group">
+                <summary className="flex justify-between items-center p-6 cursor-pointer hover:bg-gray-50">
+                  <span className="font-medium text-gray-900">Why isn't [creator name] on the list?</span>
+                  <span className="text-gray-500 group-open:rotate-90 transition-transform">▶</span>
+                </summary>
+                <div className="px-6 pb-6 text-gray-700">
+                  Two common reasons:
+                  <br /><br />
+                  They may not be in the global Top 100 for their platform.
+                  <br /><br />
+                  Their account might not be tracked or ranked publicly by Social Blade yet.
+                </div>
+              </details>
+            </div>
+            
+            <div className="border border-gray-200 rounded-lg">
+              <details className="group">
+                <summary className="flex justify-between items-center p-6 cursor-pointer hover:bg-gray-50">
+                  <span className="font-medium text-gray-900">Who is behind this leaderboard?</span>
+                  <span className="text-gray-500 group-open:rotate-90 transition-transform">▶</span>
+                </summary>
+                <div className="px-6 pb-6 text-gray-700">
+                  This site was built by Works.xyz, a creative PR and influence platform. We use Social Blade's Business API to power the data, but the design and presentation are our own.
+                </div>
+              </details>
+            </div>
+          </div>
+        </div>
       </main>
       
       <footer className="border-t bg-white py-12 mt-20">

@@ -42,7 +42,7 @@ const About = () => {
               href="https://www.linkedin.com/in/alexmacgregor2/" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="inline-flex items-center text-primary hover:underline font-medium"
+              className="inline-flex items-center text-blue-600 hover:underline"
             >
               Connect with me on LinkedIn
             </a>
