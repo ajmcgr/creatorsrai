@@ -6,7 +6,7 @@ import logo from "@/assets/logo.png";
 export function Header() {
   return (
     <header className="sticky top-0 z-50 glass-effect border-b border-border/50">
-      <div className="container mx-auto px-4 h-16 flex items-center justify-between">
+      <div className="container mx-auto px-4 h-16 flex items-center justify-between max-w-6xl">
         {/* Logo */}
         <Link to="/" className="flex items-center space-x-3 group">
           <img src={logo} alt="Creators" className="h-8" />
