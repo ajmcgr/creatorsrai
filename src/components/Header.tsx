@@ -22,7 +22,7 @@ export function Header() {
           </Link>
           <Link 
             to="/about" 
-            className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors duration-200"
+            className="text-sm font-medium text-foreground hover:text-primary transition-colors duration-200"
           >
             About
           </Link>
