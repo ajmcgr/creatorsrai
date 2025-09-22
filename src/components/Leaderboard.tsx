@@ -8,15 +8,15 @@ import { TrendingUp, TrendingDown, Users, Play, Camera, Video, MessageCircle } f
 import { formatNumber } from "@/lib/formatNumber";
 
 interface LeaderboardEntry {
-  platform: string;
-  person_id: string;
+  id: string;
   username: string;
-  display_name: string;
+  displayName: string;
   avatar: string;
-  current_value: number;
-  prev_value: number;
-  diff_value: number;
-  week_start: string;
+  platform: string;
+  currentValue: number;
+  previousValue: number;
+  growth: number;
+  growthPercentage: number;
 }
 
 const PLATFORM_CONFIG = {
@@ -62,17 +62,42 @@ export function Leaderboard() {
   }, []);
 
   const fetchLeaderboardData = async () => {
+    setLoading(true);
     try {
-      const { data: result, error } = await supabase
+      console.log("Fetching leaderboard data...");
+      
+      const { data: leaderboardData, error } = await supabase
         .from('top_cache_latest_with_delta')
         .select('*')
         .order('current_value', { ascending: false })
-        .limit(50);
+        .limit(100);
 
-      if (error) throw error;
-      setData(result || []);
+      if (error) {
+        console.error("Error fetching data:", error);
+        return;
+      }
+
+      if (!leaderboardData || leaderboardData.length === 0) {
+        console.log("No data available");
+        setData([]);
+        return;
+      }
+
+      const formattedData: LeaderboardEntry[] = leaderboardData.map((item) => ({
+        id: item.person_id || item.username || '',
+        username: item.username || '',
+        displayName: item.display_name || item.username || '',
+        avatar: item.avatar || '',
+        platform: item.platform || '',
+        currentValue: item.current_value || 0,
+        previousValue: item.prev_value || 0,
+        growth: item.diff_value || 0,
+        growthPercentage: item.prev_value > 0 ? ((item.diff_value || 0) / item.prev_value) * 100 : 0
+      }));
+
+      setData(formattedData);
     } catch (error) {
-      console.error('Error fetching leaderboard:', error);
+      console.error("Error fetching leaderboard data:", error);
     } finally {
       setLoading(false);
     }
@@ -133,45 +158,45 @@ export function Leaderboard() {
         {filteredData.map((entry, index) => {
           const config = PLATFORM_CONFIG[entry.platform as keyof typeof PLATFORM_CONFIG];
           const Icon = config?.icon || Users;
-          const isGrowing = entry.diff_value > 0;
-          const growthPercentage = entry.prev_value 
-            ? ((entry.diff_value / entry.prev_value) * 100).toFixed(1)
+          const isGrowing = entry.growth > 0;
+          const growthPercentage = entry.previousValue 
+            ? ((entry.growth / entry.previousValue) * 100).toFixed(1)
             : '0';
 
           return (
             <Card 
-              key={`${entry.platform}-${entry.person_id}`}
-              className="p-6 bg-gradient-card border-0 shadow-soft hover:shadow-medium transition-all duration-300 animate-fade-in"
+              key={`${entry.platform}-${entry.id}`}
+              className="p-6 bg-white border border-gray-200 hover:shadow-md transition-all duration-300"
               style={{ animationDelay: `${index * 50}ms` }}
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-4">
                   {/* Rank */}
                   <div className="flex-shrink-0 w-8 text-center">
-                    <span className="text-2xl font-bold text-muted-foreground">
+                    <span className="text-2xl font-bold text-gray-500">
                       {index + 1}
                     </span>
                   </div>
 
                   {/* Avatar */}
-                  <Avatar className="h-12 w-12 ring-2 ring-border">
-                    <AvatarImage src={entry.avatar} alt={entry.display_name} />
+                  <Avatar className="h-12 w-12 ring-2 ring-gray-200">
+                    <AvatarImage src={entry.avatar} alt={entry.displayName} />
                     <AvatarFallback>
-                      {entry.display_name?.charAt(0) || entry.username?.charAt(0) || '?'}
+                      {entry.displayName?.charAt(0) || entry.username?.charAt(0) || '?'}
                     </AvatarFallback>
                   </Avatar>
 
                   {/* Info */}
                   <div className="flex-1 min-w-0">
-                    <h3 className="font-semibold text-lg truncate">
-                      {entry.display_name || entry.username}
+                    <h3 className="font-semibold text-lg truncate text-gray-900">
+                      {entry.displayName || entry.username}
                     </h3>
                     <div className="flex items-center space-x-2">
                       <Badge variant="secondary" className="text-xs">
                         <Icon className="w-3 h-3 mr-1" />
                         {config?.name || entry.platform}
                       </Badge>
-                      <span className="text-sm text-muted-foreground">
+                      <span className="text-sm text-gray-500">
                         @{entry.username}
                       </span>
                     </div>
@@ -180,13 +205,13 @@ export function Leaderboard() {
 
                 {/* Stats */}
                 <div className="text-right space-y-1">
-                  <div className="font-bold text-xl">
-                    {formatNumber(entry.current_value)}
+                  <div className="font-bold text-xl text-gray-900">
+                    {formatNumber(entry.currentValue)}
                   </div>
                   
-                  {entry.diff_value !== 0 && (
+                  {entry.growth !== 0 && (
                     <div className={`flex items-center justify-end space-x-1 text-sm ${
-                      isGrowing ? 'text-success' : 'text-destructive'
+                      isGrowing ? 'text-green-600' : 'text-red-600'
                     }`}>
                       {isGrowing ? (
                         <TrendingUp className="w-4 h-4" />
@@ -194,9 +219,9 @@ export function Leaderboard() {
                         <TrendingDown className="w-4 h-4" />
                       )}
                       <span className="font-medium">
-                        {isGrowing ? '+' : ''}{formatNumber(entry.diff_value)}
+                        {isGrowing ? '+' : ''}{formatNumber(entry.growth)}
                       </span>
-                      <span className="text-muted-foreground">
+                      <span className="text-gray-500">
                         ({isGrowing ? '+' : ''}{growthPercentage}%)
                       </span>
                     </div>

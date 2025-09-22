@@ -1,5 +1,9 @@
-import { serve } from "https://deno.land/std@0.177.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+};
 
 const supabase = createClient(
   Deno.env.get("SUPABASE_URL")!,
@@ -9,6 +13,7 @@ const supabase = createClient(
 const SB_BASE_URL = Deno.env.get("SB_BASE_URL") || "https://matrix.sbapis.com/b";
 const SB_CLIENT_ID = Deno.env.get("SB_CLIENT_ID")!;
 const SB_TOKEN = Deno.env.get("SB_TOKEN")!;
+const ADMIN_REFRESH_SECRET = Deno.env.get("ADMIN_REFRESH_SECRET")!;
 
 const PLATFORMS = ["youtube", "instagram", "tiktok", "twitch", "facebook"];
 const PRIMARY_METRIC: Record<string,string> = {
@@ -28,7 +33,24 @@ function weekStartUTC(d = new Date()): string {
   return monday.toISOString().slice(0,10);
 }
 
-serve(async () => {
+Deno.serve(async (req) => {
+  // Handle CORS preflight requests
+  if (req.method === 'OPTIONS') {
+    return new Response(null, { headers: corsHeaders });
+  }
+
+  // Check admin secret for manual refresh
+  if (req.method === 'POST') {
+    const authHeader = req.headers.get('authorization');
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return new Response('Unauthorized', { status: 401, headers: corsHeaders });
+    }
+    
+    const token = authHeader.replace('Bearer ', '');
+    if (token !== ADMIN_REFRESH_SECRET) {
+      return new Response('Unauthorized', { status: 401, headers: corsHeaders });
+    }
+  }
   const week_start = weekStartUTC();
   const results: any[] = [];
 
@@ -87,6 +109,6 @@ serve(async () => {
   }
 
   return new Response(JSON.stringify({ week_start, refreshed: results }), {
-    headers: { "Content-Type": "application/json" },
+    headers: { ...corsHeaders, "Content-Type": "application/json" },
   });
 });
