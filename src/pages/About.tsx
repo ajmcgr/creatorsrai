@@ -23,8 +23,17 @@ const About = () => {
             <p className="text-gray-700 leading-relaxed mb-4">
               I'm Alex MacGregor, a PR strategist who has spent the last decade relying on enterprise suites like Meltwater, Cision, and Muck Rack to get coverage for tech brands across Asia-Pacific.
             </p>
-            <p className="text-gray-700 leading-relaxed mb-6">
+            <p className="text-gray-700 leading-relaxed mb-4">
               Now, I'm building the future of PR & Influence.
+            </p>
+            <p className="text-gray-700 leading-relaxed mb-4">
+              In today's world, creators aren't just influencers — they're the new media companies. They drive cultural conversations, shift consumer behavior faster than traditional press ever could, and often set the agenda for how stories spread online. Tracking creators is no longer a "nice-to-have," it's essential. If you can't see who's shaping the narrative in real time, you're already behind.
+            </p>
+            <p className="text-gray-700 leading-relaxed mb-4">
+              That's why I'm focused on building platforms that don't just catalogue journalists but map the entire creator economy — from YouTube to TikTok to Instagram — so brands, founders, and storytellers can see who truly moves audiences.
+            </p>
+            <p className="text-gray-700 leading-relaxed mb-6">
+              The future of creators isn't about follower counts, it's about influence, trust, and how effectively they can build movements around ideas. The lines between press, influencer, and entrepreneur are blurring. Tomorrow's most powerful media outlets will be individuals with a camera, a community, and a compelling story.
             </p>
             
             <div className="mb-6">
