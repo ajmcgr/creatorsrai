@@ -12,7 +12,7 @@ const Index = () => {
       <main className="container mx-auto px-4 py-12">
         <div className="mb-8">
           <h2 className="text-3xl font-bold mb-2 text-gray-900">
-            World's Most Popular Creators Real-time Leaderboard
+            World's Most Popular Creators - Real-time Leaderboard
           </h2>
           <p className="text-gray-600">
             Real-time leaderboard showing the most followed creators across platforms
