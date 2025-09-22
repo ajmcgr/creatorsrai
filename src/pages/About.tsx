@@ -8,7 +8,7 @@ const About = () => {
       <Header />
       
       <main className="container mx-auto px-4 py-12 max-w-2xl">
-        <div className="border border-[#e3e4e5] p-8 bg-white">
+        <div className="border border-[#e3e4e5] p-8 bg-white rounded-lg">
           <section className="mb-12">
             <h2 className="text-4xl font-bold mb-6 text-gray-900 text-center">Our Story</h2>
             <p className="text-xl text-gray-700 leading-relaxed mb-4">
