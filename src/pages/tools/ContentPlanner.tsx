@@ -261,7 +261,7 @@ export default function ContentPlanner() {
               <ul className="space-y-2">
                 <li>
                   <a 
-                    href="https://discord.gg/Cet49cDcSr" 
+                    href="https://discord.gg/zH5GjPDT" 
                     target="_blank" 
                     rel="noopener noreferrer"
                     className="text-gray-600 hover:text-primary transition-colors"
@@ -277,6 +277,14 @@ export default function ContentPlanner() {
                     className="text-gray-600 hover:text-primary transition-colors"
                   >
                     Twitter
+                  </a>
+                </li>
+                <li>
+                  <a 
+                    href="mailto:alex@works.xyz" 
+                    className="text-gray-600 hover:text-primary transition-colors"
+                  >
+                    Contact Us
                   </a>
                 </li>
               </ul>

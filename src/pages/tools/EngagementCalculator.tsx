@@ -206,6 +206,14 @@ export default function EngagementCalculator() {
                     Twitter
                   </a>
                 </li>
+                <li>
+                  <a 
+                    href="mailto:alex@works.xyz" 
+                    className="text-gray-600 hover:text-primary transition-colors"
+                  >
+                    Contact Us
+                  </a>
+                </li>
               </ul>
             </div>
           </div>
