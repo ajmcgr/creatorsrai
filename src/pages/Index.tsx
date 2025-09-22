@@ -16,7 +16,7 @@ const Index = () => {
           </h2>
           <p className="text-gray-600">
             Real-time leaderboard showing the most followed creators across platforms (
-            <Link to="/about" className="text-primary hover:underline">learn more</Link>
+            <Link to="/about" className="text-primary underline hover:no-underline">learn more</Link>
             )
           </p>
         </div>
