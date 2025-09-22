@@ -154,11 +154,13 @@ const Index = () => {
             <div>
               <h3 className="font-semibold text-gray-900 mb-4">Free Tools</h3>
               <ul className="space-y-2">
-                <li><a href="#" className="text-gray-600 hover:text-primary transition-colors">Engagement Calculator</a></li>
-                <li><a href="#" className="text-gray-600 hover:text-primary transition-colors">Hashtag Generator</a></li>
-                <li><a href="#" className="text-gray-600 hover:text-primary transition-colors">Content Planner</a></li>
-                <li><a href="#" className="text-gray-600 hover:text-primary transition-colors">Influencer Finder</a></li>
-                <li><a href="#" className="text-gray-600 hover:text-primary transition-colors">ROI Calculator</a></li>
+                <li><Link to="/tools/engagement-calculator" className="text-gray-600 hover:text-primary transition-colors">Engagement Calculator</Link></li>
+                <li><Link to="/tools/hashtag-generator" className="text-gray-600 hover:text-primary transition-colors">Hashtag Generator</Link></li>
+                <li><Link to="/tools/content-planner" className="text-gray-600 hover:text-primary transition-colors">Content Planner</Link></li>
+                <li><Link to="/tools/influencer-finder" className="text-gray-600 hover:text-primary transition-colors">Influencer Finder</Link></li>
+                <li><Link to="/tools/roi-calculator" className="text-gray-600 hover:text-primary transition-colors">ROI Calculator</Link></li>
+                <li><Link to="/tools/growth-tracker" className="text-gray-600 hover:text-primary transition-colors">Growth Tracker</Link></li>
+                <li><Link to="/tools/brand-mention-tracker" className="text-gray-600 hover:text-primary transition-colors">Brand Mention Tracker</Link></li>
               </ul>
             </div>
             
