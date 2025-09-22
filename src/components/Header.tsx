@@ -1,6 +1,7 @@
-import { Crown, Menu, Info } from "lucide-react";
+import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import logo from "@/assets/logo.png";
 
 export function Header() {
   return (
@@ -8,18 +9,7 @@ export function Header() {
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
         {/* Logo */}
         <Link to="/" className="flex items-center space-x-3 group">
-          <div className="relative">
-            <Crown className="w-8 h-8 text-primary group-hover:text-primary-glow transition-colors duration-300" />
-            <div className="absolute inset-0 bg-primary/20 rounded-full blur-md group-hover:bg-primary-glow/30 transition-all duration-300" />
-          </div>
-          <div>
-            <h1 className="font-display font-bold text-xl gradient-text">
-              RankedPeople
-            </h1>
-            <p className="text-xs text-muted-foreground -mt-1">
-              Social Media Leaderboard
-            </p>
-          </div>
+          <img src={logo} alt="Creators" className="h-8" />
         </Link>
 
         {/* Navigation */}
