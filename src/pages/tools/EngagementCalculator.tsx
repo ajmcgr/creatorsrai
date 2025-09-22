@@ -170,6 +170,7 @@ export default function EngagementCalculator() {
               </ul>
             </div>
             
+            <div>
               <h3 className="font-semibold text-gray-900 mb-4">Free Tools</h3>
               <ul className="space-y-2">
                 <li><Link to="/tools/engagement-calculator" className="text-gray-600 hover:text-primary transition-colors">Engagement Calculator</Link></li>
@@ -180,13 +181,14 @@ export default function EngagementCalculator() {
                 <li><Link to="/tools/audience-demographics" className="text-gray-600 hover:text-primary transition-colors">Audience Demographics</Link></li>
                 <li><Link to="/tools/campaign-tracker" className="text-gray-600 hover:text-primary transition-colors">Campaign Tracker</Link></li>
               </ul>
+            </div>
             
             <div>
               <h3 className="font-semibold text-gray-900 mb-4">Connect</h3>
               <ul className="space-y-2">
                 <li>
                   <a 
-                    href="https://discord.gg/Cet49cDcSr" 
+                    href="https://discord.gg/zH5GjPDT" 
                     target="_blank" 
                     rel="noopener noreferrer"
                     className="text-gray-600 hover:text-primary transition-colors"
