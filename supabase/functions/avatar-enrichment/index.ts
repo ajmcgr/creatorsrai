@@ -39,15 +39,53 @@ async function fetchSbStats(platform: Platform, query: string): Promise<any> {
 }
 
 function extractAvatar(stats: any): string | undefined {
-  const c = stats || {};
-  return (
-    c.avatar ||
-    c.profile_picture ||
-    c.profilePic ||
-    c.thumbnail ||
-    c.image ||
-    undefined
-  );
+  if (!stats) return undefined;
+  
+  console.log('Stats object keys:', Object.keys(stats));
+  
+  // Try various possible avatar field names from Social Blade API
+  const possibleFields = [
+    'avatar',
+    'profile_picture', 
+    'profilePic',
+    'profilepic',
+    'thumbnail',
+    'image',
+    'icon',
+    'picture',
+    'photo',
+    'profile_image',
+    'profileImage',
+    'avatarUrl',
+    'avatar_url',
+    // YouTube specific
+    'snippet.thumbnails.default.url',
+    'snippet.thumbnails.medium.url', 
+    'snippet.thumbnails.high.url',
+    // Generic nested paths
+    'thumbnails.default.url',
+    'thumbnails.medium.url',
+    'thumbnails.high.url'
+  ];
+  
+  for (const field of possibleFields) {
+    let value = stats;
+    const parts = field.split('.');
+    
+    for (const part of parts) {
+      value = value?.[part];
+      if (!value) break;
+    }
+    
+    if (typeof value === 'string' && value.length > 0) {
+      console.log(`Found avatar in field '${field}':`, value);
+      return value;
+    }
+  }
+  
+  // Log the full stats object for debugging if no avatar found
+  console.log('No avatar found. Full stats object:', JSON.stringify(stats, null, 2));
+  return undefined;
 }
 
 async function getAvatarFromCache(supabase: any, platform: Platform, personId: string): Promise<any> {
@@ -131,10 +169,32 @@ Deno.serve(async (req) => {
     // 2) Fetch missing from Social Blade statistics
     for (const id of toFetch) {
       try {
-        const stats = await fetchSbStats(platform, id);
-        const avatar = extractAvatar(stats);
-        const displayName = displayNames[id];
+        // Try both the ID and username if available
+        const attempts = [id];
         const username = usernames[id];
+        if (username && username !== id) {
+          attempts.push(username);
+        }
+        
+        let stats = null;
+        let avatar = undefined;
+        
+        for (const query of attempts) {
+          try {
+            console.log(`Trying to fetch stats for ${platform}/${query}...`);
+            stats = await fetchSbStats(platform, query);
+            avatar = extractAvatar(stats);
+            if (avatar) {
+              console.log(`Found avatar using query '${query}': ${avatar}`);
+              break;
+            }
+          } catch (queryError) {
+            console.log(`Failed to fetch with query '${query}':`, queryError.message);
+            continue;
+          }
+        }
+        
+        const displayName = displayNames[id];
         
         await setAvatarCache(supabase, platform, id, avatar, displayName, username);
         
@@ -143,6 +203,10 @@ Deno.serve(async (req) => {
         }
         
         console.log(`Enriched avatar for ${platform}/${id}: ${avatar ? 'found' : 'not found'}`);
+        
+        // Add delay between requests to avoid rate limiting
+        await new Promise(resolve => setTimeout(resolve, 150));
+        
       } catch (error) {
         console.error(`Error fetching avatar for ${id}:`, error);
         // Cache the miss to avoid repeated API calls
