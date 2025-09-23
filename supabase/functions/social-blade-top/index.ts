@@ -91,8 +91,9 @@ function normalizeTop(platform: Platform, raw: any[]): TopItem[] {
   }));
 }
 
-// Cache helpers
+// Cache helpers with simplified logic
 const CACHE_TTL_HOURS = Number(Deno.env.get('CACHE_TTL_HOURS') || '168'); // 7 days default
+const DEFAULT_LIMIT = Number(Deno.env.get('TOP_LIMIT') || '200'); // Default 200 as requested
 
 function supa() {
   const url = Deno.env.get('SUPABASE_URL');
@@ -109,6 +110,7 @@ async function cacheGet(platform: Platform) {
     .from('top_cache')
     .select('data_json, fetched_at')
     .eq('platform', platform)
+    .eq('page', 1) // Use page 1 as primary cache key
     .maybeSingle();
     
   if (!data) return null;
@@ -119,16 +121,23 @@ async function cacheGet(platform: Platform) {
   return data;
 }
 
-async function cacheSet(platform: Platform, raw: any) {
+async function cacheSet(platform: Platform, rawData: any) {
   const client = supa();
   if (!client) return;
   
-  await client.from('top_cache').upsert({
-    platform,
-    page: 1,
-    data_json: raw,
-    fetched_at: new Date().toISOString()
-  });
+  try {
+    await client.from('top_cache').upsert({
+      platform,
+      page: 1,
+      week_start: new Date().toISOString().split('T')[0], // Today's date
+      metric: platform === 'youtube' ? 'subscribers' : 'followers',
+      data_json: rawData,
+      fetched_at: new Date().toISOString()
+    });
+    console.log(`Cached ${platform} data successfully`);
+  } catch (err) {
+    console.error(`Failed to cache ${platform} data:`, err);
+  }
 }
 
 Deno.serve(async (req) => {
@@ -142,64 +151,73 @@ Deno.serve(async (req) => {
     const platform = (url.searchParams.get('platform') || 'youtube').toLowerCase() as Platform;
     const bypassCache = url.searchParams.get('bypassCache') === '1';
     const limitParam = url.searchParams.get('limit');
-    const DEFAULT_LIMIT = Number(Deno.env.get('TOP_LIMIT') || '200'); // Default 200 as per spec
     const lim = limitParam ? Number(limitParam) : DEFAULT_LIMIT;
     const limit = lim >= 200 ? 200 : 100;
     
     const ALLOWED_PLATFORMS: Platform[] = ['youtube', 'tiktok', 'instagram'];
     if (!ALLOWED_PLATFORMS.includes(platform)) {
       return new Response(
-        JSON.stringify({ error: 'Invalid platform. Must be youtube, tiktok, or instagram' }),
+        JSON.stringify({ error: 'invalid platform' }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
-    console.log(`Fetching ${platform} data (limit: ${limit}, bypassCache: ${bypassCache})`);
+    console.log(`API request: ${platform} (limit: ${limit}, bypassCache: ${bypassCache})`);
 
-    // Try cache first unless bypassed
+    // Try cache unless bypassed
     if (!bypassCache) {
       const cached = await cacheGet(platform);
       if (cached?.data_json) {
-        const cachedArray = Array.isArray(cached.data_json) ? cached.data_json : (cached.data_json?.data || []);
+        const arr = Array.isArray(cached.data_json) 
+          ? cached.data_json 
+          : (cached.data_json?.data || []);
         
-        // Only use cache if it has enough data for the requested limit
-        if (cachedArray.length && ((limit === 100 && cachedArray.length >= 100) || (limit === 200 && cachedArray.length >= 200))) {
-          console.log(`Cache hit for ${platform}, returning ${Math.min(limit, cachedArray.length)} items`);
-          const response: TopResponse = {
-            fetched_at: cached.fetched_at,
-            items: normalizeTop(platform, cachedArray).slice(0, limit)
-          };
-          
+        // Use cache if it has enough data for the requested limit
+        if (arr?.length && ((limit === 100 && arr.length >= 100) || (limit === 200 && arr.length >= 200))) {
+          console.log(`Cache hit for ${platform}, returning ${Math.min(limit, arr.length)} items`);
+          const items = normalizeTop(platform, arr).slice(0, limit);
           return new Response(
-            JSON.stringify(response),
+            JSON.stringify({ fetched_at: cached.fetched_at, items }),
             { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
           );
         }
       }
     }
 
-    // Live fetch merged pages (page=1 [+ page=2 if limit=200])
+    // Live fetch (page=1 [+ page=2 if limit=200]). Log upstream failures.
     console.log(`Cache miss for ${platform}, fetching live data...`);
-    const rawData = await fetchTopMerged(platform, limit);
     
-    // Cache the raw data (always cache the largest set we fetched)
-    await cacheSet(platform, rawData);
-
-    const response: TopResponse = {
-      fetched_at: new Date().toISOString(),
-      items: normalizeTop(platform, rawData).slice(0, limit)
-    };
-
-    return new Response(
-      JSON.stringify(response),
-      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-    );
+    try {
+      const rawData = await fetchTopMerged(platform, limit);
+      await cacheSet(platform, rawData); // best-effort caching
+      const items = normalizeTop(platform, rawData).slice(0, limit);
+      
+      return new Response(
+        JSON.stringify({ fetched_at: new Date().toISOString(), items }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    } catch (fetchError: any) {
+      console.error('SB_FETCH_FAIL', { platform, limit, error: fetchError?.message });
+      return new Response(
+        JSON.stringify({ 
+          error: 'upstream-failed', 
+          detail: fetchError?.message || 'Social Blade API error' 
+        }),
+        { 
+          status: 502, 
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+        }
+      );
+    }
 
   } catch (error) {
-    console.error('Error in social-blade-top function:', error);
+    console.error('Unexpected error in social-blade-top function:', error);
     
     return new Response(
-      JSON.stringify({ error: error.message || 'Internal server error' }),
+      JSON.stringify({ 
+        error: 'Internal server error',
+        detail: error.message || 'Unknown error'
+      }),
       { 
         status: 500, 
         headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
