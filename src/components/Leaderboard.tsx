@@ -50,8 +50,19 @@ export function Leaderboard() {
   const [lastUpdated, setLastUpdated] = useState<string | null>(null);
   const [page, setPage] = useState<number>(1);
   
-  // Use avatar enrichment hook for progressive loading
-  const { items: enrichedData, loading: avatarLoading } = useAvatarEnrichment(data, selectedPlatform);
+  // Pagination (Top-200 shown as two pages of 100)
+  const pageSize = 100;
+  const total = data.length; // Use raw data length instead of enriched data
+  const totalPages = Math.max(1, Math.ceil(total / pageSize));
+  const currentPage = Math.min(page, totalPages);
+  const start = (currentPage - 1) * pageSize;
+  const pagedData = data.slice(start, start + pageSize);
+  
+  // Use avatar enrichment hook for progressive loading on the current page only
+  const { items: enrichedPageData, loading: avatarLoading } = useAvatarEnrichment(pagedData, selectedPlatform);
+
+  console.log(`Pagination: total=${total}, currentPage=${currentPage}, totalPages=${totalPages}`);
+  console.log(`Data length: raw=${data.length}, enriched=${enrichedPageData.length}`);
 
   const fetchData = async (platform: Platform) => {
     setLoading(true);
@@ -90,17 +101,10 @@ export function Leaderboard() {
 
   useEffect(() => {
     fetchData(selectedPlatform);
+    setPage(1); // Reset to page 1 when switching platforms
   }, [selectedPlatform]);
 
   const platforms: Platform[] = ['youtube', 'instagram', 'tiktok'];
-
-  // Pagination (Top-200 shown as two pages of 100)
-  const pageSize = 100;
-  const total = enrichedData.length;
-  const totalPages = Math.max(1, Math.ceil(total / pageSize));
-  const currentPage = Math.min(page, totalPages);
-  const start = (currentPage - 1) * pageSize;
-  const pagedItems = enrichedData.slice(start, start + pageSize);
 
   const formatTimeAgo = (dateString: string | null) => {
     if (!dateString) return '';
@@ -166,7 +170,7 @@ export function Leaderboard() {
 
       {/* Leaderboard */}
       <div className="space-y-3">
-        {pagedItems.map((entry, index) => {
+        {enrichedPageData.map((entry, index) => {
           const config = PLATFORM_CONFIG[entry.platform];
           const Icon = config?.icon || Users;
 
@@ -236,22 +240,50 @@ export function Leaderboard() {
         <Pagination className="mt-6">
           <PaginationContent>
             <PaginationItem>
-              <PaginationPrevious href="#" onClick={(e) => { e.preventDefault(); setPage(Math.max(1, currentPage - 1)); }} />
+              <PaginationPrevious 
+                href="#" 
+                onClick={(e) => { 
+                  e.preventDefault(); 
+                  if (currentPage > 1) setPage(currentPage - 1); 
+                }} 
+                className={currentPage === 1 ? 'pointer-events-none opacity-50' : ''}
+              />
             </PaginationItem>
             <PaginationItem>
-              <PaginationLink href="#" isActive={currentPage === 1} onClick={(e) => { e.preventDefault(); setPage(1); }}>1</PaginationLink>
+              <PaginationLink 
+                href="#" 
+                isActive={currentPage === 1} 
+                onClick={(e) => { e.preventDefault(); setPage(1); }}
+              >
+                1
+              </PaginationLink>
             </PaginationItem>
+            {totalPages > 1 && (
+              <PaginationItem>
+                <PaginationLink 
+                  href="#" 
+                  isActive={currentPage === 2} 
+                  onClick={(e) => { e.preventDefault(); setPage(2); }}
+                >
+                  2
+                </PaginationLink>
+              </PaginationItem>
+            )}
             <PaginationItem>
-              <PaginationLink href="#" isActive={currentPage === 2} onClick={(e) => { e.preventDefault(); setPage(2); }}>2</PaginationLink>
-            </PaginationItem>
-            <PaginationItem>
-              <PaginationNext href="#" onClick={(e) => { e.preventDefault(); setPage(Math.min(totalPages, currentPage + 1)); }} />
+              <PaginationNext 
+                href="#" 
+                onClick={(e) => { 
+                  e.preventDefault(); 
+                  if (currentPage < totalPages) setPage(currentPage + 1); 
+                }} 
+                className={currentPage === totalPages ? 'pointer-events-none opacity-50' : ''}
+              />
             </PaginationItem>
           </PaginationContent>
         </Pagination>
       )}
 
-      {enrichedData.length === 0 && !loading && (
+      {data.length === 0 && !loading && (
         <Card className="p-12 text-center bg-gradient-surface">
           <div className="text-muted-foreground">
             <Users className="w-12 h-12 mx-auto mb-4 opacity-50" />
