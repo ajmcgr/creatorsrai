@@ -111,18 +111,24 @@ export type Database = {
         Row: {
           created_at: string
           data_json: Json
+          fetched_at: string
+          limit_size: number
           platform: string
           week_start: string
         }
         Insert: {
           created_at?: string
           data_json: Json
+          fetched_at?: string
+          limit_size?: number
           platform: string
           week_start: string
         }
         Update: {
           created_at?: string
           data_json?: Json
+          fetched_at?: string
+          limit_size?: number
           platform?: string
           week_start?: string
         }
