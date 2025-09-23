@@ -111,7 +111,7 @@ const Index = () => {
                   <span className="text-gray-500 group-open:rotate-90 transition-transform">▶</span>
                 </summary>
                 <div className="px-4 sm:px-6 pb-4 sm:pb-6 text-gray-700 text-sm sm:text-base">
-                  This site was built by Works.xyz, a creative PR and influence platform. We use Social Blade's Business API to power the data, but the design and presentation are our own.
+                  This site was built by <a href="http://x.com/alexmacgregor__/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Alex</a> and Works.xyz, a creative PR and influence platform. We use Social Blade's Business API to power the data, but the design and presentation are our own.
                 </div>
               </details>
             </div>
