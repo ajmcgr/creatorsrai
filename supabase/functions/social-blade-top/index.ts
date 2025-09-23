@@ -19,64 +19,19 @@ interface TopItem {
 
 interface TopResponse {
   fetched_at: string;
+  week_start?: string;
+  limit_size?: number;
   items: TopItem[];
 }
 
-// Configuration
-const SB_BASE = Deno.env.get('SB_BASE_URL') || 'https://matrix.sbapis.com/b';
-const SB_CLIENT_ID = Deno.env.get('SB_CLIENT_ID')!;
-const SB_TOKEN = Deno.env.get('SB_TOKEN')!;
-const CACHE_TTL_HOURS = Number(Deno.env.get('CACHE_TTL_HOURS') || '168');
-const DEFAULT_LIMIT = Number(Deno.env.get('TOP_LIMIT') || '200');
-const ALLOWED_PLATFORMS = new Set(['youtube', 'tiktok', 'instagram']);
-
-function topUrl(platform: Platform, page: number) {
-  const q = platform === 'youtube' ? 'subscribers' : 'followers';
-  return `${SB_BASE}/${platform}/top?query=${q}&page=${page}`; // SB is 1-indexed
-}
-
-async function fetchTopPage(platform: Platform, page: number) {
-  console.log(`Fetching ${platform} page ${page} from Social Blade...`);
-  
-  const res = await fetch(topUrl(platform, page), {
-    headers: { 
-      clientid: SB_CLIENT_ID, 
-      token: SB_TOKEN 
-    }
-  });
-  
-  if (!res.ok) {
-    const t = await res.text().catch(() => '');
-    console.error(`SB top ${platform} p${page} ${res.status}: ${t}`);
-    throw new Error(`SB top ${platform} p${page} ${res.status}: ${t}`);
-  }
-  
-  const data = await res.json();
-  console.log(`Successfully fetched ${platform} page ${page}:`, Array.isArray(data) ? data.length : (data?.data?.length || 0), 'items');
-  return data;
-}
-
-async function fetchTopMerged(platform: Platform, limit: number) {
-  // Always fetch page 1
-  const p1 = await fetchTopPage(platform, 1);
-  if (limit <= 100) {
-    return p1;
-  }
-
-  console.log(`Fetching Top-200 for ${platform} by attempting page 2 (graceful fallback if unavailable)`);
-
-  try {
-    const p2 = await fetchTopPage(platform, 2);
-    const arr = (Array.isArray(p1) ? p1 : p1?.data || []).concat(
-      Array.isArray(p2) ? p2 : p2?.data || []
-    );
-    console.log(`Merged ${platform} data: ${(Array.isArray(p1) ? p1 : p1?.data || []).length} + ${(Array.isArray(p2) ? p2 : p2?.data || []).length} = ${arr.length} items`);
-    return arr;
-  } catch (err: any) {
-    console.warn(`Page 2 fetch failed for ${platform}, returning page 1 only. Reason: ${err?.message || err}`);
-    const arr = Array.isArray(p1) ? p1 : p1?.data || [];
-    return arr;
-  }
+// Helper to get Monday UTC for a given date
+function mondayUTC(d = new Date()) {
+  const day = d.getUTCDay();
+  const diff = (day === 0 ? -6 : 1 - day);
+  const monday = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()));
+  monday.setUTCDate(monday.getUTCDate() + diff);
+  monday.setUTCHours(0, 0, 0, 0);
+  return monday.toISOString().slice(0, 10);
 }
 
 function normalizeTop(platform: Platform, raw: any[]): TopItem[] {
@@ -120,51 +75,11 @@ function normalizeTop(platform: Platform, raw: any[]): TopItem[] {
   });
 }
 
-// Cache helpers
-
 function supa() {
   const url = Deno.env.get('SUPABASE_URL');
   const serviceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
   if (!url || !serviceKey) return null;
   return createClient(url, serviceKey, { auth: { persistSession: false } });
-}
-
-async function cacheGet(platform: Platform) {
-  const client = supa();
-  if (!client) return null;
-  
-  const { data } = await client
-    .from('top_cache')
-    .select('data_json, fetched_at')
-    .eq('platform', platform)
-    .eq('page', 1) // Use page 1 as primary cache key
-    .maybeSingle();
-    
-  if (!data) return null;
-  
-  const ageHours = (Date.now() - new Date(data.fetched_at).getTime()) / (1000 * 60 * 60);
-  if (ageHours > CACHE_TTL_HOURS) return null;
-  
-  return data;
-}
-
-async function cacheSet(platform: Platform, rawData: any) {
-  const client = supa();
-  if (!client) return;
-  
-  try {
-    await client.from('top_cache').upsert({
-      platform,
-      page: 1,
-      week_start: new Date().toISOString().split('T')[0], // Today's date
-      metric: platform === 'youtube' ? 'subscribers' : 'followers',
-      data_json: rawData,
-      fetched_at: new Date().toISOString()
-    });
-    console.log(`Cached ${platform} data successfully`);
-  } catch (err) {
-    console.error(`Failed to cache ${platform} data:`, err);
-  }
 }
 
 Deno.serve(async (req) => {
@@ -176,72 +91,106 @@ Deno.serve(async (req) => {
   try {
     const url = new URL(req.url);
     const platform = (url.searchParams.get('platform') || 'youtube').toLowerCase() as Platform;
-    const bypassCache = url.searchParams.get('bypassCache') === '1';
     const limitParam = url.searchParams.get('limit');
-    const lim = limitParam ? Number(limitParam) : DEFAULT_LIMIT;
-    const limit = lim >= 200 ? 200 : 100;
-    
-    if (!ALLOWED_PLATFORMS.has(platform)) {
+    const limit = limitParam ? Number(limitParam) : Number(Deno.env.get('TOP_LIMIT') || 100);
+    const lim = limit >= 200 ? 200 : 100;
+
+    const allowedPlatforms = new Set(['youtube', 'tiktok', 'instagram']);
+    if (!allowedPlatforms.has(platform)) {
       return new Response(
         JSON.stringify({ error: 'invalid platform' }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
-    console.log(`API request: ${platform} (limit: ${limit}, bypassCache: ${bypassCache})`);
+    console.log(`Cache-only API request: ${platform} (limit: ${lim})`);
 
-    // Try cache unless bypassed
-    if (!bypassCache) {
-      const cached = await cacheGet(platform);
-      if (cached?.data_json) {
-        const arr = Array.isArray(cached.data_json) 
-          ? cached.data_json 
-          : (cached.data_json?.data || []);
-        
-        // Use cache if it has enough data for the requested limit
-        if (arr?.length && ((limit === 100 && arr.length >= 100) || (limit === 200 && arr.length >= 200))) {
-          console.log(`Cache hit for ${platform}, returning ${Math.min(limit, arr.length)} items`);
-          const items = normalizeTop(platform, arr).slice(0, limit);
-          return new Response(
-            JSON.stringify({ fetched_at: cached.fetched_at, items }),
-            { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-          );
-        }
-      }
+    const client = supa();
+    if (!client) {
+      return new Response(
+        JSON.stringify({ error: 'database_unavailable', items: [] }),
+        { status: 503, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
 
-    // Live fetch (page=1 [+ page=2 if limit=200]). Log upstream failures.
-    console.log(`Cache miss for ${platform}, fetching live data...`);
+    const todayWeek = mondayUTC();
     
-    try {
-      const rawData = await fetchTopMerged(platform, limit);
-      await cacheSet(platform, rawData); // best-effort caching
-      const items = normalizeTop(platform, rawData).slice(0, limit);
+    // Try to get latest snapshot <= current week
+    const { data, error } = await client
+      .from('top_snapshots')
+      .select('data_json, fetched_at, week_start, limit_size')
+      .eq('platform', platform)
+      .lte('week_start', todayWeek)
+      .order('week_start', { ascending: false })
+      .limit(1);
+
+    if (data?.[0]?.data_json?.length) {
+      const snapshot = data[0];
+      const arr = Array.isArray(snapshot.data_json) ? snapshot.data_json : (snapshot.data_json?.data || []);
+      const items = normalizeTop(platform, arr).slice(0, lim);
+      
+      console.log(`Cache hit for ${platform}, returning ${items.length} items from week ${snapshot.week_start}`);
       
       return new Response(
-        JSON.stringify({ fetched_at: new Date().toISOString(), items }),
-        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    } catch (fetchError: any) {
-      console.error('SB_FETCH_FAIL', { platform, limit, error: fetchError?.message });
-      return new Response(
-        JSON.stringify({ 
-          error: 'upstream-failed', 
-          detail: fetchError?.message || 'Social Blade API error' 
+        JSON.stringify({
+          fetched_at: snapshot.fetched_at,
+          week_start: snapshot.week_start,
+          limit_size: snapshot.limit_size,
+          items
         }),
-        { 
-          status: 502, 
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
-        }
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
+    // Fallback to legacy cache (top_cache table) if no snapshot found
+    console.log(`No snapshot found for ${platform}, trying legacy cache...`);
+    
+    const legacyResult = await client
+      .from('top_cache')
+      .select('data_json, fetched_at')
+      .eq('platform', platform)
+      .maybeSingle();
+
+    if (legacyResult.data?.data_json?.length) {
+      const arr = Array.isArray(legacyResult.data.data_json) 
+        ? legacyResult.data.data_json 
+        : (legacyResult.data.data_json?.data || []);
+      const items = normalizeTop(platform, arr).slice(0, lim);
+      
+      console.log(`Legacy cache hit for ${platform}, returning ${items.length} items`);
+      
+      return new Response(
+        JSON.stringify({
+          fetched_at: legacyResult.data.fetched_at,
+          week_start: todayWeek,
+          limit_size: lim,
+          items
+        }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // No data available
+    console.log(`No cached data available for ${platform}`);
+    return new Response(
+      JSON.stringify({ 
+        items: [], 
+        error: 'no_snapshot',
+        message: `No cached data available for ${platform}. Weekly refresh may not have run yet.`
+      }),
+      { 
+        status: 503, 
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+      }
+    );
+
   } catch (error) {
-    console.error('Unexpected error in social-blade-top function:', error);
+    console.error('Error in social-blade-top function:', error);
     
     return new Response(
       JSON.stringify({ 
-        error: 'Internal server error',
+        error: 'internal_error',
+        items: [],
         detail: error.message || 'Unknown error'
       }),
       { 

@@ -20,7 +20,14 @@ type TopItem = {
   followers: number;
   platform: Platform;
 };
-type TopResponse = { fetched_at: string; items: TopItem[] };
+type TopResponse = { 
+  fetched_at: string; 
+  week_start?: string;
+  limit_size?: number;
+  items: TopItem[];
+  error?: string;
+  message?: string;
+};
 
 const PLATFORM_CONFIG = {
   youtube: { 
@@ -65,21 +72,17 @@ export function Leaderboard() {
   console.log(`Pagination: total=${total}, currentPage=${currentPage}, totalPages=${totalPages}`);
   console.log(`Data length: raw=${data.length}, enriched=${enrichedPageData.length}`);
 
-  const fetchData = async (platform: Platform, bypassCache = false) => {
+  const fetchData = async (platform: Platform) => {
     setLoading(true);
     setError(null);
     try {
-      console.log(`Fetching ${platform} data from Social Blade API...`);
+      console.log(`Fetching ${platform} data from cached snapshots...`);
       
-      // Build URL with proper parameters
+      // Build URL with proper parameters - always use cache-only approach
       const params = new URLSearchParams({
         platform,
         limit: '200'
       });
-      
-      if (bypassCache) {
-        params.append('bypassCache', '1');
-      }
       
       const url = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/social-blade-top?${params}`;
       const anon = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY as string;
@@ -95,7 +98,11 @@ export function Leaderboard() {
         let errorMessage = `HTTP ${response.status}`;
         try {
           const errorData = await response.json();
-          errorMessage = errorData.error || errorData.detail || errorMessage;
+          if (errorData.error === 'no_snapshot') {
+            errorMessage = 'No cached data available - weekly refresh may not have run yet';
+          } else {
+            errorMessage = errorData.message || errorData.detail || errorData.error || errorMessage;
+          }
         } catch {
           const errText = await response.text().catch(() => '');
           if (errText) errorMessage = errText;
@@ -111,7 +118,11 @@ export function Leaderboard() {
       const result: TopResponse = await response.json();
       
       if (!result.items || result.items.length === 0) {
-        setError(`No ${platform} data available at this time`);
+        if (result.error === 'no_snapshot') {
+          setError(`No cached ${platform} data available - weekly refresh may not have run yet`);
+        } else {
+          setError(`No ${platform} data available at this time`);
+        }
         setData([]);
         setLastUpdated(null);
         return;
@@ -120,7 +131,7 @@ export function Leaderboard() {
       setData(result.items);
       setLastUpdated(result.fetched_at);
       setError(null);
-      console.log(`Successfully fetched ${result.items.length} items for ${platform}`);
+      console.log(`Successfully fetched ${result.items.length} cached items for ${platform}`);
 
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -131,11 +142,6 @@ export function Leaderboard() {
     } finally {
       setLoading(false);
     }
-  };
-
-  const refreshData = () => {
-    fetchData(selectedPlatform, true); // Bypass cache
-    setPage(1);
   };
 
   useEffect(() => {
