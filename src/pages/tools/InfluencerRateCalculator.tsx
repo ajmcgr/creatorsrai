@@ -397,6 +397,15 @@ export default function InfluencerRateCalculator() {
             <p className="text-sm text-gray-600">
               Copyright © 2025 Works App, Inc. Built with ♥️ by{" "}
               <a 
+                href="http://x.com/alexmacgregor__/" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-primary hover:underline"
+              >
+                Alex
+              </a>
+              {" "}and{" "}
+              <a 
                 href="https://works.xyz/" 
                 target="_blank" 
                 rel="noopener noreferrer"
