@@ -46,6 +46,16 @@ function normalizeTop(platform: Platform, raw: any[]): TopItem[] {
     return undefined;
   };
 
+  const toNumber = (v: any): number => {
+    if (typeof v === 'number' && Number.isFinite(v)) return v;
+    if (typeof v === 'string') {
+      const cleaned = v.replace(/[,\s]/g, '');
+      const n = parseInt(cleaned, 10);
+      return Number.isFinite(n) ? n : 0;
+    }
+    return 0;
+  };
+
   const src = Array.isArray(raw) ? raw : (raw?.data || []);
   return src.map((it: any, i: number) => {
     const id = pickString(
@@ -54,12 +64,16 @@ function normalizeTop(platform: Platform, raw: any[]): TopItem[] {
     ) || `${platform}-${i}`;
 
     const displayName = pickString(
-      it.displayname, it.display_name, it.title, it.name, it.fullname,
-      it.channelname, it.channel_name, it.username, it.handle
-    ) || 'Unknown';
+      it.displayname, it.display_name, it.displayName,
+      it.title, it.channelTitle, it.channel_title,
+      it.name, it.fullname, it.full_name,
+      it.channelname, it.channel_name,
+      it.username, it.handle
+    ) || id;
 
     const username = pickString(
-      it.username, it.handle, it.user?.username, it.account?.handle
+      it.username, it.handle, it.customUrl, it.custom_url,
+      it.user?.username, it.account?.handle, it.screen_name
     );
 
     const avatar = pickString(
@@ -67,9 +81,10 @@ function normalizeTop(platform: Platform, raw: any[]): TopItem[] {
       it.picture, it.profile_image_url, it.profile?.avatar, it.user?.avatar
     );
 
-    const followers = platform === 'youtube'
-      ? Number(it.subscribers ?? it.subscriberCount ?? it.subs ?? it.followers ?? 0)
-      : Number(it.followers ?? it.followerCount ?? it.fans ?? it.subscribers ?? 0);
+    const yt = toNumber(it.subscribers ?? it.subscriberCount ?? it.subscriber_count ?? it.subs ?? it.subs_count ?? it['Subscribers']);
+    const igtt = toNumber(it.followers ?? it.followerCount ?? it.follower_count ?? it.fans ?? it['Followers']);
+
+    const followers = platform === 'youtube' ? yt : igtt;
 
     return { rank: i + 1, id, displayName, username, avatar, followers, platform };
   });
