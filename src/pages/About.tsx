@@ -21,12 +21,6 @@ const About = () => {
               <strong>Hello there!</strong>
             </p>
             <p className="text-gray-700 leading-relaxed mb-4">
-              I'm Alex MacGregor, a PR strategist who has spent the last decade relying on enterprise suites like Meltwater, Cision, and Muck Rack to get coverage for tech brands across Asia-Pacific.
-            </p>
-            <p className="text-gray-700 leading-relaxed mb-4">
-              Now, I'm building the future of PR & Influence.
-            </p>
-            <p className="text-gray-700 leading-relaxed mb-4">
               In today's world, creators aren't just influencers, they're the new media companies. They drive cultural conversations, shift consumer behavior faster than traditional press ever could, and often set the agenda for how stories spread online.
             </p>
             <p className="text-gray-700 leading-relaxed mb-4">
