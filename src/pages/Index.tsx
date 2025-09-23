@@ -8,12 +8,12 @@ const Index = () => {
     <div className="min-h-screen bg-white">
       <Header />
       
-      <main className="container mx-auto px-4 py-12 max-w-6xl">
-        <div className="mb-8">
-          <h2 className="text-3xl font-bold mb-2 text-gray-900">
+      <main className="container mx-auto px-4 sm:px-6 py-8 sm:py-12 max-w-6xl">
+        <div className="mb-6 sm:mb-8">
+          <h2 className="text-2xl sm:text-3xl font-bold mb-2 text-gray-900">
             World's Most Popular Creators Leaderboard
           </h2>
-          <p className="text-gray-600">
+          <p className="text-sm sm:text-base text-gray-600">
             Real-time leaderboard showing the most followed creators across platforms (
             <Link to="/about" className="text-primary underline hover:no-underline">learn more</Link>
             )
@@ -22,19 +22,19 @@ const Index = () => {
         
         <Leaderboard />
         
-        <div className="mt-16">
-          <h2 className="text-3xl font-bold mb-8 text-gray-900">
+        <div className="mt-12 sm:mt-16">
+          <h2 className="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8 text-gray-900">
             Frequently Asked Questions
           </h2>
           
           <div className="space-y-4">
             <div className="border border-gray-200 rounded-lg">
               <details className="group">
-                <summary className="flex justify-between items-center p-6 cursor-pointer hover:bg-gray-50">
-                  <span className="font-medium text-gray-900">How often is the leaderboard updated?</span>
+                <summary className="flex justify-between items-center p-4 sm:p-6 cursor-pointer hover:bg-gray-50">
+                  <span className="font-medium text-gray-900 text-sm sm:text-base">How often is the leaderboard updated?</span>
                   <span className="text-gray-500 group-open:rotate-90 transition-transform">▶</span>
                 </summary>
-                <div className="px-6 pb-6 text-gray-700">
+                <div className="px-4 sm:px-6 pb-4 sm:pb-6 text-gray-700 text-sm sm:text-base">
                   The leaderboard refreshes once per month by default, pulling directly from Social Blade's official creator rankings.
                 </div>
               </details>
@@ -42,11 +42,11 @@ const Index = () => {
             
             <div className="border border-gray-200 rounded-lg">
               <details className="group">
-                <summary className="flex justify-between items-center p-6 cursor-pointer hover:bg-gray-50">
-                  <span className="font-medium text-gray-900">How do you verify the information?</span>
+                <summary className="flex justify-between items-center p-4 sm:p-6 cursor-pointer hover:bg-gray-50">
+                  <span className="font-medium text-gray-900 text-sm sm:text-base">How do you verify the information?</span>
                   <span className="text-gray-500 group-open:rotate-90 transition-transform">▶</span>
                 </summary>
-                <div className="px-6 pb-6 text-gray-700">
+                <div className="px-4 sm:px-6 pb-4 sm:pb-6 text-gray-700 text-sm sm:text-base">
                   All numbers (subscribers, followers, views) come directly from the Social Blade Business API, which tracks creators across YouTube, TikTok, and Instagram. We don't manually edit or inflate any figures — everything you see is what Social Blade reports.
                 </div>
               </details>
@@ -54,11 +54,11 @@ const Index = () => {
             
             <div className="border border-gray-200 rounded-lg">
               <details className="group">
-                <summary className="flex justify-between items-center p-6 cursor-pointer hover:bg-gray-50">
-                  <span className="font-medium text-gray-900">Which platforms are included?</span>
+                <summary className="flex justify-between items-center p-4 sm:p-6 cursor-pointer hover:bg-gray-50">
+                  <span className="font-medium text-gray-900 text-sm sm:text-base">Which platforms are included?</span>
                   <span className="text-gray-500 group-open:rotate-90 transition-transform">▶</span>
                 </summary>
-                <div className="px-6 pb-6 text-gray-700">
+                <div className="px-4 sm:px-6 pb-4 sm:pb-6 text-gray-700 text-sm sm:text-base">
                   Right now, we focus on the three biggest creator ecosystems: YouTube, TikTok, and Instagram. More platforms (Twitch, Facebook, X) may be added later depending on demand.
                 </div>
               </details>
@@ -66,11 +66,11 @@ const Index = () => {
             
             <div className="border border-gray-200 rounded-lg">
               <details className="group">
-                <summary className="flex justify-between items-center p-6 cursor-pointer hover:bg-gray-50">
-                  <span className="font-medium text-gray-900">Why only the Top 200?</span>
+                <summary className="flex justify-between items-center p-4 sm:p-6 cursor-pointer hover:bg-gray-50">
+                  <span className="font-medium text-gray-900 text-sm sm:text-base">Why only the Top 200?</span>
                   <span className="text-gray-500 group-open:rotate-90 transition-transform">▶</span>
                 </summary>
-                <div className="px-6 pb-6 text-gray-700">
+                <div className="px-4 sm:px-6 pb-4 sm:pb-6 text-gray-700 text-sm sm:text-base">
                   The Social Blade API provides results in pages of 100. We fetch and merge the first two pages to display the top 200 biggest creators per platform.
                 </div>
               </details>
@@ -78,11 +78,11 @@ const Index = () => {
             
             <div className="border border-gray-200 rounded-lg">
               <details className="group">
-                <summary className="flex justify-between items-center p-6 cursor-pointer hover:bg-gray-50">
-                  <span className="font-medium text-gray-900">Can I suggest a creator or channel to add?</span>
+                <summary className="flex justify-between items-center p-4 sm:p-6 cursor-pointer hover:bg-gray-50">
+                  <span className="font-medium text-gray-900 text-sm sm:text-base">Can I suggest a creator or channel to add?</span>
                   <span className="text-gray-500 group-open:rotate-90 transition-transform">▶</span>
                 </summary>
-                <div className="px-6 pb-6 text-gray-700">
+                <div className="px-4 sm:px-6 pb-4 sm:pb-6 text-gray-700 text-sm sm:text-base">
                   The rankings come straight from Social Blade's data, so you can't "submit" someone to appear. If a creator is active and large enough, they'll naturally show up in Social Blade's top lists.
                 </div>
               </details>
@@ -90,11 +90,11 @@ const Index = () => {
             
             <div className="border border-gray-200 rounded-lg">
               <details className="group">
-                <summary className="flex justify-between items-center p-6 cursor-pointer hover:bg-gray-50">
-                  <span className="font-medium text-gray-900">Why isn't [creator name] on the list?</span>
+                <summary className="flex justify-between items-center p-4 sm:p-6 cursor-pointer hover:bg-gray-50">
+                  <span className="font-medium text-gray-900 text-sm sm:text-base">Why isn't [creator name] on the list?</span>
                   <span className="text-gray-500 group-open:rotate-90 transition-transform">▶</span>
                 </summary>
-                <div className="px-6 pb-6 text-gray-700">
+                <div className="px-4 sm:px-6 pb-4 sm:pb-6 text-gray-700 text-sm sm:text-base">
                   Two common reasons:
                   <br /><br />
                   They may not be in the global Top 200 for their platform.
@@ -106,11 +106,11 @@ const Index = () => {
             
             <div className="border border-gray-200 rounded-lg">
               <details className="group">
-                <summary className="flex justify-between items-center p-6 cursor-pointer hover:bg-gray-50">
-                  <span className="font-medium text-gray-900">Who is behind this leaderboard?</span>
+                <summary className="flex justify-between items-center p-4 sm:p-6 cursor-pointer hover:bg-gray-50">
+                  <span className="font-medium text-gray-900 text-sm sm:text-base">Who is behind this leaderboard?</span>
                   <span className="text-gray-500 group-open:rotate-90 transition-transform">▶</span>
                 </summary>
-                <div className="px-6 pb-6 text-gray-700">
+                <div className="px-4 sm:px-6 pb-4 sm:pb-6 text-gray-700 text-sm sm:text-base">
                   This site was built by Works.xyz, a creative PR and influence platform. We use Social Blade's Business API to power the data, but the design and presentation are our own.
                 </div>
               </details>

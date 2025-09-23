@@ -212,7 +212,7 @@ export function Leaderboard() {
 
       {/* Last Updated Info */}
       {lastUpdated && (
-        <div className="text-sm text-muted-foreground mb-6 flex justify-between items-center">
+        <div className="text-sm text-muted-foreground mb-6 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
           <span>Last updated: {formatTimeAgo(lastUpdated)}</span>
           <span className="text-xs">
             Showing {data.length} creators • Page {page} of {totalPages}
@@ -229,20 +229,20 @@ export function Leaderboard() {
           return (
             <Card 
               key={`${entry.platform}-${String(entry.id)}`}
-              className="p-6 bg-white border border-gray-200 hover:shadow-md transition-all duration-300"
+              className="p-3 sm:p-6 bg-white border border-gray-200 hover:shadow-md transition-all duration-300"
               style={{ animationDelay: `${index * 50}ms` }}
             >
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-4">
+              <div className="flex items-center justify-between gap-2 sm:gap-4">
+                <div className="flex items-center space-x-2 sm:space-x-4 flex-1 min-w-0">
                   {/* Rank */}
-                  <div className="flex-shrink-0 w-8 text-center">
-                    <span className="text-2xl font-bold text-gray-500">
+                  <div className="flex-shrink-0 w-6 sm:w-8 text-center">
+                    <span className="text-lg sm:text-2xl font-bold text-gray-500">
                       {entry.rank}
                     </span>
                   </div>
 
                   {/* Avatar */}
-                  <Avatar className="h-12 w-12">
+                  <Avatar className="h-10 w-10 sm:h-12 sm:w-12 flex-shrink-0">
                     <AvatarImage 
                       src={entry.avatar}
                       alt={entry.displayName}
@@ -257,23 +257,23 @@ export function Leaderboard() {
                       <img 
                         src={diamondIcon} 
                         alt="Placeholder avatar"
-                        className="w-6 h-6"
+                        className="w-5 h-5 sm:w-6 sm:h-6"
                       />
                     </AvatarFallback>
                   </Avatar>
 
                   {/* Info */}
                   <div className="flex-1 min-w-0">
-                    <h3 className="font-semibold text-lg truncate text-gray-900">
+                    <h3 className="font-semibold text-sm sm:text-lg truncate text-gray-900">
                       {entry.displayName}
                     </h3>
-                    <div className="flex items-center space-x-2">
-                      <Badge variant="secondary" className="text-xs">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-2 gap-1 sm:gap-0">
+                      <Badge variant="secondary" className="text-xs w-fit">
                         <Icon className="w-3 h-3 mr-1" />
                         {config?.name || entry.platform}
                       </Badge>
                       {entry.username && (
-                        <span className="text-sm text-gray-500">
+                        <span className="text-xs sm:text-sm text-gray-500 truncate">
                           @{entry.username}
                         </span>
                       )}
@@ -282,11 +282,11 @@ export function Leaderboard() {
                 </div>
 
                 {/* Stats */}
-                <div className="text-right space-y-1">
-                  <div className="font-bold text-xl text-gray-900">
+                <div className="text-right space-y-1 flex-shrink-0">
+                  <div className="font-bold text-sm sm:text-xl text-gray-900">
                     {formatNumber(entry.followers)}
                   </div>
-                  <div className="text-sm text-gray-500">
+                  <div className="text-xs sm:text-sm text-gray-500">
                     {config?.metric || 'followers'}
                   </div>
                 </div>
