@@ -47,7 +47,7 @@ function normalizeTop(platform: Platform, raw: any[]): TopItem[] {
   };
 
   const toNumber = (v: any): number => {
-    if (typeof v === 'number' && Number.isFinite(v)) return v;
+    if (typeof v === 'number' && Number.isFinite(v)) return Math.floor(v);
     if (typeof v === 'string') {
       const cleaned = v.replace(/[,\s]/g, '');
       const n = parseInt(cleaned, 10);
@@ -58,12 +58,23 @@ function normalizeTop(platform: Platform, raw: any[]): TopItem[] {
 
   const src = Array.isArray(raw) ? raw : (raw?.data || []);
   return src.map((it: any, i: number) => {
+    // Handle nested Social Blade structure
+    const idObj = it.id || {};
+    const statsObj = it.statistics?.total || {};
+    
     const id = pickString(
+      idObj.id, idObj.userid, idObj.user_id, idObj.channelid,
       it.id, it.userid, it.user_id, it.channelid, it.channelId, it.channel_id,
       it.username, it.handle
     ) || `${platform}-${i}`;
 
     const displayName = pickString(
+      idObj.display_name, idObj.displayname, idObj.displayName,
+      idObj.title, idObj.channelTitle, idObj.channel_title,
+      idObj.name, idObj.fullname, idObj.full_name,
+      idObj.channelname, idObj.channel_name,
+      idObj.username, idObj.handle,
+      // Fallback to top-level props
       it.displayname, it.display_name, it.displayName,
       it.title, it.channelTitle, it.channel_title,
       it.name, it.fullname, it.full_name,
@@ -72,17 +83,27 @@ function normalizeTop(platform: Platform, raw: any[]): TopItem[] {
     ) || id;
 
     const username = pickString(
+      idObj.username, idObj.handle, idObj.customUrl, idObj.custom_url,
       it.username, it.handle, it.customUrl, it.custom_url,
       it.user?.username, it.account?.handle, it.screen_name
     );
 
     const avatar = pickString(
+      idObj.avatar, idObj.profile_picture, idObj.profilePic, idObj.thumbnail, idObj.image,
       it.avatar, it.profile_picture, it.profilePic, it.thumbnail, it.image,
       it.picture, it.profile_image_url, it.profile?.avatar, it.user?.avatar
     );
 
-    const yt = toNumber(it.subscribers ?? it.subscriberCount ?? it.subscriber_count ?? it.subs ?? it.subs_count ?? it['Subscribers']);
-    const igtt = toNumber(it.followers ?? it.followerCount ?? it.follower_count ?? it.fans ?? it['Followers']);
+    // Extract follower counts from nested structure
+    const yt = toNumber(
+      statsObj.subscribers ?? statsObj.subscriberCount ?? statsObj.subscriber_count ??
+      it.subscribers ?? it.subscriberCount ?? it.subscriber_count ?? it.subs ?? it.subs_count ?? it['Subscribers']
+    );
+    
+    const igtt = toNumber(
+      statsObj.followers ?? statsObj.followerCount ?? statsObj.follower_count ??
+      it.followers ?? it.followerCount ?? it.follower_count ?? it.fans ?? it['Followers']
+    );
 
     const followers = platform === 'youtube' ? yt : igtt;
 
