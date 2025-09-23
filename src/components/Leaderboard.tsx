@@ -71,6 +71,8 @@ export function Leaderboard() {
 
   console.log(`Pagination: total=${total}, currentPage=${currentPage}, totalPages=${totalPages}`);
   console.log(`Data length: raw=${data.length}, enriched=${enrichedPageData.length}`);
+  console.log('Raw data sample:', data.slice(0, 2)); // Debug: show first 2 items
+  console.log('Enriched data sample:', enrichedPageData.slice(0, 2)); // Debug: show first 2 items
 
   const fetchData = async (platform: Platform) => {
     setLoading(true);
@@ -132,6 +134,7 @@ export function Leaderboard() {
       setLastUpdated(result.fetched_at);
       setError(null);
       console.log(`Successfully fetched ${result.items.length} cached items for ${platform}`);
+      console.log('Sample data:', result.items.slice(0, 3)); // Debug: show first 3 items
 
     } catch (error) {
       console.error('Error fetching data:', error);
