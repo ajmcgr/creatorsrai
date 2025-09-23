@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Header } from "@/components/Header";
 import { Link } from "react-router-dom";
 import { Leaderboard } from "@/components/Leaderboard";
+import { WeeklyRefreshTrigger } from "@/components/WeeklyRefreshTrigger";
 
 const Index = () => {
   return (
@@ -20,7 +21,11 @@ const Index = () => {
           </p>
         </div>
         
-        <Leaderboard />
+        <WeeklyRefreshTrigger />
+        
+        <div className="mt-8">
+          <Leaderboard />
+        </div>
         
         <div className="mt-16">
           <h2 className="text-3xl font-bold mb-8 text-gray-900">
