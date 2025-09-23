@@ -40,6 +40,9 @@ verify_jwt = false
 [functions.weekly-diff-email]
 verify_jwt = false
 
+[functions.health]
+verify_jwt = false
+
 [db]
 port = 54322
 

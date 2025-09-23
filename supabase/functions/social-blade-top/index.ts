@@ -22,10 +22,13 @@ interface TopResponse {
   items: TopItem[];
 }
 
-// Social Blade helpers
+// Configuration
 const SB_BASE = Deno.env.get('SB_BASE_URL') || 'https://matrix.sbapis.com/b';
 const SB_CLIENT_ID = Deno.env.get('SB_CLIENT_ID')!;
 const SB_TOKEN = Deno.env.get('SB_TOKEN')!;
+const CACHE_TTL_HOURS = Number(Deno.env.get('CACHE_TTL_HOURS') || '168');
+const DEFAULT_LIMIT = Number(Deno.env.get('TOP_LIMIT') || '200');
+const ALLOWED_PLATFORMS = new Set(['youtube', 'tiktok', 'instagram']);
 
 function topUrl(platform: Platform, page: number) {
   const q = platform === 'youtube' ? 'subscribers' : 'followers';
@@ -117,9 +120,7 @@ function normalizeTop(platform: Platform, raw: any[]): TopItem[] {
   });
 }
 
-// Cache helpers with simplified logic
-const CACHE_TTL_HOURS = Number(Deno.env.get('CACHE_TTL_HOURS') || '168'); // 7 days default
-const DEFAULT_LIMIT = Number(Deno.env.get('TOP_LIMIT') || '200'); // Default 200 as requested
+// Cache helpers
 
 function supa() {
   const url = Deno.env.get('SUPABASE_URL');
@@ -180,8 +181,7 @@ Deno.serve(async (req) => {
     const lim = limitParam ? Number(limitParam) : DEFAULT_LIMIT;
     const limit = lim >= 200 ? 200 : 100;
     
-    const ALLOWED_PLATFORMS: Platform[] = ['youtube', 'tiktok', 'instagram'];
-    if (!ALLOWED_PLATFORMS.includes(platform)) {
+    if (!ALLOWED_PLATFORMS.has(platform)) {
       return new Response(
         JSON.stringify({ error: 'invalid platform' }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
