@@ -143,7 +143,7 @@ Deno.serve(async (req) => {
     }
     
     const wanted = limitParam ? Number(limitParam) : 200;
-    const limit = wanted >= 200 ? 200 : 100;
+    const limit = Math.min(wanted, 200); // Always allow up to 200
 
     const allowedPlatforms = new Set(['youtube', 'tiktok', 'instagram']);
     if (!allowedPlatforms.has(platform)) {
@@ -177,46 +177,49 @@ Deno.serve(async (req) => {
     if (data?.[0]?.data_json?.length) {
       const snapshot = data[0];
       const arr = Array.isArray(snapshot.data_json) ? snapshot.data_json : (snapshot.data_json?.data || []);
-      let items = normalizeTop(platform, arr).slice(0, limit);
+      let items = normalizeTop(platform, arr);
 
-      // If snapshot contains fewer than requested items and 200 were requested,
-      // try to augment with legacy cached pages to reach up to 200 entries.
-      if (items.length < limit && limit > 100) {
-        try {
-          const { data: legacyRows } = await client
-            .from('top_cache')
-            .select('data_json, page, week_start')
-            .eq('platform', platform)
-            .order('week_start', { ascending: false })
-            .order('page', { ascending: true })
-            .limit(2);
+      // Always try to augment with legacy cache to get more data when available
+      try {
+        const { data: legacyRows } = await client
+          .from('top_cache')
+          .select('data_json, page, week_start')
+          .eq('platform', platform)
+          .order('week_start', { ascending: false })
+          .order('page', { ascending: true })
+          .limit(4); // Get more pages to potentially reach 200 items
 
-          if (legacyRows && legacyRows.length) {
-            const legacyArrays = legacyRows.map((row) => Array.isArray(row.data_json) ? row.data_json : (row.data_json?.data || []));
-            const mergedRaw = [...arr, ...legacyArrays.flat()];
-            const mergedNormalized = normalizeTop(platform, mergedRaw);
-            // Dedupe by id while preserving order
-            const seen = new Set<string>();
-            const deduped: TopItem[] = [];
-            for (const it of mergedNormalized) {
-              if (!seen.has(it.id)) { seen.add(it.id); deduped.push(it); }
-              if (deduped.length >= limit) break;
+        if (legacyRows && legacyRows.length) {
+          const legacyArrays = legacyRows.map((row) => Array.isArray(row.data_json) ? row.data_json : (row.data_json?.data || []));
+          const mergedRaw = [...arr, ...legacyArrays.flat()];
+          const mergedNormalized = normalizeTop(platform, mergedRaw);
+          
+          // Dedupe by id while preserving order and rank
+          const seen = new Set<string>();
+          const deduped: TopItem[] = [];
+          for (const it of mergedNormalized) {
+            if (!seen.has(it.id)) { 
+              seen.add(it.id); 
+              deduped.push(it); 
             }
-            items = deduped.slice(0, limit);
-            console.log(`Cache hit for ${platform}, augmented with legacy pages to ${items.length} items`);
+            if (deduped.length >= limit) break;
           }
-        } catch (e) {
-          console.log('Augmentation with legacy cache failed, returning snapshot items only');
+          items = deduped.slice(0, limit);
+          console.log(`Cache hit for ${platform}, combined snapshot + legacy to ${items.length} items`);
+        } else {
+          items = items.slice(0, limit);
+          console.log(`Cache hit for ${platform}, snapshot only: ${items.length} items from month ${snapshot.week_start}`);
         }
-      } else {
-        console.log(`Cache hit for ${platform}, returning ${items.length} items from month ${snapshot.week_start}`);
+      } catch (e) {
+        console.log('Augmentation with legacy cache failed, returning snapshot items only');
+        items = items.slice(0, limit);
       }
 
       return new Response(
         JSON.stringify({
           fetched_at: snapshot.fetched_at,
-          period_start: snapshot.week_start, // month anchor
-          limit_size: snapshot.limit_size,
+          period_start: snapshot.week_start,
+          limit_size: limit,
           items
         }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
