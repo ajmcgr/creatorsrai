@@ -11,7 +11,7 @@ type Platform = 'youtube' | 'tiktok' | 'instagram';
 const SB_BASE = Deno.env.get('SB_BASE_URL') || 'https://matrix.sbapis.com/b';
 const SB_CLIENT_ID = Deno.env.get('SB_CLIENT_ID')!;
 const SB_TOKEN = Deno.env.get('SB_TOKEN')!;
-const TOP_LIMIT = Number(Deno.env.get('TOP_LIMIT') || 100);
+const TOP_LIMIT = 200; // Force 200 items collection
 
 // Helper to get Monday UTC for a given date
 function mondayUTC(d = new Date()) {
