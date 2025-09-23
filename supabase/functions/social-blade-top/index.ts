@@ -22,13 +22,13 @@ interface TopResponse {
   items: TopItem[];
 }
 
-function sbTopUrl(platform: Platform): string {
+function sbTopUrl(platform: Platform, page: number = 1): string {
   const SB_BASE = Deno.env.get('SB_BASE_URL') || 'https://matrix.sbapis.com/b';
   const query = platform === 'youtube' ? 'subscribers' : 'followers';
-  return `${SB_BASE}/${platform}/top?query=${query}&page=1`;
+  return `${SB_BASE}/${platform}/top?query=${query}&page=${page}`;
 }
 
-async function fetchSbTop(platform: Platform): Promise<any> {
+async function fetchSbTopPage(platform: Platform, page: number): Promise<any> {
   const SB_CLIENT_ID = Deno.env.get('SB_CLIENT_ID');
   const SB_TOKEN = Deno.env.get('SB_TOKEN');
   
@@ -36,9 +36,9 @@ async function fetchSbTop(platform: Platform): Promise<any> {
     throw new Error('Social Blade credentials not configured');
   }
 
-  console.log(`Fetching ${platform} data from Social Blade...`);
+  console.log(`Fetching ${platform} data from Social Blade page ${page}...`);
   
-  const res = await fetch(sbTopUrl(platform), {
+  const res = await fetch(sbTopUrl(platform, page), {
     headers: { 
       clientid: SB_CLIENT_ID, 
       token: SB_TOKEN 
@@ -47,13 +47,36 @@ async function fetchSbTop(platform: Platform): Promise<any> {
   
   if (!res.ok) {
     const text = await res.text();
-    console.error(`SocialBlade ${platform} ${res.status}: ${text}`);
-    throw new Error(`SocialBlade ${platform} ${res.status}: ${text}`);
+    console.error(`SocialBlade ${platform} page ${page} ${res.status}: ${text}`);
+    throw new Error(`SocialBlade ${platform} page ${page} ${res.status}: ${text}`);
   }
   
   const data = await res.json();
-  console.log(`Successfully fetched ${platform} data:`, data?.length || 0, 'items');
+  console.log(`Successfully fetched ${platform} page ${page} data:`, Array.isArray(data) ? data.length : (data?.data?.length || 0), 'items');
   return data;
+}
+
+async function fetchSbTop(platform: Platform, limit: number = 100): Promise<any> {
+  if (limit <= 100) {
+    return await fetchSbTopPage(platform, 1);
+  }
+  
+  console.log(`Fetching Top-200 for ${platform} by merging pages 1 & 2`);
+  
+  // Fetch both pages in parallel
+  const [page1Data, page2Data] = await Promise.all([
+    fetchSbTopPage(platform, 1),
+    fetchSbTopPage(platform, 2)
+  ]);
+
+  // Merge the results - handle nested data structure
+  const page1Array = Array.isArray(page1Data) ? page1Data : (page1Data?.data || []);
+  const page2Array = Array.isArray(page2Data) ? page2Data : (page2Data?.data || []);
+  
+  const merged = [...page1Array, ...page2Array];
+  console.log(`Merged ${platform} data: ${page1Array.length} + ${page2Array.length} = ${merged.length} items`);
+  
+  return merged;
 }
 
 function normalizeTop(platform: Platform, raw: any): TopItem[] {
@@ -153,6 +176,8 @@ Deno.serve(async (req) => {
   try {
     const url = new URL(req.url);
     const platform = (url.searchParams.get('platform') || 'youtube').toLowerCase() as Platform;
+    const limitParam = url.searchParams.get('limit');
+    const limit = limitParam ? Math.min(Math.max(Number(limitParam), 100), 200) : 100; // Default 100, max 200
     
     const ALLOWED_PLATFORMS: Platform[] = ['youtube', 'tiktok', 'instagram'];
     if (!ALLOWED_PLATFORMS.includes(platform)) {
@@ -167,30 +192,35 @@ Deno.serve(async (req) => {
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    // Try to get cached data first
+    // Try to get cached data first - but only if we have enough data
     const cached = await getCachedData(supabase, platform);
     if (cached?.data_json) {
-      const response: TopResponse = {
-        fetched_at: cached.fetched_at,
-        items: normalizeTop(platform, cached.data_json)
-      };
+      const cachedArray = Array.isArray(cached.data_json) ? cached.data_json : (cached.data_json?.data || []);
       
-      return new Response(
-        JSON.stringify(response),
-        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
+      // Only use cache if it has enough data for the requested limit
+      if (cachedArray.length >= limit || (limit <= 100 && cachedArray.length >= 100)) {
+        const response: TopResponse = {
+          fetched_at: cached.fetched_at,
+          items: normalizeTop(platform, cachedArray).slice(0, limit)
+        };
+        
+        return new Response(
+          JSON.stringify(response),
+          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
     }
 
-    // Fetch fresh data from Social Blade
-    console.log(`Fetching fresh data for ${platform}...`);
-    const raw = await fetchSbTop(platform);
+    // Fetch fresh data from Social Blade (fetch 200 for cache, slice to limit for response)
+    console.log(`Fetching fresh data for ${platform} (Top-${limit === 200 ? '200' : '100'})...`);
+    const raw = await fetchSbTop(platform, 200); // Always fetch 200 for cache
     
     // Cache the fresh data
     await setCachedData(supabase, platform, raw);
 
     const response: TopResponse = {
       fetched_at: new Date().toISOString(),
-      items: normalizeTop(platform, raw)
+      items: normalizeTop(platform, raw).slice(0, limit)
     };
 
     return new Response(
