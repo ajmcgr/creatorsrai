@@ -34,20 +34,15 @@ function normalizeTop(platform: Platform, raw: any[]): TopItem[] {
   }));
 }
 
-async function fetchFromSocialBlade(platform: Platform): Promise<any[]> {
+async function fetchFromSocialBladePage(platform: Platform, page: number): Promise<any[]> {
   const SB_CLIENT_ID = Deno.env.get('SB_CLIENT_ID')!;
   const SB_TOKEN = Deno.env.get('SB_TOKEN')!;
   const SB_BASE_URL = Deno.env.get('SB_BASE_URL')!;
 
-  const endpoints = {
-    youtube: '/youtube/top?query=subscribers&page=1',
-    tiktok: '/tiktok/top?query=followers&page=1',
-    instagram: '/instagram/top?query=followers&page=1'
-  };
-
-  const url = `${SB_BASE_URL}${endpoints[platform]}`;
+  const query = platform === 'youtube' ? 'subscribers' : 'followers';
+  const url = `${SB_BASE_URL}/${platform}/top?query=${query}&page=${page}`;
   
-  console.log(`Fetching ${platform} data from Social Blade: ${url}`);
+  console.log(`Fetching ${platform} data from Social Blade page ${page}: ${url}`);
   
   const response = await fetch(url, {
     headers: {
@@ -58,14 +53,35 @@ async function fetchFromSocialBlade(platform: Platform): Promise<any[]> {
   });
 
   if (!response.ok) {
-    console.error(`Social Blade API error for ${platform}:`, response.status, response.statusText);
+    console.error(`Social Blade API error for ${platform} page ${page}:`, response.status, response.statusText);
     throw new Error(`SocialBlade error: ${response.status}`);
   }
 
   const data = await response.json();
-  console.log(`Successfully fetched ${platform} data:`, data?.length || 0, 'items');
+  const dataArray = Array.isArray(data) ? data : (data?.data || []);
+  console.log(`Successfully fetched ${platform} page ${page} data:`, dataArray.length, 'items');
   
-  return Array.isArray(data) ? data : [];
+  return dataArray;
+}
+
+async function fetchFromSocialBlade(platform: Platform, limit = 200): Promise<any[]> {
+  if (limit <= 100) {
+    return await fetchFromSocialBladePage(platform, 1);
+  }
+  
+  console.log(`Fetching Top-200 for ${platform} by merging pages 1 & 2`);
+  
+  // Fetch both pages in parallel
+  const [page1Data, page2Data] = await Promise.all([
+    fetchFromSocialBladePage(platform, 1),
+    fetchFromSocialBladePage(platform, 2)
+  ]);
+
+  // Merge the results
+  const merged = [...page1Data, ...page2Data];
+  console.log(`Merged ${platform} data: ${page1Data.length} + ${page2Data.length} = ${merged.length} items`);
+  
+  return merged;
 }
 
 Deno.serve(async (req) => {
@@ -84,6 +100,8 @@ Deno.serve(async (req) => {
   try {
     const url = new URL(req.url);
     const platform = url.searchParams.get('platform') as Platform;
+    const limitParam = url.searchParams.get('limit');
+    const limit = limitParam ? Math.min(Math.max(Number(limitParam), 100), 200) : 200; // Default to 200, cap at 200
 
     if (!platform || !PLATFORMS.includes(platform)) {
       return new Response(
@@ -116,28 +134,33 @@ Deno.serve(async (req) => {
     }
 
     if (cachedData && cachedData.data_json) {
-      console.log(`Cache hit for ${platform}`);
-      const items = normalizeTop(platform, cachedData.data_json as any[]);
-      return new Response(
-        JSON.stringify({
-          fetched_at: cachedData.fetched_at,
-          items
-        } satisfies TopResponse),
-        { 
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-        }
-      );
+      const cachedArray = Array.isArray(cachedData.data_json) ? cachedData.data_json : [];
+      
+      // Only use cache if it has enough data for the requested limit
+      if (cachedArray.length >= limit || (limit <= 100 && cachedArray.length >= 100)) {
+        console.log(`Cache hit for ${platform}, using ${Math.min(limit, cachedArray.length)} items`);
+        const items = normalizeTop(platform, cachedArray).slice(0, limit);
+        return new Response(
+          JSON.stringify({
+            fetched_at: cachedData.fetched_at,
+            items
+          } satisfies TopResponse),
+          { 
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          }
+        );
+      }
     }
 
-    // Cache miss - fetch from Social Blade
-    console.log(`Cache miss for ${platform}, fetching from Social Blade`);
-    const rawData = await fetchFromSocialBlade(platform);
+    // Cache miss - fetch from Social Blade (Top-200 by default)
+    console.log(`Cache miss for ${platform}, fetching Top-200 from Social Blade`);
+    const rawData = await fetchFromSocialBlade(platform, 200); // Always fetch 200 for cache
     
     if (rawData.length === 0) {
       console.warn(`No data returned from Social Blade for ${platform}`);
     }
 
-    // Update cache
+    // Update cache with the full dataset
     const now = new Date().toISOString();
     const { error: upsertError } = await supabase
       .from('top_cache')
@@ -154,7 +177,7 @@ Deno.serve(async (req) => {
       console.error('Cache upsert error:', upsertError);
     }
 
-    const items = normalizeTop(platform, rawData);
+    const items = normalizeTop(platform, rawData).slice(0, limit);
     
     return new Response(
       JSON.stringify({

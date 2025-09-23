@@ -7,13 +7,7 @@ const corsHeaders = {
 
 type Platform = 'youtube' | 'tiktok' | 'instagram';
 
-function sbTopUrl(platform: Platform): string {
-  const SB_BASE = Deno.env.get('SB_BASE_URL') || 'https://matrix.sbapis.com/b';
-  const query = platform === 'youtube' ? 'subscribers' : 'followers';
-  return `${SB_BASE}/${platform}/top?query=${query}&page=1`;
-}
-
-async function fetchSbTop(platform: Platform): Promise<any> {
+async function fetchSbTopPage(platform: Platform, page: number): Promise<any[]> {
   const SB_CLIENT_ID = Deno.env.get('SB_CLIENT_ID');
   const SB_TOKEN = Deno.env.get('SB_TOKEN');
   
@@ -21,9 +15,13 @@ async function fetchSbTop(platform: Platform): Promise<any> {
     throw new Error('Social Blade credentials not configured');
   }
 
-  console.log(`Fetching ${platform} data from Social Blade...`);
+  const SB_BASE = Deno.env.get('SB_BASE_URL') || 'https://matrix.sbapis.com/b';
+  const query = platform === 'youtube' ? 'subscribers' : 'followers';
+  const url = `${SB_BASE}/${platform}/top?query=${query}&page=${page}`;
   
-  const res = await fetch(sbTopUrl(platform), {
+  console.log(`Fetching ${platform} data from Social Blade page ${page}...`);
+  
+  const res = await fetch(url, {
     headers: { 
       clientid: SB_CLIENT_ID, 
       token: SB_TOKEN 
@@ -32,11 +30,31 @@ async function fetchSbTop(platform: Platform): Promise<any> {
   
   if (!res.ok) {
     const text = await res.text();
-    console.error(`SocialBlade ${platform} ${res.status}: ${text}`);
-    throw new Error(`SocialBlade ${platform} ${res.status}: ${text}`);
+    console.error(`SocialBlade ${platform} page ${page} ${res.status}: ${text}`);
+    throw new Error(`SocialBlade ${platform} page ${page} ${res.status}: ${text}`);
   }
   
-  return await res.json();
+  const data = await res.json();
+  const dataArray = Array.isArray(data) ? data : (data?.data || []);
+  console.log(`Successfully fetched ${platform} page ${page} data:`, dataArray.length, 'items');
+  
+  return dataArray;
+}
+
+async function fetchSbTop(platform: Platform): Promise<any> {
+  console.log(`Fetching Top-200 for ${platform} by merging pages 1 & 2`);
+  
+  // Fetch both pages in parallel for Top-200
+  const [page1Data, page2Data] = await Promise.all([
+    fetchSbTopPage(platform, 1),
+    fetchSbTopPage(platform, 2)
+  ]);
+
+  // Merge the results
+  const merged = [...page1Data, ...page2Data];
+  console.log(`Merged ${platform} data: ${page1Data.length} + ${page2Data.length} = ${merged.length} items`);
+  
+  return merged;
 }
 
 async function setCachedData(supabase: any, platform: Platform, raw: any): Promise<void> {
