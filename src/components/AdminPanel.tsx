@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { RefreshCw, Lock } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { MonthlyRefreshTrigger } from "@/components/MonthlyRefreshTrigger";
 import { useToast } from "@/hooks/use-toast";
 
 type Platform = 'youtube' | 'tiktok' | 'instagram';
@@ -120,56 +121,23 @@ export function AdminPanel() {
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Button
-            onClick={() => refreshData()}
-            disabled={refreshing}
-            className="w-full"
-          >
-            {refreshing ? (
-              <>
-                <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
-                Refreshing All...
-              </>
-            ) : (
-              'Refresh All Platforms'
-            )}
-          </Button>
-
-          <div className="grid grid-cols-3 gap-2">
-            {(['youtube', 'instagram', 'tiktok'] as Platform[]).map((platform) => (
-              <Button
-                key={platform}
-                onClick={() => refreshData([platform])}
-                disabled={refreshing}
-                variant="outline"
-                size="sm"
-                className="text-xs"
-              >
-                {platform === 'youtube' && '📺'}
-                {platform === 'instagram' && '📸'}
-                {platform === 'tiktok' && '🎵'}
-                {platform.charAt(0).toUpperCase() + platform.slice(1)}
-              </Button>
-            ))}
-          </div>
-        </div>
-
+        <MonthlyRefreshTrigger />
+        
         <div className="bg-gray-50 p-4 rounded-lg">
-          <h4 className="font-semibold mb-2">Instructions:</h4>
+          <h4 className="font-semibold mb-2">Monthly Top-200 System:</h4>
           <ul className="text-sm text-gray-600 space-y-1">
-            <li>• Use "Refresh All Platforms" to update all data at once</li>
-            <li>• Use individual platform buttons to refresh specific platforms</li>
-            <li>• Data is cached for 7 days by default</li>
-            <li>• Refreshing will override the cache with fresh Social Blade data</li>
+            <li>• Data refreshes automatically on the 1st of each month</li>
+            <li>• Fetches Top-200 creators from each platform (6 API calls total)</li>
+            <li>• Users can paginate through all 200 entries (50 per page)</li>
+            <li>• Uses ~120 Social Blade credits per month</li>
           </ul>
         </div>
 
         <div className="bg-blue-50 p-4 rounded-lg">
           <h4 className="font-semibold mb-2 text-blue-800">API Endpoints:</h4>
           <div className="text-sm text-blue-700 space-y-1">
-            <div><Badge variant="secondary">GET</Badge> <code>/functions/v1/top?platform=youtube</code></div>
-            <div><Badge variant="secondary">POST</Badge> <code>/functions/v1/admin-refresh</code></div>
+            <div><Badge variant="secondary">GET</Badge> <code>/functions/v1/social-blade-top?platform=youtube&limit=200</code></div>
+            <div><Badge variant="secondary">POST</Badge> <code>/functions/v1/monthly-refresh</code></div>
           </div>
         </div>
 

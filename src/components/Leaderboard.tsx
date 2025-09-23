@@ -58,8 +58,8 @@ export function Leaderboard() {
   const [page, setPage] = useState<number>(1);
   const [error, setError] = useState<string | null>(null);
   
-  // Pagination (Top-200 shown as two pages of 100)
-  const pageSize = 100;
+  // Pagination (Top-200 shown as 4 pages of 50)
+  const pageSize = 50;
   const total = data.length; // Use raw data length instead of enriched data
   const totalPages = Math.max(1, Math.ceil(total / pageSize));
   const currentPage = Math.min(page, totalPages);
@@ -78,7 +78,7 @@ export function Leaderboard() {
     setLoading(true);
     setError(null);
     try {
-      console.log(`Fetching ${platform} data from cached snapshots...`);
+      console.log(`Fetching Top-200 ${platform} data from monthly cache...`);
       
       // Build URL with proper parameters - always use cache-only approach
       const params = new URLSearchParams({
@@ -101,7 +101,7 @@ export function Leaderboard() {
         try {
           const errorData = await response.json();
           if (errorData.error === 'no_snapshot') {
-            errorMessage = 'No cached data available - weekly refresh may not have run yet';
+            errorMessage = 'No cached data available - monthly refresh may not have run yet';
           } else {
             errorMessage = errorData.message || errorData.detail || errorData.error || errorMessage;
           }
@@ -121,7 +121,7 @@ export function Leaderboard() {
       
       if (!result.items || result.items.length === 0) {
         if (result.error === 'no_snapshot') {
-          setError(`No cached ${platform} data available - weekly refresh may not have run yet`);
+          setError(`No cached ${platform} data available - monthly refresh may not have run yet`);
         } else {
           setError(`No ${platform} data available at this time`);
         }
@@ -211,8 +211,11 @@ export function Leaderboard() {
 
       {/* Last Updated Info */}
       {lastUpdated && (
-        <div className="text-sm text-gray-500 text-center">
-          Updated {formatTimeAgo(lastUpdated)}
+        <div className="text-sm text-muted-foreground mb-6 flex justify-between items-center">
+          <span>Last updated: {formatTimeAgo(lastUpdated)}</span>
+          <span className="text-xs">
+            Showing {data.length} creators • Page {page} of {totalPages}
+          </span>
         </div>
       )}
 
@@ -284,7 +287,7 @@ export function Leaderboard() {
       </div>
 
       {/* Pagination */}
-      {total > 100 && (
+      {totalPages > 1 && (
         <Pagination className="mt-6">
           <PaginationContent>
             <PaginationItem>
@@ -297,26 +300,17 @@ export function Leaderboard() {
                 className={currentPage === 1 ? 'pointer-events-none opacity-50' : ''}
               />
             </PaginationItem>
-            <PaginationItem>
-              <PaginationLink 
-                href="#" 
-                isActive={currentPage === 1} 
-                onClick={(e) => { e.preventDefault(); setPage(1); }}
-              >
-                1
-              </PaginationLink>
-            </PaginationItem>
-            {totalPages > 1 && (
-              <PaginationItem>
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => (
+              <PaginationItem key={pageNum}>
                 <PaginationLink 
                   href="#" 
-                  isActive={currentPage === 2} 
-                  onClick={(e) => { e.preventDefault(); setPage(2); }}
+                  isActive={currentPage === pageNum} 
+                  onClick={(e) => { e.preventDefault(); setPage(pageNum); }}
                 >
-                  2
+                  {pageNum}
                 </PaginationLink>
               </PaginationItem>
-            )}
+            ))}
             <PaginationItem>
               <PaginationNext 
                 href="#" 

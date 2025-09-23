@@ -35,7 +35,7 @@ const Index = () => {
                   <span className="text-gray-500 group-open:rotate-90 transition-transform">▶</span>
                 </summary>
                 <div className="px-6 pb-6 text-gray-700">
-                  The leaderboard refreshes once per week by default, pulling directly from Social Blade's official creator rankings. This ensures you're seeing accurate, consistent data without burning through unnecessary API credits.
+                  The leaderboard refreshes once per month by default, pulling directly from Social Blade's official creator rankings. This ensures you're seeing accurate, consistent data without burning through unnecessary API credits.
                 </div>
               </details>
             </div>

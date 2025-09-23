@@ -24,14 +24,14 @@ interface TopResponse {
   items: TopItem[];
 }
 
-// Helper to get Monday UTC for a given date
-function mondayUTC(d = new Date()) {
-  const day = d.getUTCDay();
-  const diff = (day === 0 ? -6 : 1 - day);
-  const monday = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()));
-  monday.setUTCDate(monday.getUTCDate() + diff);
-  monday.setUTCHours(0, 0, 0, 0);
-  return monday.toISOString().slice(0, 10);
+// Helper to get first of month UTC for a given date
+function firstOfMonthUTC(d = new Date()) {
+  return new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), 1));
+}
+
+function monthKey(d = new Date()) {
+  const m = firstOfMonthUTC(d);
+  return m.toISOString().slice(0, 10);
 }
 
 function normalizeTop(platform: Platform, raw: any[]): TopItem[] {
@@ -128,8 +128,8 @@ Deno.serve(async (req) => {
     const url = new URL(req.url);
     const platform = (url.searchParams.get('platform') || 'youtube').toLowerCase() as Platform;
     const limitParam = url.searchParams.get('limit');
-    const limit = limitParam ? Number(limitParam) : Number(Deno.env.get('TOP_LIMIT') || 100);
-    const lim = limit >= 200 ? 200 : 100;
+    const wanted = limitParam ? Number(limitParam) : 200;
+    const limit = wanted >= 200 ? 200 : 100;
 
     const allowedPlatforms = new Set(['youtube', 'tiktok', 'instagram']);
     if (!allowedPlatforms.has(platform)) {
@@ -139,7 +139,7 @@ Deno.serve(async (req) => {
       );
     }
 
-    console.log(`Cache-only API request: ${platform} (limit: ${lim})`);
+    console.log(`Cache-only API request: ${platform} (limit: ${limit})`);
 
     const client = supa();
     if (!client) {
@@ -149,28 +149,28 @@ Deno.serve(async (req) => {
       );
     }
 
-    const todayWeek = mondayUTC();
+    const currentMonth = monthKey();
     
-    // Try to get latest snapshot <= current week
+    // Try to get latest snapshot <= current month
     const { data, error } = await client
       .from('top_snapshots')
       .select('data_json, fetched_at, week_start, limit_size')
       .eq('platform', platform)
-      .lte('week_start', todayWeek)
+      .lte('week_start', currentMonth)
       .order('week_start', { ascending: false })
       .limit(1);
 
     if (data?.[0]?.data_json?.length) {
       const snapshot = data[0];
       const arr = Array.isArray(snapshot.data_json) ? snapshot.data_json : (snapshot.data_json?.data || []);
-      const items = normalizeTop(platform, arr).slice(0, lim);
+      const items = normalizeTop(platform, arr).slice(0, limit);
       
-      console.log(`Cache hit for ${platform}, returning ${items.length} items from week ${snapshot.week_start}`);
+      console.log(`Cache hit for ${platform}, returning ${items.length} items from month ${snapshot.week_start}`);
       
       return new Response(
         JSON.stringify({
           fetched_at: snapshot.fetched_at,
-          week_start: snapshot.week_start,
+          period_start: snapshot.week_start, // month anchor
           limit_size: snapshot.limit_size,
           items
         }),
@@ -191,15 +191,15 @@ Deno.serve(async (req) => {
       const arr = Array.isArray(legacyResult.data.data_json) 
         ? legacyResult.data.data_json 
         : (legacyResult.data.data_json?.data || []);
-      const items = normalizeTop(platform, arr).slice(0, lim);
+      const items = normalizeTop(platform, arr).slice(0, limit);
       
       console.log(`Legacy cache hit for ${platform}, returning ${items.length} items`);
       
       return new Response(
         JSON.stringify({
           fetched_at: legacyResult.data.fetched_at,
-          week_start: todayWeek,
-          limit_size: lim,
+          period_start: currentMonth,
+          limit_size: limit,
           items
         }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
