@@ -50,16 +50,20 @@ function extractAvatar(stats: any): string | undefined {
     return stats.data.general.branding.avatar;
   }
   
-  // Fallback to other possible locations
+  // Enhanced fallback to more possible avatar field names
   const possibleFields = [
     'avatar',
-    'profile_picture', 
+    'profile_picture',
     'profilePic',
     'profilepic',
-    'thumbnail',
+    'profilePicUrl',
+    'profile_pic',
     'image',
+    'imageUrl',
     'icon',
     'picture',
+    'logo',
+    'thumbnail',
     'photo',
     'profile_image',
     'profileImage',
@@ -157,73 +161,92 @@ Deno.serve(async (req) => {
 
     const body = await req.json();
     const platform = body.platform as Platform;
-    const ids = (body.ids || []).slice(0, 20); // Safety limit of 20
+    const ids = body.ids || []; // Process all IDs, not just first 20
     const displayNames = body.displayNames || {};
     const usernames = body.usernames || {};
 
+    console.log(`Processing avatar enrichment for ${ids.length} ${platform} creators`);
+
     const result: Record<string, { avatar?: string }> = {};
 
-    // 1) Try cache first
-    const toFetch: string[] = [];
-    for (const id of ids) {
-      try {
-        const cached = await getAvatarFromCache(supabase, platform, id);
-        if (cached?.avatar_url) {
-          result[id] = { avatar: cached.avatar_url };
-        } else {
+    // Process all IDs in batches to prevent timeouts
+    const batchSize = Number(Deno.env.get('ENRICH_BATCH_LIMIT') || '16');
+    
+    for (let i = 0; i < ids.length; i += batchSize) {
+      const chunk = ids.slice(i, i + batchSize);
+      
+      // 1) Try cache first for this chunk
+      const toFetch: string[] = [];
+      for (const id of chunk) {
+        try {
+          const cached = await getAvatarFromCache(supabase, platform, id);
+          if (cached?.avatar_url) {
+            result[id] = { avatar: cached.avatar_url };
+          } else {
+            toFetch.push(id);
+          }
+        } catch (error) {
+          console.error(`Error checking cache for ${id}:`, error);
           toFetch.push(id);
         }
-      } catch (error) {
-        console.error(`Error checking cache for ${id}:`, error);
-        toFetch.push(id);
       }
-    }
 
-    // 2) Fetch missing from Social Blade statistics
-    for (const id of toFetch) {
-      try {
-        // Try both the ID and username if available
-        const attempts = [id];
-        const username = usernames[id];
-        if (username && username !== id) {
-          attempts.push(username);
-        }
-        
-        let stats = null;
-        let avatar = undefined;
-        
-        for (const query of attempts) {
-          try {
-            console.log(`Trying to fetch stats for ${platform}/${query}...`);
-            stats = await fetchSbStats(platform, query);
-            avatar = extractAvatar(stats);
-            if (avatar) {
-              console.log(`Found avatar using query '${query}': ${avatar}`);
-              break;
+      // 2) Fetch missing from Social Blade statistics
+      for (const id of toFetch) {
+        try {
+          // Try both the ID and username if available
+          const attempts = [id];
+          const username = usernames[id];
+          if (username && username !== id) {
+            attempts.push(username);
+          }
+          
+          let stats = null;
+          let avatar = undefined;
+          
+          for (const query of attempts) {
+            try {
+              console.log(`Trying to fetch stats for ${platform}/${query}...`);
+              stats = await fetchSbStats(platform, query);
+              avatar = extractAvatar(stats);
+              if (avatar) {
+                console.log(`Found avatar using query '${query}': ${avatar}`);
+                break;
+              }
+            } catch (queryError) {
+              console.log(`Failed to fetch with query '${query}':`, queryError.message);
+              continue;
             }
-          } catch (queryError) {
-            console.log(`Failed to fetch with query '${query}':`, queryError.message);
-            continue;
+          }
+          
+          const displayName = displayNames[id];
+          
+          await setAvatarCache(supabase, platform, id, avatar, displayName, username);
+          
+          if (avatar) {
+            result[id] = { avatar };
+          }
+          
+          console.log(`Enriched avatar for ${platform}/${id}: ${avatar ? 'found' : 'not found'}`);
+          
+          // Add delay between requests to avoid rate limiting
+          await new Promise(resolve => setTimeout(resolve, 200));
+          
+        } catch (error) {
+          console.error(`Error fetching avatar for ${id}:`, error);
+          // Cache the miss to avoid repeated API calls
+          try {
+            await setAvatarCache(supabase, platform, id, undefined, displayNames[id], usernames[id]);
+          } catch (cacheError) {
+            console.error(`Failed to cache miss for ${id}:`, cacheError);
           }
         }
-        
-        const displayName = displayNames[id];
-        
-        await setAvatarCache(supabase, platform, id, avatar, displayName, username);
-        
-        if (avatar) {
-          result[id] = { avatar };
-        }
-        
-        console.log(`Enriched avatar for ${platform}/${id}: ${avatar ? 'found' : 'not found'}`);
-        
-        // Add delay between requests to avoid rate limiting
-        await new Promise(resolve => setTimeout(resolve, 150));
-        
-      } catch (error) {
-        console.error(`Error fetching avatar for ${id}:`, error);
-        // Cache the miss to avoid repeated API calls
-        await setAvatarCache(supabase, platform, id, undefined, displayNames[id], usernames[id]);
+      }
+      
+      // Delay between batches
+      if (i + batchSize < ids.length) {
+        console.log(`Processed batch ${Math.floor(i/batchSize) + 1}/${Math.ceil(ids.length/batchSize)}, pausing before next batch...`);
+        await new Promise(resolve => setTimeout(resolve, 500));
       }
     }
 
