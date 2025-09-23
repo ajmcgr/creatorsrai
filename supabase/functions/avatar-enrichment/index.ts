@@ -43,7 +43,14 @@ function extractAvatar(stats: any): string | undefined {
   
   console.log('Stats object keys:', Object.keys(stats));
   
-  // Try various possible avatar field names from Social Blade API
+  // The Social Blade API returns avatars in a nested structure
+  // Try the correct nested path first
+  if (stats.data?.general?.branding?.avatar) {
+    console.log('Found avatar in nested branding structure:', stats.data.general.branding.avatar);
+    return stats.data.general.branding.avatar;
+  }
+  
+  // Fallback to other possible locations
   const possibleFields = [
     'avatar',
     'profile_picture', 
@@ -58,14 +65,15 @@ function extractAvatar(stats: any): string | undefined {
     'profileImage',
     'avatarUrl',
     'avatar_url',
-    // YouTube specific
-    'snippet.thumbnails.default.url',
-    'snippet.thumbnails.medium.url', 
-    'snippet.thumbnails.high.url',
-    // Generic nested paths
-    'thumbnails.default.url',
-    'thumbnails.medium.url',
-    'thumbnails.high.url'
+    // Check direct data fields
+    'data.avatar',
+    'data.profile_picture',
+    'data.general.avatar',
+    // YouTube specific nested paths
+    'data.general.branding.profile_picture',
+    'data.snippet.thumbnails.default.url',
+    'data.snippet.thumbnails.medium.url', 
+    'data.snippet.thumbnails.high.url',
   ];
   
   for (const field of possibleFields) {
@@ -83,8 +91,13 @@ function extractAvatar(stats: any): string | undefined {
     }
   }
   
-  // Log the full stats object for debugging if no avatar found
-  console.log('No avatar found. Full stats object:', JSON.stringify(stats, null, 2));
+  // Log a truncated version for debugging if no avatar found
+  console.log('No avatar found. Sample data structure:', {
+    hasData: !!stats.data,
+    hasGeneral: !!stats.data?.general,
+    hasBranding: !!stats.data?.general?.branding,
+    brandingKeys: stats.data?.general?.branding ? Object.keys(stats.data.general.branding) : null
+  });
   return undefined;
 }
 
