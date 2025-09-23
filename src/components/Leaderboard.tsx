@@ -73,13 +73,13 @@ export function Leaderboard() {
       const url = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/social-blade-top?platform=${platform}&limit=200`;
       const response = await fetch(url, {
         headers: {
-          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
           'Content-Type': 'application/json'
         }
       });
-      
+
       if (!response.ok) {
-        console.error('API request failed:', response.status);
+        const errText = await response.text().catch(() => '');
+        console.error('API request failed:', response.status, errText);
         setData([]);
         setLastUpdated(null);
         return;
