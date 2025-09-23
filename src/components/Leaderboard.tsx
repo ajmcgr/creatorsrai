@@ -82,9 +82,11 @@ export function Leaderboard() {
       }
       
       const url = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/social-blade-top?${params}`;
+      const anon = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY as string;
       const response = await fetch(url, {
         headers: {
-          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+          'Authorization': `Bearer ${anon}`,
+          'apikey': anon,
           'Content-Type': 'application/json'
         }
       });
@@ -178,34 +180,24 @@ export function Leaderboard() {
   return (
     <div className="space-y-6">
       {/* Platform Filter */}
-      <div className="flex flex-wrap gap-2 items-center justify-between">
-        <div className="flex flex-wrap gap-2">
-          {platforms.map((platform) => {
-            const config = PLATFORM_CONFIG[platform];
-            
-            return (
-              <button
-                key={platform}
-                onClick={() => { setSelectedPlatform(platform); setPage(1); }}
-                className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
-                  selectedPlatform === platform
-                    ? 'bg-primary text-primary-foreground shadow-glow'
-                    : 'bg-secondary text-secondary-foreground hover:bg-accent'
-                }`}
-              >
-                {config.name}
-              </button>
-            );
-          })}
-        </div>
-        
-        <button
-          onClick={refreshData}
-          disabled={loading}
-          className="px-3 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors disabled:opacity-50"
-        >
-          🔄 Refresh
-        </button>
+      <div className="flex flex-wrap gap-2">
+        {platforms.map((platform) => {
+          const config = PLATFORM_CONFIG[platform];
+          
+          return (
+            <button
+              key={platform}
+              onClick={() => { setSelectedPlatform(platform); setPage(1); }}
+              className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+                selectedPlatform === platform
+                  ? 'bg-primary text-primary-foreground shadow-glow'
+                  : 'bg-secondary text-secondary-foreground hover:bg-accent'
+              }`}
+            >
+              {config.name}
+            </button>
+          );
+        })}
       </div>
 
       {/* Last Updated Info */}
