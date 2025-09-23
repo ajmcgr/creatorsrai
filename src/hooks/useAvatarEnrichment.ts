@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 
 type Platform = 'youtube' | 'tiktok' | 'instagram';
@@ -20,24 +20,27 @@ type AvatarResult = {
 export function useAvatarEnrichment(items: TopItem[], platform: Platform) {
   const [enrichedItems, setEnrichedItems] = useState<TopItem[]>(items);
   const [loading, setLoading] = useState(false);
+  const idsKeyRef = useRef<string>('');
 
   useEffect(() => {
-    setEnrichedItems(items);
-    
+    // Build a stable identity key based on item ids to avoid loops from array identity changes
+    const idsKey = items.map(i => i.id).join(',');
+    const contentChanged = idsKey !== idsKeyRef.current;
+    if (contentChanged) {
+      setEnrichedItems(items);
+      idsKeyRef.current = idsKey;
+    }
+
     if (items.length === 0) return;
+
+    const itemsToEnrich = items.filter(item => !item.avatar);
+    if (itemsToEnrich.length === 0) return;
+
+    let cancelled = false;
 
     const enrichAvatars = async () => {
       setLoading(true);
-      
       try {
-        // Extract IDs and metadata for items that don't have avatars
-        const itemsToEnrich = items.filter(item => !item.avatar);
-        
-        if (itemsToEnrich.length === 0) {
-          setLoading(false);
-          return;
-        }
-
         const ids = itemsToEnrich.map(item => item.id);
         const displayNames = Object.fromEntries(
           itemsToEnrich.map(item => [item.id, item.displayName])
@@ -46,17 +49,17 @@ export function useAvatarEnrichment(items: TopItem[], platform: Platform) {
           itemsToEnrich.map(item => [item.id, item.username || ''])
         );
 
-        console.log(`Enriching avatars for ${ids.length} ${platform} creators...`);
-
-        // Call the avatar enrichment edge function
+        // Call the avatar enrichment backend function
         const { data, error } = await supabase.functions.invoke('avatar-enrichment', {
           body: {
             platform,
             ids,
             displayNames,
-            usernames
-          }
+            usernames,
+          },
         });
+
+        if (cancelled) return;
 
         if (error) {
           console.error('Error enriching avatars:', error);
@@ -64,29 +67,35 @@ export function useAvatarEnrichment(items: TopItem[], platform: Platform) {
         }
 
         const avatars: Record<string, AvatarResult> = data?.avatars || {};
-        
-        // Update items with enriched avatars
-        setEnrichedItems(prevItems => 
-          prevItems.map(item => ({
-            ...item,
-            avatar: avatars[item.id]?.avatar || item.avatar
-          }))
-        );
 
-        console.log(`Successfully enriched ${Object.keys(avatars).length} avatars`);
-        
-      } catch (error) {
-        console.error('Error calling avatar enrichment:', error);
+        // Only update state if something actually changed
+        setEnrichedItems(prevItems => {
+          let changed = false;
+          const next = prevItems.map(item => {
+            const newAvatar = avatars[item.id]?.avatar;
+            if (newAvatar && newAvatar !== item.avatar) {
+              changed = true;
+              return { ...item, avatar: newAvatar };
+            }
+            return item;
+          });
+          return changed ? next : prevItems;
+        });
+      } catch (err) {
+        if (!cancelled) console.error('Error calling avatar enrichment:', err);
       } finally {
-        setLoading(false);
+        if (!cancelled) setLoading(false);
       }
     };
 
-    // Delay enrichment slightly to let the main table render first
+    // Slight delay to let the main table render first
     const timeoutId = setTimeout(enrichAvatars, 100);
-    
-    return () => clearTimeout(timeoutId);
-  }, [items, platform]);
+
+    return () => {
+      cancelled = true;
+      clearTimeout(timeoutId);
+    };
+  }, [platform, items]);
 
   return {
     items: enrichedItems,
