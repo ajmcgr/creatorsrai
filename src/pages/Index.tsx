@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { Header } from "@/components/Header";
 import { Link } from "react-router-dom";
 import { Leaderboard } from "@/components/Leaderboard";
-import "@/utils/refreshData.js";
 
 const Index = () => {
   return (

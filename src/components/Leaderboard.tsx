@@ -329,14 +329,8 @@ export function Leaderboard() {
             <Users className="w-12 h-12 mx-auto mb-4 opacity-50" />
             <h3 className="text-lg font-semibold mb-2">⚠️ {error}</h3>
             <p className="text-gray-600">
-              Try refreshing the data or selecting a different platform.
+              Please try again later or select a different platform.
             </p>
-            <button
-              onClick={() => fetchData(selectedPlatform, true)}
-              className="mt-4 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
-            >
-              Try Again
-            </button>
           </div>
         </Card>
       )}
