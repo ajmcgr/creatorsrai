@@ -49,12 +49,12 @@ const About = () => {
               Founder, Creators
             </p>
             <a 
-              href="https://www.linkedin.com/in/alexmacgregor2/" 
+              href="http://x.com/alexmacgregor__/" 
               target="_blank" 
               rel="noopener noreferrer"
               className="inline-flex items-center text-blue-600 hover:underline"
             >
-              Connect with me on LinkedIn
+              Connect with me on X
             </a>
           </section>
         </div>
