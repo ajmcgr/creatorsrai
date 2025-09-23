@@ -126,8 +126,22 @@ Deno.serve(async (req) => {
 
   try {
     const url = new URL(req.url);
-    const platform = (url.searchParams.get('platform') || 'youtube').toLowerCase() as Platform;
-    const limitParam = url.searchParams.get('limit');
+    
+    // Get parameters from both URL query params and request body
+    let platform = (url.searchParams.get('platform') || 'youtube').toLowerCase() as Platform;
+    let limitParam = url.searchParams.get('limit');
+    
+    // Also check request body for parameters (when called via supabase.functions.invoke)
+    if (req.method === 'POST') {
+      try {
+        const body = await req.json();
+        if (body.platform) platform = body.platform.toLowerCase();
+        if (body.limit) limitParam = body.limit.toString();
+      } catch (e) {
+        // Ignore JSON parsing errors for GET requests
+      }
+    }
+    
     const wanted = limitParam ? Number(limitParam) : 200;
     const limit = wanted >= 200 ? 200 : 100;
 
