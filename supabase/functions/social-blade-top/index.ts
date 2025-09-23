@@ -56,23 +56,42 @@ async function fetchSbTop(platform: Platform): Promise<any> {
   return data;
 }
 
-function normalizeTop(platform: Platform, raw: any[]): TopItem[] {
-  if (!Array.isArray(raw)) {
+function normalizeTop(platform: Platform, raw: any): TopItem[] {
+  // Handle the Social Blade API response format
+  let dataArray = raw;
+  
+  // Check if the response has a nested structure with status and data
+  if (raw && typeof raw === 'object' && raw.data && Array.isArray(raw.data)) {
+    dataArray = raw.data;
+  } else if (raw && typeof raw === 'object' && !Array.isArray(raw)) {
+    console.warn('Unexpected data structure:', raw);
+    return [];
+  }
+  
+  if (!Array.isArray(dataArray)) {
     console.warn('Raw data is not an array:', raw);
     return [];
   }
   
-  return raw.map((it: any, i: number) => ({
-    rank: i + 1,
-    id: it.id || it.userid || it.username || it.channelid || `${platform}-${i}`,
-    displayName: it.displayname || it.title || it.username || it.channelname || 'Unknown',
-    username: it.username || it.handle || undefined,
-    avatar: it.avatar || it.profile_picture || it.thumbnail || undefined,
-    followers: platform === 'youtube'
-      ? (it.subscribers ?? it.subscriberCount ?? 0)
-      : (it.followers ?? it.followerCount ?? 0),
-    platform
-  }));
+  return dataArray.map((item: any, i: number) => {
+    // Handle Social Blade's nested structure
+    const id = item.id?.id || item.id?.username || item.userid || item.username || item.channelid || `${platform}-${i}`;
+    const displayName = item.id?.display_name || item.displayname || item.title || item.username || item.channelname || 'Unknown';
+    const username = item.id?.handle?.replace('@', '') || item.id?.username || item.username || item.handle?.replace('@', '') || undefined;
+    const followers = platform === 'youtube' 
+      ? (item.statistics?.total?.subscribers ?? item.subscribers ?? item.subscriberCount ?? 0)
+      : (item.statistics?.total?.followers ?? item.followers ?? item.followerCount ?? 0);
+
+    return {
+      rank: i + 1,
+      id,
+      displayName,
+      username,
+      avatar: item.avatar || item.profile_picture || item.thumbnail || undefined,
+      followers,
+      platform
+    };
+  });
 }
 
 async function getCachedData(supabase: any, platform: Platform): Promise<any> {
