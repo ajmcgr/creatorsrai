@@ -34,6 +34,12 @@ verify_jwt = false
 [functions.avatar-enrichment]
 verify_jwt = false
 
+[functions.subscribe]
+verify_jwt = false
+
+[functions.weekly-diff-email]
+verify_jwt = false
+
 [db]
 port = 54322
 

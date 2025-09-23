@@ -62,6 +62,21 @@ export type Database = {
         }
         Relationships: []
       }
+      subscribers: {
+        Row: {
+          created_at: string
+          email: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+        }
+        Relationships: []
+      }
       top_cache: {
         Row: {
           data_json: Json
@@ -87,6 +102,27 @@ export type Database = {
           fetched_at?: string
           metric?: string
           page?: number
+          platform?: string
+          week_start?: string
+        }
+        Relationships: []
+      }
+      top_snapshots: {
+        Row: {
+          created_at: string
+          data_json: Json
+          platform: string
+          week_start: string
+        }
+        Insert: {
+          created_at?: string
+          data_json: Json
+          platform: string
+          week_start: string
+        }
+        Update: {
+          created_at?: string
+          data_json?: Json
           platform?: string
           week_start?: string
         }

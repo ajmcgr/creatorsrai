@@ -7,6 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Play, Camera, Video, Users } from "lucide-react";
 import { formatNumber } from "@/lib/formatNumber";
 import { useAvatarEnrichment } from "@/hooks/useAvatarEnrichment";
+import { SubscriptionForm } from "@/components/SubscriptionForm";
 
 type Platform = 'youtube' | 'tiktok' | 'instagram';
 type TopItem = {
@@ -229,6 +230,11 @@ export function Leaderboard() {
           </div>
         </Card>
       )}
+
+      {/* Subscription Form */}
+      <div className="mt-12 pt-8 border-t border-border">
+        <SubscriptionForm />
+      </div>
     </div>
   );
 }
