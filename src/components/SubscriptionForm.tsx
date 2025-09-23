@@ -91,7 +91,7 @@ export function SubscriptionForm() {
         
         <p className="text-sm text-muted-foreground">
           Be the first to know about new creators and updated metrics from the leaderboard.
-          Get weekly emails highlighting newcomers to the Top 100.
+          Get weekly emails highlighting newcomers to the Top 200.
         </p>
 
         <form onSubmit={handleSubmit} className="space-y-3">

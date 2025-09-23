@@ -68,11 +68,11 @@ const Index = () => {
             <div className="border border-gray-200 rounded-lg">
               <details className="group">
                 <summary className="flex justify-between items-center p-6 cursor-pointer hover:bg-gray-50">
-                  <span className="font-medium text-gray-900">Why only the Top 100?</span>
+                  <span className="font-medium text-gray-900">Why only the Top 200?</span>
                   <span className="text-gray-500 group-open:rotate-90 transition-transform">▶</span>
                 </summary>
                 <div className="px-6 pb-6 text-gray-700">
-                  The Social Blade API provides results in pages of 100. For simplicity and cost-efficiency, we display the top page (the 100 biggest creators per platform).
+                  The Social Blade API provides results in pages of 100. We fetch and merge the first two pages to display the top 200 biggest creators per platform.
                 </div>
               </details>
             </div>
@@ -98,7 +98,7 @@ const Index = () => {
                 <div className="px-6 pb-6 text-gray-700">
                   Two common reasons:
                   <br /><br />
-                  They may not be in the global Top 100 for their platform.
+                  They may not be in the global Top 200 for their platform.
                   <br /><br />
                   Their account might not be tracked or ranked publicly by Social Blade yet.
                 </div>
