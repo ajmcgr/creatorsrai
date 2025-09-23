@@ -236,7 +236,7 @@ export default function HashtagGenerator() {
                 </li>
                 <li>
                   <a 
-                    href="mailto:alex@works.xyz" 
+                    href="mailto:alex@creatorsleaderboard.com" 
                     className="text-gray-600 hover:text-primary transition-colors"
                   >
                     Contact Us
