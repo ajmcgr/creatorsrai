@@ -242,16 +242,21 @@ export function Leaderboard() {
                   </div>
 
                   {/* Avatar */}
-                  <Avatar className="h-12 w-12 ring-2 ring-gray-200">
+                  <Avatar className="h-12 w-12">
                     <AvatarImage 
-                      src={entry.avatar} 
+                      src={entry.avatar}
                       alt={entry.displayName}
+                      loading="lazy"
+                      decoding="async"
+                      // @ts-ignore - fetchPriority is not in older TS DOM types but supported by browsers
+                      fetchPriority="low"
+                      sizes="48px"
                       className={avatarLoading && !entry.avatar ? 'opacity-50' : ''}
                     />
                     <AvatarFallback className={`bg-white ${avatarLoading && !entry.avatar ? 'animate-pulse' : ''}`}>
                       <img 
                         src={diamondIcon} 
-                        alt="Diamond" 
+                        alt="Placeholder avatar"
                         className="w-6 h-6"
                       />
                     </AvatarFallback>

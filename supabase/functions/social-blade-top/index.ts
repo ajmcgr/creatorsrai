@@ -177,10 +177,41 @@ Deno.serve(async (req) => {
     if (data?.[0]?.data_json?.length) {
       const snapshot = data[0];
       const arr = Array.isArray(snapshot.data_json) ? snapshot.data_json : (snapshot.data_json?.data || []);
-      const items = normalizeTop(platform, arr).slice(0, limit);
-      
-      console.log(`Cache hit for ${platform}, returning ${items.length} items from month ${snapshot.week_start}`);
-      
+      let items = normalizeTop(platform, arr).slice(0, limit);
+
+      // If snapshot contains fewer than requested items and 200 were requested,
+      // try to augment with legacy cached pages to reach up to 200 entries.
+      if (items.length < limit && limit > 100) {
+        try {
+          const { data: legacyRows } = await client
+            .from('top_cache')
+            .select('data_json, page, week_start')
+            .eq('platform', platform)
+            .order('week_start', { ascending: false })
+            .order('page', { ascending: true })
+            .limit(2);
+
+          if (legacyRows && legacyRows.length) {
+            const legacyArrays = legacyRows.map((row) => Array.isArray(row.data_json) ? row.data_json : (row.data_json?.data || []));
+            const mergedRaw = [...arr, ...legacyArrays.flat()];
+            const mergedNormalized = normalizeTop(platform, mergedRaw);
+            // Dedupe by id while preserving order
+            const seen = new Set<string>();
+            const deduped: TopItem[] = [];
+            for (const it of mergedNormalized) {
+              if (!seen.has(it.id)) { seen.add(it.id); deduped.push(it); }
+              if (deduped.length >= limit) break;
+            }
+            items = deduped.slice(0, limit);
+            console.log(`Cache hit for ${platform}, augmented with legacy pages to ${items.length} items`);
+          }
+        } catch (e) {
+          console.log('Augmentation with legacy cache failed, returning snapshot items only');
+        }
+      } else {
+        console.log(`Cache hit for ${platform}, returning ${items.length} items from month ${snapshot.week_start}`);
+      }
+
       return new Response(
         JSON.stringify({
           fetched_at: snapshot.fetched_at,
