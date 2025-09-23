@@ -6,6 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Play, Camera, Video, Users } from "lucide-react";
 import { formatNumber } from "@/lib/formatNumber";
+import { useAvatarEnrichment } from "@/hooks/useAvatarEnrichment";
 
 type Platform = 'youtube' | 'tiktok' | 'instagram';
 type TopItem = {
@@ -45,6 +46,9 @@ export function Leaderboard() {
   const [loading, setLoading] = useState(true);
   const [selectedPlatform, setSelectedPlatform] = useState<Platform>('youtube');
   const [lastUpdated, setLastUpdated] = useState<string | null>(null);
+  
+  // Use avatar enrichment hook for progressive loading
+  const { items: enrichedData, loading: avatarLoading } = useAvatarEnrichment(data, selectedPlatform);
 
   const fetchData = async (platform: Platform) => {
     setLoading(true);
@@ -151,7 +155,7 @@ export function Leaderboard() {
 
       {/* Leaderboard */}
       <div className="space-y-3">
-        {data.map((entry, index) => {
+        {enrichedData.map((entry, index) => {
           const config = PLATFORM_CONFIG[entry.platform];
           const Icon = config?.icon || Users;
 
@@ -172,8 +176,12 @@ export function Leaderboard() {
 
                   {/* Avatar */}
                   <Avatar className="h-12 w-12 ring-2 ring-gray-200">
-                    <AvatarImage src={entry.avatar} alt={entry.displayName} />
-                    <AvatarFallback>
+                    <AvatarImage 
+                      src={entry.avatar} 
+                      alt={entry.displayName}
+                      className={avatarLoading && !entry.avatar ? 'opacity-50' : ''}
+                    />
+                    <AvatarFallback className={avatarLoading && !entry.avatar ? 'animate-pulse' : ''}>
                       {entry.displayName?.charAt(0) || '?'}
                     </AvatarFallback>
                   </Avatar>
@@ -212,7 +220,7 @@ export function Leaderboard() {
         })}
       </div>
 
-      {data.length === 0 && !loading && (
+      {enrichedData.length === 0 && !loading && (
         <Card className="p-12 text-center bg-gradient-surface">
           <div className="text-muted-foreground">
             <Users className="w-12 h-12 mx-auto mb-4 opacity-50" />

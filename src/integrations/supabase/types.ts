@@ -14,6 +14,33 @@ export type Database = {
   }
   public: {
     Tables: {
+      avatars_cache: {
+        Row: {
+          avatar_url: string | null
+          display_name: string | null
+          fetched_at: string
+          person_id: string
+          platform: string
+          username: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          display_name?: string | null
+          fetched_at?: string
+          person_id: string
+          platform: string
+          username?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          display_name?: string | null
+          fetched_at?: string
+          person_id?: string
+          platform?: string
+          username?: string | null
+        }
+        Relationships: []
+      }
       person_cache: {
         Row: {
           data_json: Json
