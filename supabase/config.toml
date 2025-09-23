@@ -25,6 +25,12 @@ verify_jwt = false
 [functions.admin-refresh]
 verify_jwt = false
 
+[functions.social-blade-top]
+verify_jwt = false
+
+[functions.admin-refresh-all]
+verify_jwt = false
+
 [db]
 port = 54322
 

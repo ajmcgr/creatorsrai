@@ -49,10 +49,11 @@ export function Leaderboard() {
   const fetchData = async (platform: Platform) => {
     setLoading(true);
     try {
-      console.log(`Fetching ${platform} data from API...`);
+      console.log(`Fetching ${platform} data from Social Blade API...`);
       
-      // Call the top API endpoint directly with platform parameter
-      const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/top?platform=${platform}`, {
+      // Call the new social-blade-top API endpoint with platform parameter
+      const url = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/social-blade-top?platform=${platform}`;
+      const response = await fetch(url, {
         headers: {
           'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
           'Content-Type': 'application/json'
