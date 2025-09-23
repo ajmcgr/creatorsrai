@@ -9,6 +9,7 @@ import { formatNumber } from "@/lib/formatNumber";
 import { useAvatarEnrichment } from "@/hooks/useAvatarEnrichment";
 import { SubscriptionForm } from "@/components/SubscriptionForm";
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
+import diamondIcon from "@/assets/diamond-icon.png";
 
 type Platform = 'youtube' | 'tiktok' | 'instagram';
 type TopItem = {
@@ -247,8 +248,12 @@ export function Leaderboard() {
                       alt={entry.displayName}
                       className={avatarLoading && !entry.avatar ? 'opacity-50' : ''}
                     />
-                    <AvatarFallback className={avatarLoading && !entry.avatar ? 'animate-pulse' : ''}>
-                      {entry.displayName?.charAt(0) || '?'}
+                    <AvatarFallback className={`bg-white ${avatarLoading && !entry.avatar ? 'animate-pulse' : ''}`}>
+                      <img 
+                        src={diamondIcon} 
+                        alt="Diamond" 
+                        className="w-6 h-6"
+                      />
                     </AvatarFallback>
                   </Avatar>
 
