@@ -59,7 +59,24 @@ async function fetchSbTop(platform: Platform): Promise<any> {
 
 async function setCachedData(supabase: any, platform: Platform, raw: any): Promise<void> {
   try {
-    const { error } = await supabase
+    // Store the merged 200-item data in top_snapshots table (preferred by social-blade-top function)
+    const { error: snapshotError } = await supabase
+      .from('top_snapshots')
+      .upsert({
+        platform,
+        week_start: new Date().toISOString().split('T')[0],
+        limit_size: raw.length,
+        data_json: raw,
+        fetched_at: new Date().toISOString()
+      });
+      
+    if (snapshotError) {
+      console.error(`Failed to cache snapshot for ${platform}:`, snapshotError);
+      throw snapshotError;
+    }
+
+    // Also update top_cache page 1 with merged data for backward compatibility
+    const { error: cacheError } = await supabase
       .from('top_cache')
       .upsert({
         platform,
@@ -70,12 +87,12 @@ async function setCachedData(supabase: any, platform: Platform, raw: any): Promi
         week_start: new Date().toISOString().split('T')[0]
       });
       
-    if (error) {
-      console.error(`Failed to cache data for ${platform}:`, error);
-      throw error;
-    } else {
-      console.log(`Successfully cached data for ${platform}`);
+    if (cacheError) {
+      console.error(`Failed to cache data for ${platform}:`, cacheError);
+      throw cacheError;
     }
+    
+    console.log(`Successfully cached ${raw.length} items for ${platform} in both snapshots and cache`);
   } catch (err) {
     console.error(`Error caching data for ${platform}:`, err);
     throw err;
