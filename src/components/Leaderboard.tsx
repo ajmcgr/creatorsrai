@@ -274,7 +274,7 @@ export function Leaderboard() {
                       </Badge>
                       {entry.username && (
                         <span className="text-xs sm:text-sm text-gray-500 truncate">
-                          @{entry.username}
+                          {entry.username}
                         </span>
                       )}
                     </div>
