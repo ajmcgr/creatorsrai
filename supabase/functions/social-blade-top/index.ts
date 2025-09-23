@@ -195,24 +195,26 @@ Deno.serve(async (req) => {
     // Fallback to legacy cache (top_cache table) if no snapshot found
     console.log(`No snapshot found for ${platform}, trying legacy cache...`);
     
-    const legacyResult = await client
+    const { data: legacyRows } = await client
       .from('top_cache')
-      .select('data_json, fetched_at')
+      .select('data_json, fetched_at, page, week_start')
       .eq('platform', platform)
-      .maybeSingle();
+      .order('week_start', { ascending: false })
+      .order('page', { ascending: true })
+      .limit(2);
 
-    if (legacyResult.data?.data_json?.length) {
-      const arr = Array.isArray(legacyResult.data.data_json) 
-        ? legacyResult.data.data_json 
-        : (legacyResult.data.data_json?.data || []);
-      const items = normalizeTop(platform, arr).slice(0, limit);
+    if (legacyRows && legacyRows.length) {
+      const arrays = legacyRows.map((row) => Array.isArray(row.data_json) ? row.data_json : (row.data_json?.data || []));
+      const merged = arrays.flat();
+      const items = normalizeTop(platform, merged).slice(0, limit);
+      const latest = legacyRows[0];
       
-      console.log(`Legacy cache hit for ${platform}, returning ${items.length} items`);
+      console.log(`Legacy cache hit for ${platform}, found ${legacyRows.length} page(s), returning ${items.length} items`);
       
       return new Response(
         JSON.stringify({
-          fetched_at: legacyResult.data.fetched_at,
-          period_start: currentMonth,
+          fetched_at: latest.fetched_at,
+          period_start: latest.week_start || currentMonth,
           limit_size: limit,
           items
         }),
