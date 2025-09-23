@@ -8,6 +8,7 @@ import { Play, Camera, Video, Users } from "lucide-react";
 import { formatNumber } from "@/lib/formatNumber";
 import { useAvatarEnrichment } from "@/hooks/useAvatarEnrichment";
 import { SubscriptionForm } from "@/components/SubscriptionForm";
+import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 
 type Platform = 'youtube' | 'tiktok' | 'instagram';
 type TopItem = {
@@ -47,6 +48,7 @@ export function Leaderboard() {
   const [loading, setLoading] = useState(true);
   const [selectedPlatform, setSelectedPlatform] = useState<Platform>('youtube');
   const [lastUpdated, setLastUpdated] = useState<string | null>(null);
+  const [page, setPage] = useState<number>(1);
   
   // Use avatar enrichment hook for progressive loading
   const { items: enrichedData, loading: avatarLoading } = useAvatarEnrichment(data, selectedPlatform);
@@ -56,11 +58,10 @@ export function Leaderboard() {
     try {
       console.log(`Fetching ${platform} data from Social Blade API...`);
       
-      // Call the new social-blade-top API endpoint with platform parameter
-      const url = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/social-blade-top?platform=${platform}`;
+      // Call the Top API endpoint with platform and limit=200
+      const url = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/top?platform=${platform}&limit=200`;
       const response = await fetch(url, {
         headers: {
-          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
           'Content-Type': 'application/json'
         }
       });
@@ -91,6 +92,14 @@ export function Leaderboard() {
   }, [selectedPlatform]);
 
   const platforms: Platform[] = ['youtube', 'instagram', 'tiktok'];
+
+  // Pagination (Top-200 shown as two pages of 100)
+  const pageSize = 100;
+  const total = enrichedData.length;
+  const totalPages = Math.max(1, Math.ceil(total / pageSize));
+  const currentPage = Math.min(page, totalPages);
+  const start = (currentPage - 1) * pageSize;
+  const pagedItems = enrichedData.slice(start, start + pageSize);
 
   const formatTimeAgo = (dateString: string | null) => {
     if (!dateString) return '';
@@ -134,7 +143,7 @@ export function Leaderboard() {
           return (
             <button
               key={platform}
-              onClick={() => setSelectedPlatform(platform)}
+              onClick={() => { setSelectedPlatform(platform); setPage(1); }}
               className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
                 selectedPlatform === platform
                   ? 'bg-primary text-primary-foreground shadow-glow'
@@ -156,7 +165,7 @@ export function Leaderboard() {
 
       {/* Leaderboard */}
       <div className="space-y-3">
-        {enrichedData.map((entry, index) => {
+        {pagedItems.map((entry, index) => {
           const config = PLATFORM_CONFIG[entry.platform];
           const Icon = config?.icon || Users;
 
@@ -220,6 +229,26 @@ export function Leaderboard() {
           );
         })}
       </div>
+
+      {/* Pagination */}
+      {total > 100 && (
+        <Pagination className="mt-6">
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious href="#" onClick={(e) => { e.preventDefault(); setPage(Math.max(1, currentPage - 1)); }} />
+            </PaginationItem>
+            <PaginationItem>
+              <PaginationLink href="#" isActive={currentPage === 1} onClick={(e) => { e.preventDefault(); setPage(1); }}>1</PaginationLink>
+            </PaginationItem>
+            <PaginationItem>
+              <PaginationLink href="#" isActive={currentPage === 2} onClick={(e) => { e.preventDefault(); setPage(2); }}>2</PaginationLink>
+            </PaginationItem>
+            <PaginationItem>
+              <PaginationNext href="#" onClick={(e) => { e.preventDefault(); setPage(Math.min(totalPages, currentPage + 1)); }} />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
+      )}
 
       {enrichedData.length === 0 && !loading && (
         <Card className="p-12 text-center bg-gradient-surface">
