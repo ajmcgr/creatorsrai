@@ -44,13 +44,13 @@ export function AdminPanel() {
 
     setRefreshing(true);
     try {
-      const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/admin-refresh`, {
+      const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/admin-refresh-all`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${adminSecret}`,
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(platforms ? { platforms } : {})
+        body: JSON.stringify({})
       });
 
       if (response.ok) {
@@ -122,6 +122,31 @@ export function AdminPanel() {
       </CardHeader>
       <CardContent className="space-y-6">
         <MonthlyRefreshTrigger />
+        
+        <div className="bg-green-50 p-4 rounded-lg border border-green-200">
+          <h4 className="font-semibold mb-3 text-green-800">🚀 Manual Data Refresh</h4>
+          <p className="text-sm text-green-700 mb-4">
+            Fetch the latest Top-200 creators from Social Blade for all platforms (YouTube, Instagram, TikTok).
+            This will use ~6-30 API credits.
+          </p>
+          <Button 
+            onClick={() => refreshData()}
+            disabled={refreshing}
+            className="w-full bg-green-600 hover:bg-green-700"
+          >
+            {refreshing ? (
+              <>
+                <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
+                Refreshing Data...
+              </>
+            ) : (
+              <>
+                <RefreshCw className="w-4 h-4 mr-2" />
+                Refresh All Platforms Now
+              </>
+            )}
+          </Button>
+        </div>
         
         <div className="bg-gray-50 p-4 rounded-lg">
           <h4 className="font-semibold mb-2">Monthly Top-200 System:</h4>
