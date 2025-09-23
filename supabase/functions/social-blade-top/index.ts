@@ -54,23 +54,26 @@ async function fetchTopPage(platform: Platform, page: number) {
 }
 
 async function fetchTopMerged(platform: Platform, limit: number) {
+  // Always fetch page 1
+  const p1 = await fetchTopPage(platform, 1);
   if (limit <= 100) {
-    return await fetchTopPage(platform, 1);
+    return p1;
   }
-  
-  console.log(`Fetching Top-200 for ${platform} by merging pages 1 & 2`);
-  
-  const [p1, p2] = await Promise.all([
-    fetchTopPage(platform, 1), 
-    fetchTopPage(platform, 2)
-  ]);
-  
-  const arr = (Array.isArray(p1) ? p1 : p1?.data || []).concat(
-    Array.isArray(p2) ? p2 : p2?.data || []
-  );
-  
-  console.log(`Merged ${platform} data: ${(Array.isArray(p1) ? p1 : p1?.data || []).length} + ${(Array.isArray(p2) ? p2 : p2?.data || []).length} = ${arr.length} items`);
-  return arr;
+
+  console.log(`Fetching Top-200 for ${platform} by attempting page 2 (graceful fallback if unavailable)`);
+
+  try {
+    const p2 = await fetchTopPage(platform, 2);
+    const arr = (Array.isArray(p1) ? p1 : p1?.data || []).concat(
+      Array.isArray(p2) ? p2 : p2?.data || []
+    );
+    console.log(`Merged ${platform} data: ${(Array.isArray(p1) ? p1 : p1?.data || []).length} + ${(Array.isArray(p2) ? p2 : p2?.data || []).length} = ${arr.length} items`);
+    return arr;
+  } catch (err: any) {
+    console.warn(`Page 2 fetch failed for ${platform}, returning page 1 only. Reason: ${err?.message || err}`);
+    const arr = Array.isArray(p1) ? p1 : p1?.data || [];
+    return arr;
+  }
 }
 
 function normalizeTop(platform: Platform, raw: any[]): TopItem[] {
