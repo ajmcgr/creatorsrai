@@ -49,6 +49,7 @@ export function Leaderboard() {
   const [selectedPlatform, setSelectedPlatform] = useState<Platform>('youtube');
   const [lastUpdated, setLastUpdated] = useState<string | null>(null);
   const [page, setPage] = useState<number>(1);
+  const [error, setError] = useState<string | null>(null);
   
   // Pagination (Top-200 shown as two pages of 100)
   const pageSize = 100;
@@ -64,13 +65,23 @@ export function Leaderboard() {
   console.log(`Pagination: total=${total}, currentPage=${currentPage}, totalPages=${totalPages}`);
   console.log(`Data length: raw=${data.length}, enriched=${enrichedPageData.length}`);
 
-  const fetchData = async (platform: Platform) => {
+  const fetchData = async (platform: Platform, bypassCache = false) => {
     setLoading(true);
+    setError(null);
     try {
       console.log(`Fetching ${platform} data from Social Blade API...`);
       
-      // Call the social-blade-top API endpoint (defaults to Top-200)
-      const url = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/social-blade-top?platform=${platform}`;
+      // Build URL with proper parameters
+      const params = new URLSearchParams({
+        platform,
+        limit: '200'
+      });
+      
+      if (bypassCache) {
+        params.append('bypassCache', '1');
+      }
+      
+      const url = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/social-blade-top?${params}`;
       const response = await fetch(url, {
         headers: {
           'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
@@ -79,25 +90,50 @@ export function Leaderboard() {
       });
 
       if (!response.ok) {
-        const errText = await response.text().catch(() => '');
-        console.error('API request failed:', response.status, errText);
+        let errorMessage = `HTTP ${response.status}`;
+        try {
+          const errorData = await response.json();
+          errorMessage = errorData.error || errorData.detail || errorMessage;
+        } catch {
+          const errText = await response.text().catch(() => '');
+          if (errText) errorMessage = errText;
+        }
+        
+        console.error('API request failed:', response.status, errorMessage);
+        setError(`Failed to load ${platform} data: ${errorMessage}`);
         setData([]);
         setLastUpdated(null);
         return;
       }
 
       const result: TopResponse = await response.json();
-      setData(result.items || []);
+      
+      if (!result.items || result.items.length === 0) {
+        setError(`No ${platform} data available at this time`);
+        setData([]);
+        setLastUpdated(null);
+        return;
+      }
+      
+      setData(result.items);
       setLastUpdated(result.fetched_at);
-      console.log(`Successfully fetched ${result.items?.length || 0} items for ${platform}`);
+      setError(null);
+      console.log(`Successfully fetched ${result.items.length} items for ${platform}`);
 
     } catch (error) {
       console.error('Error fetching data:', error);
+      const message = error instanceof Error ? error.message : 'Unknown error occurred';
+      setError(`Failed to load ${platform} data: ${message}`);
       setData([]);
       setLastUpdated(null);
     } finally {
       setLoading(false);
     }
+  };
+
+  const refreshData = () => {
+    fetchData(selectedPlatform, true); // Bypass cache
+    setPage(1);
   };
 
   useEffect(() => {
@@ -142,24 +178,34 @@ export function Leaderboard() {
   return (
     <div className="space-y-6">
       {/* Platform Filter */}
-      <div className="flex flex-wrap gap-2">
-        {platforms.map((platform) => {
-          const config = PLATFORM_CONFIG[platform];
-          
-          return (
-            <button
-              key={platform}
-              onClick={() => { setSelectedPlatform(platform); setPage(1); }}
-              className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
-                selectedPlatform === platform
-                  ? 'bg-primary text-primary-foreground shadow-glow'
-                  : 'bg-secondary text-secondary-foreground hover:bg-accent'
-              }`}
-            >
-              {config.name}
-            </button>
-          );
-        })}
+      <div className="flex flex-wrap gap-2 items-center justify-between">
+        <div className="flex flex-wrap gap-2">
+          {platforms.map((platform) => {
+            const config = PLATFORM_CONFIG[platform];
+            
+            return (
+              <button
+                key={platform}
+                onClick={() => { setSelectedPlatform(platform); setPage(1); }}
+                className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+                  selectedPlatform === platform
+                    ? 'bg-primary text-primary-foreground shadow-glow'
+                    : 'bg-secondary text-secondary-foreground hover:bg-accent'
+                }`}
+              >
+                {config.name}
+              </button>
+            );
+          })}
+        </div>
+        
+        <button
+          onClick={refreshData}
+          disabled={loading}
+          className="px-3 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors disabled:opacity-50"
+        >
+          🔄 Refresh
+        </button>
       </div>
 
       {/* Last Updated Info */}
@@ -284,12 +330,32 @@ export function Leaderboard() {
         </Pagination>
       )}
 
-      {data.length === 0 && !loading && (
+      {/* Error state */}
+      {error && !loading && (
+        <Card className="p-12 text-center bg-gradient-surface border-red-200">
+          <div className="text-red-600">
+            <Users className="w-12 h-12 mx-auto mb-4 opacity-50" />
+            <h3 className="text-lg font-semibold mb-2">⚠️ {error}</h3>
+            <p className="text-gray-600">
+              Try refreshing the data or selecting a different platform.
+            </p>
+            <button
+              onClick={() => fetchData(selectedPlatform, true)}
+              className="mt-4 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+            >
+              Try Again
+            </button>
+          </div>
+        </Card>
+      )}
+
+      {/* No data state (when no error) */}
+      {data.length === 0 && !loading && !error && (
         <Card className="p-12 text-center bg-gradient-surface">
           <div className="text-muted-foreground">
             <Users className="w-12 h-12 mx-auto mb-4 opacity-50" />
             <h3 className="text-lg font-semibold mb-2">No data available</h3>
-            <p>Leaderboard data will appear here once the weekly refresh runs.</p>
+            <p>Leaderboard data will appear here once the data is refreshed.</p>
           </div>
         </Card>
       )}
