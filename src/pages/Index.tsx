@@ -8,7 +8,7 @@ const Index = () => {
     <div className="min-h-screen bg-white">
       <Header />
       
-      <main className="container mx-auto px-4 sm:px-6 py-8 sm:py-12 max-w-6xl">
+      <main className="container mx-auto px-4 sm:px-6 py-8 sm:py-12 max-w-4xl">
         <div className="mb-6 sm:mb-8">
           <h2 className="text-2xl sm:text-3xl font-bold mb-2 text-gray-900">
             Ranking The World's Most Popular Creators
