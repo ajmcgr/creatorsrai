@@ -177,7 +177,7 @@ export function Leaderboard() {
 
           return (
             <Card 
-              key={`${entry.platform}-${entry.id}`}
+              key={`${entry.platform}-${String(entry.id)}`}
               className="p-6 bg-white border border-gray-200 hover:shadow-md transition-all duration-300"
               style={{ animationDelay: `${index * 50}ms` }}
             >

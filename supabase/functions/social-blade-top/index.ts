@@ -77,18 +77,44 @@ async function fetchTopMerged(platform: Platform, limit: number) {
 }
 
 function normalizeTop(platform: Platform, raw: any[]): TopItem[] {
+  const pickString = (...vals: any[]): string | undefined => {
+    for (const v of vals) {
+      if (typeof v === 'string' && v.trim()) return v;
+      if (v && typeof v === 'object') {
+        const inner = (v.id ?? v.value ?? v.$id);
+        if (typeof inner === 'string' && inner.trim()) return inner;
+      }
+    }
+    return undefined;
+  };
+
   const src = Array.isArray(raw) ? raw : (raw?.data || []);
-  return src.map((it: any, i: number) => ({
-    rank: i + 1,
-    id: it.id || it.userid || it.username || it.channelid || `${platform}-${i}`,
-    displayName: it.displayname || it.title || it.username || it.channelname || 'Unknown',
-    username: it.username || it.handle || undefined,
-    avatar: it.avatar || it.profile_picture || it.thumbnail || undefined,
-    followers: platform === 'youtube'
-      ? (it.subscribers ?? it.subscriberCount ?? 0)
-      : (it.followers ?? it.followerCount ?? 0),
-    platform
-  }));
+  return src.map((it: any, i: number) => {
+    const id = pickString(
+      it.id, it.userid, it.user_id, it.channelid, it.channelId, it.channel_id,
+      it.username, it.handle
+    ) || `${platform}-${i}`;
+
+    const displayName = pickString(
+      it.displayname, it.display_name, it.title, it.name, it.fullname,
+      it.channelname, it.channel_name, it.username, it.handle
+    ) || 'Unknown';
+
+    const username = pickString(
+      it.username, it.handle, it.user?.username, it.account?.handle
+    );
+
+    const avatar = pickString(
+      it.avatar, it.profile_picture, it.profilePic, it.thumbnail, it.image,
+      it.picture, it.profile_image_url, it.profile?.avatar, it.user?.avatar
+    );
+
+    const followers = platform === 'youtube'
+      ? Number(it.subscribers ?? it.subscriberCount ?? it.subs ?? it.followers ?? 0)
+      : Number(it.followers ?? it.followerCount ?? it.fans ?? it.subscribers ?? 0);
+
+    return { rank: i + 1, id, displayName, username, avatar, followers, platform };
+  });
 }
 
 // Cache helpers with simplified logic
