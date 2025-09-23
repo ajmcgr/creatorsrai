@@ -114,7 +114,7 @@ export function SubscriptionForm() {
           <Button 
             type="submit" 
             disabled={isLoading || !email}
-            className="w-full"
+            className="w-auto px-6"
           >
             {isLoading ? 'Subscribing...' : 'Subscribe to Weekly Updates'}
           </Button>

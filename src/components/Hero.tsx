@@ -41,9 +41,11 @@ export function Hero() {
         <div className="text-center max-w-4xl mx-auto">
           {/* Main Headline */}
           <h1 className="text-5xl md:text-7xl font-bold mb-6 animate-fade-in">
-            The Ultimate
             <span className="block bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent">
-              Social Media Leaderboard
+              World's Most Popular Creators
+            </span>
+            <span className="block text-4xl md:text-5xl mt-2">
+              Real-time Leaderboard
             </span>
           </h1>
           
