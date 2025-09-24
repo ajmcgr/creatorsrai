@@ -49,8 +49,8 @@ const About = () => {
               Founder, Creators Leaderboard
             </p>
             <a 
-              href="http://x.com/alexmacgregor__/" 
-              target="_blank" 
+              href="http://x.com/creatorslb" 
+              target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center text-blue-600 hover:underline"
             >
@@ -121,8 +121,8 @@ const About = () => {
                 </li>
                 <li>
                   <a 
-                    href="http://x.com/alexmacgregor__/" 
-                    target="_blank" 
+                    href="http://x.com/creatorslb" 
+                    target="_blank"
                     rel="noopener noreferrer"
                     className="text-gray-600 hover:text-primary transition-colors"
                   >
@@ -145,8 +145,8 @@ const About = () => {
             <p className="text-sm text-gray-600">
               Copyright © 2025 Works App, Inc. Built with ♥️ by{" "}
               <a 
-                href="http://x.com/alexmacgregor__/" 
-                target="_blank" 
+                href="http://x.com/creatorslb" 
+                target="_blank"
                 rel="noopener noreferrer"
                 className="text-primary hover:underline"
               >

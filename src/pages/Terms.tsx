@@ -227,8 +227,8 @@ export default function Terms() {
                 </li>
                 <li>
                   <a 
-                    href="http://x.com/alexmacgregor__/" 
-                    target="_blank" 
+                    href="http://x.com/creatorslb" 
+                    target="_blank"
                     rel="noopener noreferrer"
                     className="text-gray-600 hover:text-primary transition-colors"
                   >
@@ -243,8 +243,8 @@ export default function Terms() {
             <p className="text-sm text-gray-600">
               Copyright © 2025 Works App, Inc. Built with ♥️ by{" "}
               <a 
-                href="http://x.com/alexmacgregor__/" 
-                target="_blank" 
+                href="http://x.com/creatorslb" 
+                target="_blank"
                 rel="noopener noreferrer"
                 className="text-primary hover:underline"
               >
