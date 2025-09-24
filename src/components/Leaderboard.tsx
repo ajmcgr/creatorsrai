@@ -155,6 +155,29 @@ export function Leaderboard() {
 
   const platforms: Platform[] = ['youtube', 'instagram', 'tiktok'];
 
+  // Helper function to generate platform URL
+  const getPlatformUrl = (username: string, platform: Platform): string => {
+    const baseUrls = {
+      youtube: 'https://www.youtube.com',
+      instagram: 'https://www.instagram.com',
+      tiktok: 'https://www.tiktok.com'
+    };
+    
+    // Handle username format - some might already have @, some might not
+    const cleanUsername = username.startsWith('@') ? username.slice(1) : username;
+    
+    switch (platform) {
+      case 'youtube':
+        return `${baseUrls.youtube}/@${cleanUsername}`;
+      case 'instagram':
+        return `${baseUrls.instagram}/${cleanUsername}`;
+      case 'tiktok':
+        return `${baseUrls.tiktok}/@${cleanUsername}`;
+      default:
+        return '#';
+    }
+  };
+
   const formatTimeAgo = (dateString: string | null) => {
     if (!dateString) return '';
     const date = new Date(dateString);
@@ -264,9 +287,14 @@ export function Leaderboard() {
 
                   {/* Info */}
                   <div className="flex-1 min-w-0">
-                    <h3 className="font-semibold text-sm sm:text-lg truncate text-gray-900">
+                    <a 
+                      href={getPlatformUrl(entry.username || '', entry.platform)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-semibold text-sm sm:text-lg truncate text-gray-900 hover:text-primary transition-colors duration-200"
+                    >
                       {entry.displayName}
-                    </h3>
+                    </a>
                     <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-2 gap-1 sm:gap-0">
                       <Badge variant="secondary" className="text-xs w-fit">
                         <Icon className="w-3 h-3 mr-1" />
