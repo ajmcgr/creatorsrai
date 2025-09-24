@@ -295,17 +295,11 @@ export function Leaderboard() {
                     >
                       {entry.displayName}
                     </a>
-                    <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-2 gap-1 sm:gap-0">
-                      <Badge variant="secondary" className="text-xs w-fit">
-                        <Icon className="w-3 h-3 mr-1" />
-                        {config?.name || entry.platform}
-                      </Badge>
-                      {entry.username && (
-                        <span className="text-xs sm:text-sm text-gray-500 truncate">
-                          {entry.username}
-                        </span>
-                      )}
-                    </div>
+                    {entry.username && (
+                      <span className="text-xs sm:text-sm text-gray-500 truncate">
+                        @{entry.username.startsWith('@') ? entry.username.slice(1) : entry.username}
+                      </span>
+                    )}
                   </div>
                 </div>
 
