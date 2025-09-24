@@ -252,20 +252,20 @@ export function Leaderboard() {
           return (
             <Card 
               key={`${entry.platform}-${String(entry.id)}`}
-              className="p-2 sm:p-3 bg-white border border-gray-200 hover:shadow-md transition-all duration-300"
+              className="p-1.5 sm:p-2 bg-white border border-gray-200 hover:shadow-md transition-all duration-300"
               style={{ animationDelay: `${index * 50}ms` }}
             >
-              <div className="flex items-center justify-between gap-2 sm:gap-3">
-                <div className="flex items-center space-x-2 sm:space-x-3 flex-1 min-w-0">
+              <div className="flex items-center justify-between gap-1.5 sm:gap-2">
+                <div className="flex items-center space-x-1.5 sm:space-x-2 flex-1 min-w-0">
                   {/* Rank */}
-                  <div className="flex-shrink-0 w-6 sm:w-8 text-center">
-                    <span className="text-lg sm:text-2xl font-bold text-gray-500">
+                  <div className="flex-shrink-0 w-5 sm:w-6 text-center">
+                    <span className="text-sm sm:text-lg font-bold text-gray-500">
                       {entry.rank}
                     </span>
                   </div>
 
                   {/* Avatar */}
-                  <Avatar className="h-8 w-8 sm:h-10 sm:w-10 flex-shrink-0">
+                  <Avatar className="h-6 w-6 sm:h-8 sm:w-8 flex-shrink-0">
                     <AvatarImage 
                       src={entry.avatar}
                       alt={entry.displayName}
