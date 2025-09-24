@@ -46,7 +46,7 @@ const PLATFORM_CONFIG = {
   }
 };
 
-export function LeaderboardEnhanced() {
+export function Leaderboard() {
   const [data, setData] = useState<EnhancedTopItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedPlatform, setSelectedPlatform] = useState<Platform>('youtube');

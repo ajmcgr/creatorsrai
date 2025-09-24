@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Header } from "@/components/Header";
 import { Link } from "react-router-dom";
-import { LeaderboardEnhanced } from "@/components/LeaderboardEnhanced";
+import { Leaderboard } from "@/components/Leaderboard";
 
 const Index = () => {
   return (
@@ -50,7 +50,7 @@ const Index = () => {
           </div>
         </div>
         
-        <LeaderboardEnhanced />
+        <Leaderboard />
         
         <div className="mt-12 sm:mt-16">
           <h2 className="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8 text-gray-900">
