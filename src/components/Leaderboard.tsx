@@ -291,14 +291,14 @@ export function Leaderboard() {
                       href={getPlatformUrl(entry.username || '', entry.platform)}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="font-semibold text-sm sm:text-lg truncate text-gray-900 hover:text-primary transition-colors duration-200"
+                      className="font-semibold text-sm sm:text-lg truncate text-gray-900 hover:text-primary transition-colors duration-200 block"
                     >
                       {entry.displayName}
                     </a>
                     {entry.username && (
-                      <span className="text-xs sm:text-sm text-gray-500 truncate">
+                      <div className="text-xs sm:text-sm text-gray-500 truncate">
                         @{entry.username.startsWith('@') ? entry.username.slice(1) : entry.username}
-                      </span>
+                      </div>
                     )}
                   </div>
                 </div>
