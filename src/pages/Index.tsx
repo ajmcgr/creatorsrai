@@ -18,6 +18,36 @@ const Index = () => {
             <Link to="/about" className="text-primary underline hover:no-underline">learn more</Link>
             )
           </p>
+          
+          {/* Bookmark Section */}
+          <div className="mt-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
+            <div className="flex items-center gap-2 text-sm text-blue-800">
+              {/* Chrome Bookmark Icon */}
+              <svg 
+                width="16" 
+                height="16" 
+                viewBox="0 0 24 24" 
+                fill="none" 
+                xmlns="http://www.w3.org/2000/svg"
+                className="text-blue-600"
+              >
+                <path 
+                  d="M17 3H7c-1.1 0-1.99.9-1.99 2L5 21l7-3 7 3V5c0-1.1-.9-2-2-2zm0 15l-5-2.18L7 18V5h10v13z" 
+                  fill="currentColor"
+                />
+              </svg>
+              <span>
+                Bookmark this page: 
+                <kbd className="ml-1 px-1.5 py-0.5 text-xs bg-white border border-blue-300 rounded font-mono">
+                  Ctrl+D
+                </kbd>
+                <span className="text-blue-600 mx-1">•</span>
+                <kbd className="px-1.5 py-0.5 text-xs bg-white border border-blue-300 rounded font-mono">
+                  ⌘+D
+                </kbd>
+              </span>
+            </div>
+          </div>
         </div>
         
         <Leaderboard />
