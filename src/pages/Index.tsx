@@ -35,7 +35,7 @@ const Index = () => {
                   <span className="text-gray-500 group-open:rotate-90 transition-transform">▶</span>
                 </summary>
                 <div className="px-4 sm:px-6 pb-4 sm:pb-6 text-gray-700 text-sm sm:text-base">
-                  The leaderboard refreshes once per week by default, pulling directly from Social Blade's official creator rankings.
+                  The leaderboard refreshes once per week by default, pulling directly from official creator ranking data.
                 </div>
               </details>
             </div>
@@ -47,7 +47,7 @@ const Index = () => {
                   <span className="text-gray-500 group-open:rotate-90 transition-transform">▶</span>
                 </summary>
                 <div className="px-4 sm:px-6 pb-4 sm:pb-6 text-gray-700 text-sm sm:text-base">
-                  All numbers (subscribers, followers, views) come directly from the Social Blade Business API, which tracks creators across YouTube, TikTok, and Instagram. We don't manually edit or inflate any figures — everything you see is what Social Blade reports.
+                  All numbers (subscribers, followers, views) come directly from official APIs that track creators across YouTube, TikTok, and Instagram. We don't manually edit or inflate any figures — everything you see is authentic data.
                 </div>
               </details>
             </div>
@@ -71,7 +71,7 @@ const Index = () => {
                   <span className="text-gray-500 group-open:rotate-90 transition-transform">▶</span>
                 </summary>
                 <div className="px-4 sm:px-6 pb-4 sm:pb-6 text-gray-700 text-sm sm:text-base">
-                  The Social Blade API provides results in pages of 100. We fetch and merge the first two pages to display the top 200 biggest creators per platform.
+                  Our data sources provide results in pages of 100. We fetch and merge the first two pages to display the top 200 biggest creators per platform.
                 </div>
               </details>
             </div>
@@ -83,7 +83,7 @@ const Index = () => {
                   <span className="text-gray-500 group-open:rotate-90 transition-transform">▶</span>
                 </summary>
                 <div className="px-4 sm:px-6 pb-4 sm:pb-6 text-gray-700 text-sm sm:text-base">
-                  The rankings come straight from Social Blade's data, so you can't "submit" someone to appear. If a creator is active and large enough, they'll naturally show up in Social Blade's top lists.
+                  The rankings come straight from official data sources, so you can't "submit" someone to appear. If a creator is active and large enough, they'll naturally show up in the top lists.
                 </div>
               </details>
             </div>
@@ -99,7 +99,7 @@ const Index = () => {
                   <br /><br />
                   They may not be in the global Top 200 for their platform.
                   <br /><br />
-                  Their account might not be tracked or ranked publicly by Social Blade yet.
+                  Their account might not be tracked or ranked publicly yet.
                 </div>
               </details>
             </div>
@@ -111,7 +111,7 @@ const Index = () => {
                   <span className="text-gray-500 group-open:rotate-90 transition-transform">▶</span>
                 </summary>
                 <div className="px-4 sm:px-6 pb-4 sm:pb-6 text-gray-700 text-sm sm:text-base">
-                  This site was built by <a href="http://x.com/alexmacgregor__/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Alex</a> and Works.xyz, a creative PR and influence platform. We use Social Blade's Business API to power the data, but the design and presentation are our own.
+                  This site was built by <a href="http://x.com/alexmacgregor__/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Alex</a> and Works.xyz, a creative PR and influence platform. We use official APIs to power the data, but the design and presentation are our own.
                 </div>
               </details>
             </div>
