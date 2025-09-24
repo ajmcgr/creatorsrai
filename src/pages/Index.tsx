@@ -30,11 +30,11 @@ const Index = () => {
           <div className="space-y-4">
             <div className="border border-gray-200 rounded-lg">
               <details className="group">
-                <summary className="flex justify-between items-center p-4 sm:p-6 cursor-pointer hover:bg-gray-50">
+                <summary className="flex justify-between items-center p-3 sm:p-4 cursor-pointer hover:bg-gray-50">
                   <span className="font-medium text-gray-900 text-sm sm:text-base">How often is the leaderboard updated?</span>
                   <span className="text-gray-500 group-open:rotate-90 transition-transform">▶</span>
                 </summary>
-                <div className="px-4 sm:px-6 pb-4 sm:pb-6 text-gray-700 text-sm sm:text-base">
+                <div className="px-3 sm:px-4 pb-3 sm:pb-4 text-gray-700 text-sm sm:text-base">
                   The leaderboard refreshes once per week by default, pulling directly from official creator ranking data.
                 </div>
               </details>
@@ -42,11 +42,11 @@ const Index = () => {
             
             <div className="border border-gray-200 rounded-lg">
               <details className="group">
-                <summary className="flex justify-between items-center p-4 sm:p-6 cursor-pointer hover:bg-gray-50">
+                <summary className="flex justify-between items-center p-3 sm:p-4 cursor-pointer hover:bg-gray-50">
                   <span className="font-medium text-gray-900 text-sm sm:text-base">How do you verify the information?</span>
                   <span className="text-gray-500 group-open:rotate-90 transition-transform">▶</span>
                 </summary>
-                <div className="px-4 sm:px-6 pb-4 sm:pb-6 text-gray-700 text-sm sm:text-base">
+                <div className="px-3 sm:px-4 pb-3 sm:pb-4 text-gray-700 text-sm sm:text-base">
                   All numbers (subscribers, followers, views) come directly from official APIs that track creators across YouTube, TikTok, and Instagram. We don't manually edit or inflate any figures — everything you see is authentic data.
                 </div>
               </details>
@@ -54,11 +54,11 @@ const Index = () => {
             
             <div className="border border-gray-200 rounded-lg">
               <details className="group">
-                <summary className="flex justify-between items-center p-4 sm:p-6 cursor-pointer hover:bg-gray-50">
+                <summary className="flex justify-between items-center p-3 sm:p-4 cursor-pointer hover:bg-gray-50">
                   <span className="font-medium text-gray-900 text-sm sm:text-base">Which platforms are included?</span>
                   <span className="text-gray-500 group-open:rotate-90 transition-transform">▶</span>
                 </summary>
-                <div className="px-4 sm:px-6 pb-4 sm:pb-6 text-gray-700 text-sm sm:text-base">
+                <div className="px-3 sm:px-4 pb-3 sm:pb-4 text-gray-700 text-sm sm:text-base">
                   Right now, we focus on the three biggest creator ecosystems: YouTube, TikTok, and Instagram. More platforms (Twitch, Facebook, X) may be added later depending on demand.
                 </div>
               </details>
@@ -66,11 +66,11 @@ const Index = () => {
             
             <div className="border border-gray-200 rounded-lg">
               <details className="group">
-                <summary className="flex justify-between items-center p-4 sm:p-6 cursor-pointer hover:bg-gray-50">
+                <summary className="flex justify-between items-center p-3 sm:p-4 cursor-pointer hover:bg-gray-50">
                   <span className="font-medium text-gray-900 text-sm sm:text-base">Why only the Top 200?</span>
                   <span className="text-gray-500 group-open:rotate-90 transition-transform">▶</span>
                 </summary>
-                <div className="px-4 sm:px-6 pb-4 sm:pb-6 text-gray-700 text-sm sm:text-base">
+                <div className="px-3 sm:px-4 pb-3 sm:pb-4 text-gray-700 text-sm sm:text-base">
                   Our data sources provide results in pages of 100. We fetch and merge the first two pages to display the top 200 biggest creators per platform.
                 </div>
               </details>
@@ -78,11 +78,11 @@ const Index = () => {
             
             <div className="border border-gray-200 rounded-lg">
               <details className="group">
-                <summary className="flex justify-between items-center p-4 sm:p-6 cursor-pointer hover:bg-gray-50">
+                <summary className="flex justify-between items-center p-3 sm:p-4 cursor-pointer hover:bg-gray-50">
                   <span className="font-medium text-gray-900 text-sm sm:text-base">Can I suggest a creator or channel to add?</span>
                   <span className="text-gray-500 group-open:rotate-90 transition-transform">▶</span>
                 </summary>
-                <div className="px-4 sm:px-6 pb-4 sm:pb-6 text-gray-700 text-sm sm:text-base">
+                <div className="px-3 sm:px-4 pb-3 sm:pb-4 text-gray-700 text-sm sm:text-base">
                   The rankings come straight from official data sources, so you can't "submit" someone to appear. If a creator is active and large enough, they'll naturally show up in the top lists.
                 </div>
               </details>
@@ -90,11 +90,11 @@ const Index = () => {
             
             <div className="border border-gray-200 rounded-lg">
               <details className="group">
-                <summary className="flex justify-between items-center p-4 sm:p-6 cursor-pointer hover:bg-gray-50">
+                <summary className="flex justify-between items-center p-3 sm:p-4 cursor-pointer hover:bg-gray-50">
                   <span className="font-medium text-gray-900 text-sm sm:text-base">Why isn't [creator name] on the list?</span>
                   <span className="text-gray-500 group-open:rotate-90 transition-transform">▶</span>
                 </summary>
-                <div className="px-4 sm:px-6 pb-4 sm:pb-6 text-gray-700 text-sm sm:text-base">
+                <div className="px-3 sm:px-4 pb-3 sm:pb-4 text-gray-700 text-sm sm:text-base">
                   Two common reasons:
                   <br /><br />
                   They may not be in the global Top 200 for their platform.
@@ -106,11 +106,11 @@ const Index = () => {
             
             <div className="border border-gray-200 rounded-lg">
               <details className="group">
-                <summary className="flex justify-between items-center p-4 sm:p-6 cursor-pointer hover:bg-gray-50">
+                <summary className="flex justify-between items-center p-3 sm:p-4 cursor-pointer hover:bg-gray-50">
                   <span className="font-medium text-gray-900 text-sm sm:text-base">Who is behind this leaderboard?</span>
                   <span className="text-gray-500 group-open:rotate-90 transition-transform">▶</span>
                 </summary>
-                <div className="px-4 sm:px-6 pb-4 sm:pb-6 text-gray-700 text-sm sm:text-base">
+                <div className="px-3 sm:px-4 pb-3 sm:pb-4 text-gray-700 text-sm sm:text-base">
                   This site was built by <a href="http://x.com/alexmacgregor__/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Alex</a> and Works.xyz, a creative PR and influence platform. We use official APIs to power the data, but the design and presentation are our own.
                 </div>
               </details>
