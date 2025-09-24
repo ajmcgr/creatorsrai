@@ -153,12 +153,12 @@ const Index = () => {
         <div className="container mx-auto px-4 max-w-5xl">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
             <div>
-              <h3 className="font-semibold text-gray-900 mb-4">About</h3>
+              <h3 className="font-semibold text-gray-900 mb-4 text-sm">About</h3>
               <ul className="space-y-2">
                 <li>
                   <Link 
                     to="/about" 
-                    className="text-gray-600 hover:text-primary transition-colors"
+                    className="text-gray-600 hover:text-primary transition-colors text-sm"
                   >
                     About
                   </Link>
@@ -166,7 +166,7 @@ const Index = () => {
                 <li>
                   <Link 
                     to="/terms" 
-                    className="text-gray-600 hover:text-primary transition-colors"
+                    className="text-gray-600 hover:text-primary transition-colors text-sm"
                   >
                     Terms
                   </Link>
@@ -174,7 +174,7 @@ const Index = () => {
                 <li>
                   <Link 
                     to="/privacy" 
-                    className="text-gray-600 hover:text-primary transition-colors"
+                    className="text-gray-600 hover:text-primary transition-colors text-sm"
                   >
                     Privacy
                   </Link>
@@ -183,27 +183,27 @@ const Index = () => {
             </div>
             
             <div>
-              <h3 className="font-semibold text-gray-900 mb-4">Free Tools</h3>
+              <h3 className="font-semibold text-gray-900 mb-4 text-sm">Free Tools</h3>
               <ul className="space-y-2">
-                <li><Link to="/tools/engagement-calculator" className="text-gray-600 hover:text-primary transition-colors">Engagement Calculator</Link></li>
-                <li><Link to="/tools/hashtag-generator" className="text-gray-600 hover:text-primary transition-colors">Hashtag Generator</Link></li>
-                <li><Link to="/tools/content-planner" className="text-gray-600 hover:text-primary transition-colors">Content Planner</Link></li>
-                <li><Link to="/tools/influencer-rate-calculator" className="text-gray-600 hover:text-primary transition-colors">Influencer Rate Calculator</Link></li>
-                <li><Link to="/tools/roi-calculator" className="text-gray-600 hover:text-primary transition-colors">ROI Calculator</Link></li>
-                <li><Link to="/tools/audience-demographics" className="text-gray-600 hover:text-primary transition-colors">Audience Demographics</Link></li>
-                <li><Link to="/tools/campaign-tracker" className="text-gray-600 hover:text-primary transition-colors">Campaign Tracker</Link></li>
+                <li><Link to="/tools/engagement-calculator" className="text-gray-600 hover:text-primary transition-colors text-sm">Engagement Calculator</Link></li>
+                <li><Link to="/tools/hashtag-generator" className="text-gray-600 hover:text-primary transition-colors text-sm">Hashtag Generator</Link></li>
+                <li><Link to="/tools/content-planner" className="text-gray-600 hover:text-primary transition-colors text-sm">Content Planner</Link></li>
+                <li><Link to="/tools/influencer-rate-calculator" className="text-gray-600 hover:text-primary transition-colors text-sm">Influencer Rate Calculator</Link></li>
+                <li><Link to="/tools/roi-calculator" className="text-gray-600 hover:text-primary transition-colors text-sm">ROI Calculator</Link></li>
+                <li><Link to="/tools/audience-demographics" className="text-gray-600 hover:text-primary transition-colors text-sm">Audience Demographics</Link></li>
+                <li><Link to="/tools/campaign-tracker" className="text-gray-600 hover:text-primary transition-colors text-sm">Campaign Tracker</Link></li>
               </ul>
             </div>
             
             <div>
-              <h3 className="font-semibold text-gray-900 mb-4">Connect</h3>
+              <h3 className="font-semibold text-gray-900 mb-4 text-sm">Connect</h3>
               <ul className="space-y-2">
                 <li>
                   <a 
                     href="https://discord.gg/zH5GjPDT" 
                     target="_blank" 
                     rel="noopener noreferrer"
-                    className="text-gray-600 hover:text-primary transition-colors"
+                    className="text-gray-600 hover:text-primary transition-colors text-sm"
                   >
                     Discord
                   </a>
@@ -213,7 +213,7 @@ const Index = () => {
                     href="http://x.com/creatorslb" 
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-gray-600 hover:text-primary transition-colors"
+                    className="text-gray-600 hover:text-primary transition-colors text-sm"
                   >
                     Twitter
                   </a>
@@ -221,7 +221,7 @@ const Index = () => {
                 <li>
                   <a 
                     href="mailto:alex@creatorsleaderboard.com" 
-                    className="text-gray-600 hover:text-primary transition-colors"
+                    className="text-gray-600 hover:text-primary transition-colors text-sm"
                   >
                     Contact Us
                   </a>
