@@ -30,13 +30,20 @@ export function useInViewAvatarEnrichment(item: TopItem, platform: Platform) {
         setIsInView(entry.isIntersecting);
       },
       {
-        rootMargin: '50px', // Start loading 50px before the item comes into view
+        rootMargin: '100px', // Start loading 100px before the item comes into view
         threshold: 0.1
       }
     );
 
     if (elementRef.current) {
       observer.observe(elementRef.current);
+      
+      // Immediately check if element is already in view on mount
+      const rect = elementRef.current.getBoundingClientRect();
+      const isCurrentlyInView = rect.top < window.innerHeight && rect.bottom > 0;
+      if (isCurrentlyInView) {
+        setIsInView(true);
+      }
     }
 
     return () => {
