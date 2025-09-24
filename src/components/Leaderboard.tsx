@@ -2,11 +2,14 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Play, Camera, Video, Users } from "lucide-react";
+import { formatNumber } from "@/lib/formatNumber";
+import { useAvatarEnrichment } from "@/hooks/useAvatarEnrichment";
 import { SubscriptionForm } from "@/components/SubscriptionForm";
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
-import { LeaderboardItem } from "@/components/LeaderboardItem";
+import diamondIcon from "@/assets/diamond-icon.png";
 
 type Platform = 'youtube' | 'tiktok' | 'instagram';
 type TopItem = {
@@ -58,15 +61,19 @@ export function Leaderboard() {
   
   // Pagination (Top-200 shown as 4 pages of 50)
   const pageSize = 50;
-  const total = data.length;
+  const total = data.length; // Use raw data length instead of enriched data
   const totalPages = Math.max(1, Math.ceil(total / pageSize));
   const currentPage = Math.min(page, totalPages);
   const start = (currentPage - 1) * pageSize;
   const pagedData = data.slice(start, start + pageSize);
+  
+  // Use avatar enrichment hook for progressive loading on the current page only
+  const { items: enrichedPageData, loading: avatarLoading } = useAvatarEnrichment(pagedData, selectedPlatform);
 
   console.log(`Pagination: total=${total}, currentPage=${currentPage}, totalPages=${totalPages}`);
-  console.log(`Data length: ${data.length}`);
+  console.log(`Data length: raw=${data.length}, enriched=${enrichedPageData.length}`);
   console.log('Raw data sample:', data.slice(0, 2)); // Debug: show first 2 items
+  console.log('Enriched data sample:', enrichedPageData.slice(0, 2)); // Debug: show first 2 items
 
   const fetchData = async (platform: Platform) => {
     setLoading(true);
@@ -238,13 +245,77 @@ export function Leaderboard() {
 
       {/* Leaderboard */}
       <div className="space-y-3">
-        {pagedData.map((entry, index) => (
-          <LeaderboardItem 
-            key={`${entry.platform}-${String(entry.id)}`}
-            entry={entry}
-            index={index}
-          />
-        ))}
+        {enrichedPageData.map((entry, index) => {
+          const config = PLATFORM_CONFIG[entry.platform];
+          const Icon = config?.icon || Users;
+
+          return (
+            <Card 
+              key={`${entry.platform}-${String(entry.id)}`}
+              className="p-1.5 sm:p-2 bg-white border border-gray-200 hover:shadow-md transition-all duration-300"
+              style={{ animationDelay: `${index * 50}ms` }}
+            >
+              <div className="flex items-center justify-between gap-1.5 sm:gap-2">
+                <div className="flex items-center space-x-1.5 sm:space-x-2 flex-1 min-w-0">
+                  {/* Rank */}
+                  <div className="flex-shrink-0 w-5 sm:w-6 text-center">
+                    <span className="text-sm sm:text-lg font-bold text-gray-500">
+                      {entry.rank}
+                    </span>
+                  </div>
+
+                  {/* Avatar */}
+                  <Avatar className="h-6 w-6 sm:h-8 sm:w-8 flex-shrink-0">
+                    <AvatarImage 
+                      src={entry.avatar}
+                      alt={entry.displayName}
+                      loading="lazy"
+                      decoding="async"
+                      // @ts-ignore - fetchPriority is not in older TS DOM types but supported by browsers
+                      fetchPriority="low"
+                      sizes="48px"
+                      className={avatarLoading && !entry.avatar ? 'opacity-50' : ''}
+                    />
+                    <AvatarFallback className={`bg-white ${avatarLoading && !entry.avatar ? 'animate-pulse' : ''}`}>
+                      <img 
+                        src={diamondIcon} 
+                        alt="Placeholder avatar"
+                        className="w-5 h-5 sm:w-6 sm:h-6"
+                      />
+                    </AvatarFallback>
+                  </Avatar>
+
+                  {/* Info */}
+                  <div className="flex-1 min-w-0">
+                    <a 
+                      href={getPlatformUrl(entry.username || '', entry.platform)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-semibold text-sm sm:text-lg truncate text-gray-900 hover:text-primary transition-colors duration-200 block"
+                    >
+                      {entry.displayName}
+                    </a>
+                    {entry.username && (
+                      <div className="text-xs sm:text-sm text-gray-500 truncate">
+                        @{entry.username.startsWith('@') ? entry.username.slice(1) : entry.username}
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Stats */}
+                <div className="text-right space-y-1 flex-shrink-0">
+                  <div className="font-bold text-sm sm:text-xl text-gray-900">
+                    {formatNumber(entry.followers)}
+                  </div>
+                  <div className="text-xs sm:text-sm text-gray-500">
+                    {config?.metric || 'followers'}
+                  </div>
+                </div>
+              </div>
+            </Card>
+          );
+        })}
       </div>
 
       {/* Pagination */}
