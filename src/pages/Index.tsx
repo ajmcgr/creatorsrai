@@ -230,7 +230,7 @@ const Index = () => {
             </div>
           </div>
           
-          <div className="border-t pt-8 text-center">
+          <div className="pt-8 text-center">
             <p className="text-sm text-gray-600">
               Copyright © 2025 Works App, Inc. Built with ♥️ by{" "}
               <a 
