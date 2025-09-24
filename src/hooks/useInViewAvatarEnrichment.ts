@@ -17,10 +17,15 @@ type AvatarResult = {
   avatar?: string;
 };
 
-export function useInViewAvatarEnrichment(item: TopItem, platform: Platform) {
+export function useInViewAvatarEnrichment(
+  item: TopItem,
+  platform: Platform,
+  options?: { initialInView?: boolean }
+) {
+  const initialInView = options?.initialInView ?? false;
   const [enrichedItem, setEnrichedItem] = useState<TopItem>(item);
   const [loading, setLoading] = useState(false);
-  const [isInView, setIsInView] = useState(false);
+  const [isInView, setIsInView] = useState(initialInView);
   const elementRef = useRef<HTMLDivElement>(null);
 
   // Set up intersection observer

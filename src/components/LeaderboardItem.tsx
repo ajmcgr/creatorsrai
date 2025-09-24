@@ -41,7 +41,8 @@ interface LeaderboardItemProps {
 }
 
 export function LeaderboardItem({ entry, index }: LeaderboardItemProps) {
-  const { item: enrichedEntry, loading: avatarLoading, elementRef } = useInViewAvatarEnrichment(entry, entry.platform);
+  const isCritical = index < 12;
+  const { item: enrichedEntry, loading: avatarLoading, elementRef } = useInViewAvatarEnrichment(entry, entry.platform, { initialInView: isCritical });
   const config = PLATFORM_CONFIG[enrichedEntry.platform];
 
   // Helper function to generate platform URL
@@ -88,10 +89,10 @@ export function LeaderboardItem({ entry, index }: LeaderboardItemProps) {
             <AvatarImage 
               src={enrichedEntry.avatar}
               alt={enrichedEntry.displayName}
-              loading="lazy"
+              loading={isCritical ? "eager" : "lazy"}
               decoding="async"
               // @ts-ignore - fetchPriority is not in older TS DOM types but supported by browsers
-              fetchPriority="low"
+              fetchPriority={isCritical ? "high" : "low"}
               sizes="48px"
               className={avatarLoading && !enrichedEntry.avatar ? 'opacity-50' : ''}
             />
