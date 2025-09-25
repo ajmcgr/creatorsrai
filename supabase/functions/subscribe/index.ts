@@ -1,6 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import { Resend } from "npm:resend@2.0.0";
+import { Resend } from "https://esm.sh/resend@2.0.0";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -63,7 +63,7 @@ serve(async (req) => {
       await resend.emails.send({
         from: "Creators Leaderboard <onboarding@resend.dev>",
         to: [email],
-        subject: "Welcome to Creators Leaderboard Updates!",
+        subject: "Welcome to Creators Leaderboard Updates",
         html: `
           <h1>Welcome to Creators Leaderboard!</h1>
           <p>Thank you for subscribing to our weekly updates!</p>
