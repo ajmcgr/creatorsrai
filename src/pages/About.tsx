@@ -64,7 +64,7 @@ const About = () => {
         <div className="container mx-auto px-4 max-w-5xl">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
             <div>
-              <h3 className="font-reckless font-medium text-gray-900 mb-4">About</h3>
+              <h3 className="font-semibold text-gray-900 mb-4">About</h3>
               <ul className="space-y-2">
                 <li>
                   <Link 
@@ -94,7 +94,7 @@ const About = () => {
             </div>
             
             <div>
-              <h3 className="font-reckless font-medium text-gray-900 mb-4">Free Tools</h3>
+              <h3 className="font-semibold text-gray-900 mb-4">Free Tools</h3>
               <ul className="space-y-2">
                 <li><Link to="/tools/engagement-calculator" className="text-gray-600 hover:text-primary transition-colors">Engagement Calculator</Link></li>
                 <li><Link to="/tools/hashtag-generator" className="text-gray-600 hover:text-primary transition-colors">Hashtag Generator</Link></li>
@@ -107,7 +107,7 @@ const About = () => {
             </div>
             
             <div>
-              <h3 className="font-reckless font-medium text-gray-900 mb-4">Connect</h3>
+              <h3 className="font-semibold text-gray-900 mb-4">Connect</h3>
               <ul className="space-y-2">
                 <li>
                   <a 
