@@ -234,7 +234,7 @@ const Index = () => {
             <p className="text-sm text-gray-600">
               Copyright © 2025 Works App, Inc. Built with ♥️ by{" "}
               <a 
-                href="http://x.com/creatorslb" 
+                href="https://x.com/alexmacgregor__" 
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-primary hover:underline"
