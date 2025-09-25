@@ -147,7 +147,7 @@ export default function AudienceDemographics() {
       <Header />
       
       <main className="container mx-auto px-4 py-16 max-w-6xl">
-        <h1 className="text-4xl font-bold text-gray-900 mb-4">Audience Demographics Analyzer</h1>
+        <h1 className="text-4xl font-reckless font-medium text-gray-900 mb-4">Audience Demographics Analyzer</h1>
         <p className="text-gray-700 mb-8">Analyze audience demographics for influencer partnerships and understand who you're reaching across different platforms and niches.</p>
         
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">

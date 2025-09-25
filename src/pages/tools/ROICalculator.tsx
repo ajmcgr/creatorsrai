@@ -64,7 +64,7 @@ export default function ROICalculator() {
       <Header />
       
       <main className="container mx-auto px-4 py-16 max-w-6xl">
-        <h1 className="text-4xl font-bold text-gray-900 mb-4">ROI Calculator</h1>
+        <h1 className="text-4xl font-reckless font-medium text-gray-900 mb-4">ROI Calculator</h1>
         <p className="text-gray-700 mb-8">Calculate the return on investment for your marketing campaigns and track key performance metrics.</p>
         
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">

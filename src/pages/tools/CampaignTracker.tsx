@@ -128,7 +128,7 @@ export default function CampaignTracker() {
       <Header />
       
       <main className="container mx-auto px-4 py-16 max-w-6xl">
-        <h1 className="text-4xl font-bold text-gray-900 mb-4">Campaign Tracker</h1>
+        <h1 className="text-4xl font-reckless font-medium text-gray-900 mb-4">Campaign Tracker</h1>
         <p className="text-gray-700 mb-8">Track and monitor your influencer campaign performance across multiple platforms with real-time analytics and ROI insights.</p>
         
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">

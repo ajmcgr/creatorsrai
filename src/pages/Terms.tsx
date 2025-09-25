@@ -7,7 +7,7 @@ export default function Terms() {
       <Header />
       
       <main className="container mx-auto px-4 py-16 max-w-4xl">
-        <h1 className="text-4xl font-bold text-gray-900 mb-8">Terms and Conditions</h1>
+        <h1 className="text-4xl font-reckless font-medium text-gray-900 mb-8">Terms and Conditions</h1>
         <p className="text-gray-700 mb-8">Please read these terms and conditions carefully before using Our Service.</p>
         
         <div className="prose prose-lg max-w-none">
