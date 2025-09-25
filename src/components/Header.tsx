@@ -13,7 +13,6 @@ export function Header() {
         {/* Logo */}
         <Link to="/" className="flex items-center space-x-3 group">
           <img src={logo} alt="Creators" className="h-8" />
-          <span className="text-xl" style={{ color: '#4b5563' }}>Leaderboard</span>
         </Link>
 
         {/* Navigation */}
