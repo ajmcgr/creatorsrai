@@ -10,7 +10,7 @@ const Index = () => {
       
       <main className="container mx-auto px-4 sm:px-6 py-8 sm:py-12 max-w-5xl">
         <div className="mb-6 sm:mb-8">
-          <h2 className="text-2xl sm:text-3xl font-bold mb-2 text-gray-900">
+          <h2 className="text-2xl sm:text-3xl font-reckless font-medium mb-2 text-gray-900">
             The World's Most Popular Creators Ranked
           </h2>
           <p className="text-sm sm:text-base text-gray-600">
@@ -53,7 +53,7 @@ const Index = () => {
         <Leaderboard />
         
         <div className="mt-12 sm:mt-16">
-          <h2 className="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8 text-gray-900">
+          <h2 className="text-2xl sm:text-3xl font-reckless font-medium mb-6 sm:mb-8 text-gray-900">
             Frequently Asked Questions
           </h2>
           

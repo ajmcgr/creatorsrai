@@ -15,6 +15,7 @@ export default {
     extend: {
       fontFamily: {
         'inter': ['Inter', 'system-ui', 'sans-serif'],
+        'reckless': ['Reckless', 'serif'],
       },
       colors: {
         border: "hsl(var(--border))",
