@@ -97,85 +97,113 @@ function createTableRows(platform: string, creators: any[]): string {
   }).join('');
 }
 
-function generateEmailHtml(newCreatorsMap: Record<string, any[]>, weekStart: string): string {
+async function generateEmailHtml(newCreatorsMap: Record<string, any[]>, weekStart: string): Promise<string> {
+  // Fetch email template from database
+  const { data: templateData } = await supabase
+    .from('email_templates')
+    .select('*')
+    .eq('name', 'weekly_creators_update')
+    .eq('is_active', true)
+    .single();
+
+  if (!templateData) {
+    throw new Error('Email template not found');
+  }
+
+  // Fetch active advertisers for this template
+  const { data: advertisers } = await supabase
+    .from('email_template_advertisers')
+    .select(`
+      position,
+      ad_content,
+      advertiser:advertisers(
+        name,
+        logo_url,
+        website_url,
+        description
+      )
+    `)
+    .eq('email_template_id', templateData.id)
+    .eq('is_active', true)
+    .order('position');
+
+  // Generate advertiser content
+  let advertiserContent = '';
+  if (advertisers && advertisers.length > 0) {
+    advertiserContent = advertisers.map((ad: any) => {
+      const advertiser = ad.advertiser;
+      return `
+        <div style="margin-bottom: 24px; padding: 20px; background-color: #f8f9fa; border-radius: 8px; border-left: 4px solid #007bff;">
+          <div style="display: flex; align-items: center; margin-bottom: 12px;">
+            ${advertiser.logo_url ? `<img src="${escapeHtml(advertiser.logo_url)}" alt="${escapeHtml(advertiser.name)}" style="height: 40px; margin-right: 12px;">` : ''}
+            <h4 style="margin: 0; color: #333; font-size: 18px;">Sponsored by ${escapeHtml(advertiser.name)}</h4>
+          </div>
+          ${ad.ad_content ? `<div style="color: #555; line-height: 1.5;">${ad.ad_content}</div>` : ''}
+          ${advertiser.website_url ? `<div style="margin-top: 12px;"><a href="${escapeHtml(advertiser.website_url)}" style="color: #007bff; text-decoration: none; font-weight: 500;">Learn More →</a></div>` : ''}
+        </div>
+      `;
+    }).join('');
+  }
+
+  // Generate creator content
   const hasNewCreators = Object.values(newCreatorsMap).some(creators => creators?.length > 0);
   
-  const platformSections = PLATFORMS.map(platform => {
-    const creators = newCreatorsMap[platform] || [];
-    const rows = createTableRows(platform, creators);
-    
-    return `
-      <div style="margin-bottom: 32px;">
-        <h3 style="margin: 0 0 16px 0; font-size: 20px; font-weight: 600; text-transform: uppercase; color: #333;">
-          ${platform}
-        </h3>
-        ${rows ? `
-          <table style="width: 100%; border-collapse: collapse; border: 1px solid #e0e0e0; border-radius: 8px; overflow: hidden;">
-            <thead>
-              <tr style="background-color: #f8f9fa;">
-                <th style="padding: 12px; text-align: center; font-weight: 600; color: #666; border-bottom: 2px solid #e0e0e0;">#</th>
-                <th style="padding: 12px; text-align: left; font-weight: 600; color: #666; border-bottom: 2px solid #e0e0e0;">Platform</th>
-                <th style="padding: 12px; text-align: left; font-weight: 600; color: #666; border-bottom: 2px solid #e0e0e0;">Name</th>
-                <th style="padding: 12px; text-align: left; font-weight: 600; color: #666; border-bottom: 2px solid #e0e0e0;">Handle</th>
-                <th style="padding: 12px; text-align: right; font-weight: 600; color: #666; border-bottom: 2px solid #e0e0e0;">Audience</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${rows}
-            </tbody>
-          </table>
-        ` : `
-          <p style="color: #666; font-style: italic; margin: 0;">No new creators this week for ${platform}.</p>
-        `}
+  let creatorContent = '';
+  if (hasNewCreators) {
+    const platformSections = PLATFORMS.map(platform => {
+      const creators = newCreatorsMap[platform] || [];
+      const rows = createTableRows(platform, creators);
+      
+      return `
+        <div style="margin-bottom: 32px;">
+          <h3 style="margin: 0 0 16px 0; font-size: 20px; font-weight: 600; text-transform: uppercase; color: #333;">
+            ${platform}
+          </h3>
+          ${rows ? `
+            <table style="width: 100%; border-collapse: collapse; border: 1px solid #e0e0e0; border-radius: 8px; overflow: hidden;">
+              <thead>
+                <tr style="background-color: #f8f9fa;">
+                  <th style="padding: 12px; text-align: center; font-weight: 600; color: #666; border-bottom: 2px solid #e0e0e0;">#</th>
+                  <th style="padding: 12px; text-align: left; font-weight: 600; color: #666; border-bottom: 2px solid #e0e0e0;">Platform</th>
+                  <th style="padding: 12px; text-align: left; font-weight: 600; color: #666; border-bottom: 2px solid #e0e0e0;">Name</th>
+                  <th style="padding: 12px; text-align: left; font-weight: 600; color: #666; border-bottom: 2px solid #e0e0e0;">Handle</th>
+                  <th style="padding: 12px; text-align: right; font-weight: 600; color: #666; border-bottom: 2px solid #e0e0e0;">Audience</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${rows}
+              </tbody>
+            </table>
+          ` : `
+            <p style="color: #666; font-style: italic; margin: 0;">No new creators this week for ${platform}.</p>
+          `}
+        </div>
+      `;
+    }).join('');
+    creatorContent = platformSections;
+  } else {
+    creatorContent = `
+      <div style="text-align: center; padding: 40px 0;">
+        <p style="font-size: 18px; color: #666; margin: 0;">
+          No new creators entered the Top 100 this week across any platform.
+        </p>
+        <p style="font-size: 14px; color: #999; margin: 16px 0 0 0;">
+          Check back next week for updates!
+        </p>
       </div>
     `;
-  }).join('');
+  }
 
-  return `
-    <!DOCTYPE html>
-    <html>
-    <head>
-      <meta charset="utf-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>New Creators This Week</title>
-    </head>
-    <body style="margin: 0; padding: 0; background-color: #f7f7f7; font-family: Inter, system-ui, -apple-system, sans-serif;">
-      <div style="max-width: 720px; margin: 0 auto; background-color: #ffffff; padding: 32px; border-radius: 8px; margin-top: 20px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-        <div style="text-align: center; margin-bottom: 32px;">
-          <h1 style="margin: 0; font-size: 28px; font-weight: 700; color: #1a1a1a; margin-bottom: 8px;">
-            🚀 New Creators This Week
-          </h1>
-          <p style="margin: 0; color: #666; font-size: 16px;">
-            Week starting ${weekStart}
-          </p>
-        </div>
-        
-        ${hasNewCreators ? platformSections : `
-          <div style="text-align: center; padding: 40px 0;">
-            <p style="font-size: 18px; color: #666; margin: 0;">
-              No new creators entered the Top 100 this week across any platform.
-            </p>
-            <p style="font-size: 14px; color: #999; margin: 16px 0 0 0;">
-              Check back next week for updates!
-            </p>
-          </div>
-        `}
-        
-        <hr style="margin: 32px 0; border: none; border-top: 1px solid #e0e0e0;">
-        
-        <div style="text-align: center;">
-          <p style="color: #999; font-size: 12px; margin: 0;">
-            You're receiving this because you subscribed at 
-            <a href="https://creators200.com" style="color: #666; text-decoration: none;">creators200.com</a>
-          </p>
-          <p style="color: #999; font-size: 12px; margin: 8px 0 0 0;">
-            Stay tuned for unsubscribe options in future updates.
-          </p>
-        </div>
-      </div>
-    </body>
-    </html>
-  `;
+  // Replace placeholders in template
+  let emailHtml = templateData.html_content
+    .replace(/\{\{week_start\}\}/g, weekStart)
+    .replace(/\{\{advertiser_content\}\}/g, advertiserContent)
+    .replace(/\{\{creator_content\}\}/g, creatorContent);
+
+  // Replace subject placeholders
+  const subject = templateData.subject.replace(/\{\{week_start\}\}/g, weekStart);
+
+  return emailHtml;
 }
 
 async function sendEmail(recipients: string[], subject: string, html: string): Promise<void> {
@@ -273,8 +301,16 @@ serve(async (req) => {
 
     // Send email if there are subscribers
     if (recipients.length > 0) {
-      const subject = `New Creators This Week — ${weekStart}`;
-      const html = generateEmailHtml(newCreatorsMap, weekStart);
+      // Get template with subject
+      const { data: templateData } = await supabase
+        .from('email_templates')
+        .select('subject')
+        .eq('name', 'weekly_creators_update')
+        .eq('is_active', true)
+        .single();
+
+      const subject = templateData?.subject?.replace(/\{\{week_start\}\}/g, weekStart) || `New Creators This Week — ${weekStart}`;
+      const html = await generateEmailHtml(newCreatorsMap, weekStart);
       
       await sendEmail(recipients, subject, html);
       console.log(`Email sent to ${recipients.length} subscribers`);
