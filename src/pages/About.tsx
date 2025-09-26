@@ -46,7 +46,7 @@ const About = () => {
             
             <p className="text-gray-900 font-medium mb-6">
               — Alex MacGregor<br />
-              Founder, Creators
+              Founder, Creators 200
             </p>
             <a 
               href="http://x.com/creatorslb" 
