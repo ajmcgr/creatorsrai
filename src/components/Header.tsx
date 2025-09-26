@@ -11,7 +11,7 @@ export function Header() {
     <header className="sticky top-0 z-50 glass-effect border-b border-border/50">
       <div className="container mx-auto px-4 h-16 flex items-center justify-between max-w-5xl">
         {/* Logo */}
-        <Link to="/" className="flex items-center space-x-3 group">
+        <Link to="/" className="flex items-center space-x-2 group">
           <img src={logo} alt="Creators" className="h-8" />
           <span className="text-muted-foreground font-semibold text-2xl">200</span>
         </Link>
