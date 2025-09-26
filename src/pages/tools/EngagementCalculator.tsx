@@ -152,6 +152,14 @@ export default function EngagementCalculator() {
                   </Link>
                 </li>
                 <li>
+                  <a 
+                    href="mailto:alex@creators200.com?subject=Creators%20200%20Advertising" 
+                    className="text-gray-600 hover:text-primary transition-colors"
+                  >
+                    Advertise
+                  </a>
+                </li>
+                <li>
                   <Link 
                     to="/terms" 
                     className="text-gray-600 hover:text-primary transition-colors"
