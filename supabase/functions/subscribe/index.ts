@@ -15,9 +15,11 @@ const resend = new Resend(Deno.env.get('RESEND_API_KEY'));
 
 async function addToBeehiiv(email: string): Promise<boolean> {
   if (!BEEHIIV_API_KEY) {
-    console.warn('Beehiiv API key not configured');
+    console.error('Beehiiv API key not configured - this is required for newsletter subscriptions');
     return false;
   }
+
+  console.log(`Attempting to add ${email} to Beehiiv publication ${BEEHIIV_PUB_ID}`);
 
   try {
     const response = await fetch(`https://api.beehiiv.com/v2/publications/${BEEHIIV_PUB_ID}/subscriptions`, {
@@ -28,18 +30,24 @@ async function addToBeehiiv(email: string): Promise<boolean> {
       },
       body: JSON.stringify({
         email: email,
-        reactivate_existing: false,
-        send_welcome_email: false,
+        reactivate_existing: true,
+        send_welcome_email: true,
         utm_source: 'creators200.com'
       })
+    });
+
+    const responseText = await response.text();
+    console.log(`Beehiiv API response for ${email}:`, {
+      status: response.status,
+      statusText: response.statusText,
+      body: responseText
     });
 
     if (response.ok) {
       console.log(`Successfully added ${email} to Beehiiv`);
       return true;
     } else {
-      const errorText = await response.text();
-      console.error(`Beehiiv API error for ${email}:`, response.status, errorText);
+      console.error(`Beehiiv API error for ${email}:`, response.status, responseText);
       return false;
     }
   } catch (error) {
@@ -95,11 +103,19 @@ serve(async (req) => {
       );
     }
 
-    // Add to Beehiiv (don't fail if this fails)
+    // Add to Beehiiv (this is the primary goal)
     const beehiivSuccess = await addToBeehiiv(email);
     if (!beehiivSuccess) {
-      console.warn(`Failed to add ${email} to Beehiiv, but local subscription succeeded`);
+      console.error(`Failed to add ${email} to Beehiiv`);
+      return new Response(
+        JSON.stringify({ ok: false, error: 'Failed to subscribe to newsletter. Please try again.' }), 
+        { 
+          status: 500, 
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        }
+      );
     }
+    console.log(`Successfully added ${email} to Beehiiv newsletter`);
 
     // Send confirmation email
     try {
