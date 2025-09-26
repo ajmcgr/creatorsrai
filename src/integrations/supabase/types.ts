@@ -14,6 +14,45 @@ export type Database = {
   }
   public: {
     Tables: {
+      advertisers: {
+        Row: {
+          created_at: string
+          description: string | null
+          email: string
+          id: string
+          is_active: boolean
+          logo_url: string | null
+          name: string
+          paid_until: string | null
+          updated_at: string
+          website_url: string | null
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          email: string
+          id?: string
+          is_active?: boolean
+          logo_url?: string | null
+          name: string
+          paid_until?: string | null
+          updated_at?: string
+          website_url?: string | null
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          email?: string
+          id?: string
+          is_active?: boolean
+          logo_url?: string | null
+          name?: string
+          paid_until?: string | null
+          updated_at?: string
+          website_url?: string | null
+        }
+        Relationships: []
+      }
       avatars_cache: {
         Row: {
           avatar_url: string | null
@@ -38,6 +77,81 @@ export type Database = {
           person_id?: string
           platform?: string
           username?: string | null
+        }
+        Relationships: []
+      }
+      email_template_advertisers: {
+        Row: {
+          ad_content: string | null
+          advertiser_id: string
+          created_at: string
+          email_template_id: string
+          id: string
+          is_active: boolean
+          position: number
+        }
+        Insert: {
+          ad_content?: string | null
+          advertiser_id: string
+          created_at?: string
+          email_template_id: string
+          id?: string
+          is_active?: boolean
+          position?: number
+        }
+        Update: {
+          ad_content?: string | null
+          advertiser_id?: string
+          created_at?: string
+          email_template_id?: string
+          id?: string
+          is_active?: boolean
+          position?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "email_template_advertisers_advertiser_id_fkey"
+            columns: ["advertiser_id"]
+            isOneToOne: false
+            referencedRelation: "advertisers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "email_template_advertisers_email_template_id_fkey"
+            columns: ["email_template_id"]
+            isOneToOne: false
+            referencedRelation: "email_templates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      email_templates: {
+        Row: {
+          created_at: string
+          html_content: string
+          id: string
+          is_active: boolean
+          name: string
+          subject: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          html_content: string
+          id?: string
+          is_active?: boolean
+          name: string
+          subject: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          html_content?: string
+          id?: string
+          is_active?: boolean
+          name?: string
+          subject?: string
+          updated_at?: string
         }
         Relationships: []
       }
