@@ -103,19 +103,13 @@ serve(async (req) => {
       );
     }
 
-    // Add to Beehiiv (this is the primary goal)
+    // Add to Beehiiv (optional - don't fail the subscription if this fails)
     const beehiivSuccess = await addToBeehiiv(email);
     if (!beehiivSuccess) {
-      console.error(`Failed to add ${email} to Beehiiv`);
-      return new Response(
-        JSON.stringify({ ok: false, error: 'Failed to subscribe to newsletter. Please try again.' }), 
-        { 
-          status: 500, 
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-        }
-      );
+      console.warn(`Failed to add ${email} to Beehiiv, but local subscription succeeded`);
+    } else {
+      console.log(`Successfully added ${email} to Beehiiv newsletter`);
     }
-    console.log(`Successfully added ${email} to Beehiiv newsletter`);
 
     // Send confirmation email
     try {
