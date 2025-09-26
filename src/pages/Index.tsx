@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Header } from "@/components/Header";
 import { Link } from "react-router-dom";
 import { Leaderboard } from "@/components/Leaderboard";
+import { SubscriptionForm } from "@/components/SubscriptionForm";
 
 const Index = () => {
   return (
@@ -51,6 +52,11 @@ const Index = () => {
         </div>
         
         <Leaderboard />
+        
+        {/* Subscribe to Updates Form */}
+        <div className="mt-12 sm:mt-16">
+          <SubscriptionForm />
+        </div>
         
         <div className="mt-12 sm:mt-16">
           <h2 className="text-2xl sm:text-3xl font-reckless font-medium mb-6 sm:mb-8 text-gray-900">
