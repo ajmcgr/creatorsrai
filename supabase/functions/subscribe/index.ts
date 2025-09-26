@@ -1,6 +1,5 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import { Resend } from "https://esm.sh/resend@2.0.0";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -10,8 +9,7 @@ const corsHeaders = {
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL');
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
 const BEEHIIV_API_KEY = Deno.env.get('BEEHIIV_API_KEY');
-const BEEHIIV_PUB_ID = "da8703cc-12dd-47ad-bdb7-ddaf29333bf9"; // Your publication ID
-const resend = new Resend(Deno.env.get('RESEND_API_KEY'));
+const BEEHIIV_PUB_ID = "da8703cc-12dd-47ad-bdb7-ddaf29333bf9";
 
 async function addToBeehiiv(email: string): Promise<boolean> {
   if (!BEEHIIV_API_KEY) {
@@ -86,16 +84,28 @@ serve(async (req) => {
       );
     }
 
+    console.log(`Received subscription request for: ${email}`);
+    
     const supabase = createClient(SUPABASE_URL!, SUPABASE_SERVICE_ROLE_KEY!);
     
+    // Store in Supabase as backup
     const { error } = await supabase
       .from('subscribers')
       .upsert({ email });
 
     if (error) {
-      console.error('Subscription error:', error);
+      console.error('Supabase storage error:', error);
+      // Continue anyway - Beehiiv is the primary target
+    } else {
+      console.log(`Successfully stored ${email} in Supabase`);
+    }
+
+    // Add to Beehiiv (this is the main goal)
+    const beehiivSuccess = await addToBeehiiv(email);
+    if (!beehiivSuccess) {
+      console.error(`Failed to add ${email} to Beehiiv - this is the primary failure`);
       return new Response(
-        JSON.stringify({ ok: false, error: 'Failed to subscribe. Please try again.' }), 
+        JSON.stringify({ ok: false, error: 'Failed to subscribe to newsletter. Please try again.' }), 
         { 
           status: 500, 
           headers: { ...corsHeaders, 'Content-Type': 'application/json' }
@@ -103,38 +113,12 @@ serve(async (req) => {
       );
     }
 
-    // Add to Beehiiv (optional - don't fail the subscription if this fails)
-    const beehiivSuccess = await addToBeehiiv(email);
-    if (!beehiivSuccess) {
-      console.warn(`Failed to add ${email} to Beehiiv, but local subscription succeeded`);
-    } else {
-      console.log(`Successfully added ${email} to Beehiiv newsletter`);
-    }
-
-    // Send confirmation email
-    try {
-      await resend.emails.send({
-        from: "Creators 200 <alex@creators200.com>",
-        to: [email],
-        subject: "Welcome to Creators 200 Updates",
-        html: `
-          <h1>Welcome to Creators 200!</h1>
-          <p>Thank you for subscribing to our weekly updates!</p>
-          <p>You'll now receive weekly emails highlighting new creators who have entered the Top 200 across YouTube, TikTok, and Instagram.</p>
-          <p>Stay tuned for exciting creator insights and trending metrics!</p>
-          <br>
-          <p>Best regards,<br>The Creators 200 Team</p>
-        `,
-      });
-      console.log('Confirmation email sent successfully');
-    } catch (emailError) {
-      console.error('Failed to send confirmation email:', emailError);
-      // Don't fail the subscription if email fails
-    }
+    console.log(`Successfully subscribed ${email} to Beehiiv newsletter`);
 
     return new Response(
       JSON.stringify({ 
         ok: true, 
+        message: 'Successfully subscribed to newsletter!',
         synced_to_beehiiv: beehiivSuccess 
       }), 
       { 
