@@ -11,46 +11,55 @@ const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
 const BEEHIIV_API_KEY = Deno.env.get('BEEHIIV_API_KEY');
 const BEEHIIV_PUB_ID = "da8703cc-12dd-47ad-bdb7-ddaf29333bf9";
 
-async function addToBeehiiv(email: string): Promise<boolean> {
+async function addToBeehiiv(email: string): Promise<{ success: boolean; error?: string }> {
   if (!BEEHIIV_API_KEY) {
-    console.error('Beehiiv API key not configured - this is required for newsletter subscriptions');
-    return false;
+    const error = 'Beehiiv API key not configured - this is required for newsletter subscriptions';
+    console.error(error);
+    return { success: false, error };
   }
 
   console.log(`Attempting to add ${email} to Beehiiv publication ${BEEHIIV_PUB_ID}`);
+  console.log(`Using API key: ${BEEHIIV_API_KEY.substring(0, 10)}...`);
 
   try {
+    const requestBody = {
+      email: email,
+      reactivate_existing: true,
+      send_welcome_email: true,
+      utm_source: 'creators200.com'
+    };
+    
+    console.log('Request body:', JSON.stringify(requestBody));
+    
     const response = await fetch(`https://api.beehiiv.com/v2/publications/${BEEHIIV_PUB_ID}/subscriptions`, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${BEEHIIV_API_KEY}`,
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({
-        email: email,
-        reactivate_existing: true,
-        send_welcome_email: true,
-        utm_source: 'creators200.com'
-      })
+      body: JSON.stringify(requestBody)
     });
 
     const responseText = await response.text();
     console.log(`Beehiiv API response for ${email}:`, {
       status: response.status,
       statusText: response.statusText,
+      headers: Object.fromEntries(response.headers.entries()),
       body: responseText
     });
 
     if (response.ok) {
-      console.log(`Successfully added ${email} to Beehiiv`);
-      return true;
+      console.log(`✅ Successfully added ${email} to Beehiiv`);
+      return { success: true };
     } else {
-      console.error(`Beehiiv API error for ${email}:`, response.status, responseText);
-      return false;
+      const error = `Beehiiv API error: ${response.status} ${response.statusText} - ${responseText}`;
+      console.error(error);
+      return { success: false, error };
     }
   } catch (error) {
-    console.error(`Error adding ${email} to Beehiiv:`, error);
-    return false;
+    const errorMessage = `Network error adding ${email} to Beehiiv: ${error}`;
+    console.error(errorMessage);
+    return { success: false, error: errorMessage };
   }
 }
 
@@ -101,11 +110,16 @@ serve(async (req) => {
     }
 
     // Add to Beehiiv (this is the main goal)
-    const beehiivSuccess = await addToBeehiiv(email);
-    if (!beehiivSuccess) {
-      console.error(`Failed to add ${email} to Beehiiv - this is the primary failure`);
+    console.log('About to call Beehiiv API...');
+    const beehiivResult = await addToBeehiiv(email);
+    
+    if (!beehiivResult.success) {
+      console.error(`❌ Failed to add ${email} to Beehiiv:`, beehiivResult.error);
       return new Response(
-        JSON.stringify({ ok: false, error: 'Failed to subscribe to newsletter. Please try again.' }), 
+        JSON.stringify({ 
+          ok: false, 
+          error: `Newsletter subscription failed: ${beehiivResult.error || 'Unknown error'}` 
+        }), 
         { 
           status: 500, 
           headers: { ...corsHeaders, 'Content-Type': 'application/json' }
@@ -113,13 +127,13 @@ serve(async (req) => {
       );
     }
 
-    console.log(`Successfully subscribed ${email} to Beehiiv newsletter`);
+    console.log(`✅ Successfully subscribed ${email} to Beehiiv newsletter`);
 
     return new Response(
       JSON.stringify({ 
         ok: true, 
         message: 'Successfully subscribed to newsletter!',
-        synced_to_beehiiv: beehiivSuccess 
+        synced_to_beehiiv: beehiivResult.success 
       }), 
       { 
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
