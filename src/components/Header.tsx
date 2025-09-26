@@ -22,7 +22,7 @@ export function Header() {
             to="/" 
             className="text-sm font-medium text-foreground hover:text-primary transition-colors duration-200"
           >
-            Rankings
+            Ranking
           </Link>
           <Link 
             to="/about" 
@@ -58,7 +58,7 @@ export function Header() {
                 className="text-sm font-medium text-foreground hover:text-primary transition-colors duration-200"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
-                Rankings
+                Ranking
               </Link>
               <Link 
                 to="/about" 

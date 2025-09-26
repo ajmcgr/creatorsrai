@@ -45,7 +45,7 @@ export function Hero() {
               World's Most Popular Creators
             </span>
             <span className="block text-4xl md:text-5xl mt-2">
-              Real-time Rankings
+              Real-time Ranking
             </span>
           </h1>
           
@@ -53,7 +53,7 @@ export function Hero() {
           <p className="text-xl md:text-2xl text-white/90 mb-12 animate-slide-up font-light leading-relaxed">
             Discover the most talked-about people online. 
             <br className="hidden md:block" />
-            Weekly updated rankings with real growth analytics.
+            Weekly updated ranking with real growth analytics.
           </p>
 
           {/* Stats Grid */}

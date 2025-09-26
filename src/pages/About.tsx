@@ -12,7 +12,7 @@ const About = () => {
           <section className="mb-12">
             <h2 className="text-4xl font-reckless font-medium mb-6 text-gray-900 text-center">Our Story</h2>
             <p className="text-xl text-gray-700 leading-relaxed mb-4">
-              I started these rankings to help people quickly understand who's trending on socials.
+              I started this ranking to help people quickly understand who's trending on socials.
             </p>
           </section>
 
