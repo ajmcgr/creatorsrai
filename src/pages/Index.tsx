@@ -14,7 +14,7 @@ const Index = () => {
             The World's Most Popular Creators Ranked
           </h2>
           <p className="text-sm sm:text-base text-gray-600">
-            Real-time leaderboard showing the most followed creators across platforms (
+            Real-time rankings showing the most followed creators across platforms (
             <Link to="/about" className="text-primary underline hover:no-underline">learn more</Link>
             )
           </p>
@@ -61,11 +61,11 @@ const Index = () => {
             <div className="border border-gray-200 rounded-lg">
               <details className="group">
                 <summary className="flex justify-between items-center p-3 sm:p-4 cursor-pointer hover:bg-gray-50">
-                  <span className="font-medium text-gray-900 text-sm sm:text-base">How often is the leaderboard updated?</span>
+                  <span className="font-medium text-gray-900 text-sm sm:text-base">How often are the rankings updated?</span>
                   <span className="text-gray-500 group-open:rotate-90 transition-transform">▶</span>
                 </summary>
                 <div className="px-3 sm:px-4 pb-3 sm:pb-4 text-gray-700 text-sm sm:text-base">
-                  The leaderboard refreshes once per week by default, pulling directly from official creator ranking data.
+                  The rankings refresh once per week by default, pulling directly from official creator ranking data.
                 </div>
               </details>
             </div>
@@ -137,7 +137,7 @@ const Index = () => {
             <div className="border border-gray-200 rounded-lg">
               <details className="group">
                 <summary className="flex justify-between items-center p-3 sm:p-4 cursor-pointer hover:bg-gray-50">
-                  <span className="font-medium text-gray-900 text-sm sm:text-base">Who is behind this leaderboard?</span>
+                  <span className="font-medium text-gray-900 text-sm sm:text-base">Who is behind these rankings?</span>
                   <span className="text-gray-500 group-open:rotate-90 transition-transform">▶</span>
                 </summary>
                 <div className="px-3 sm:px-4 pb-3 sm:pb-4 text-gray-700 text-sm sm:text-base">

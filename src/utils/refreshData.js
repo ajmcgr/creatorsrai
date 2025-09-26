@@ -1,6 +1,6 @@
 import { supabase } from "@/integrations/supabase/client";
 
-export const refreshLeaderboardData = async () => {
+export const refreshRankingsData = async () => {
   try {
     const { data, error } = await supabase.functions.invoke('refresh-weekly', {
       method: 'POST',
@@ -20,4 +20,4 @@ export const refreshLeaderboardData = async () => {
 };
 
 // Auto-trigger refresh on load if no data exists
-refreshLeaderboardData().catch(console.error);
+refreshRankingsData().catch(console.error);

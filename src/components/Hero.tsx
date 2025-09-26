@@ -45,7 +45,7 @@ export function Hero() {
               World's Most Popular Creators
             </span>
             <span className="block text-4xl md:text-5xl mt-2">
-              Real-time Leaderboard
+              Real-time Rankings
             </span>
           </h1>
           

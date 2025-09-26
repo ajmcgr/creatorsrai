@@ -243,7 +243,7 @@ export function Leaderboard() {
         </div>
       )}
 
-      {/* Leaderboard */}
+      {/* Rankings */}
       <div className="space-y-3">
         {enrichedPageData.map((entry, index) => {
           const config = PLATFORM_CONFIG[entry.platform];
@@ -376,7 +376,7 @@ export function Leaderboard() {
           <div className="text-muted-foreground">
             <Users className="w-12 h-12 mx-auto mb-4 opacity-50" />
             <h3 className="text-lg font-semibold mb-2">No data available</h3>
-            <p>Leaderboard data will appear here once the data is refreshed.</p>
+            <p>Rankings data will appear here once the data is refreshed.</p>
           </div>
         </Card>
       )}

@@ -73,7 +73,7 @@ export function SubscriptionForm() {
               You're subscribed!
             </h3>
             <p className="text-sm text-green-700">
-              You'll receive weekly updates about new creators entering the leaderboard.
+              You'll receive weekly updates about new creators entering the rankings.
             </p>
           </div>
         </div>
@@ -90,7 +90,7 @@ export function SubscriptionForm() {
         </div>
         
         <p className="text-sm text-muted-foreground">
-          Be the first to know about new creators and updated metrics from the leaderboard.
+          Be the first to know about new creators and updated metrics from the rankings.
           Get weekly emails highlighting newcomers to the Top 200.
         </p>
 
