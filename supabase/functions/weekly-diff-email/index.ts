@@ -104,7 +104,7 @@ async function generateEmailHtml(newCreatorsMap: Record<string, any[]>, weekStar
     .select('*')
     .eq('name', 'weekly_creators_update')
     .eq('is_active', true)
-    .single();
+    .maybeSingle();
 
   if (!templateData) {
     throw new Error('Email template not found');
@@ -307,7 +307,7 @@ serve(async (req) => {
         .select('subject')
         .eq('name', 'weekly_creators_update')
         .eq('is_active', true)
-        .single();
+        .maybeSingle();
 
       const subject = templateData?.subject?.replace(/\{\{week_start\}\}/g, weekStart) || `New Creators This Week — ${weekStart}`;
       const html = await generateEmailHtml(newCreatorsMap, weekStart);
