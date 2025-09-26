@@ -27,13 +27,13 @@ const About = () => {
               Tracking creators is no longer a "nice-to-have," it's essential. If you can't see who's shaping the narrative in real time, you're already behind.
             </p>
             <p className="text-gray-700 leading-relaxed mb-4">
-              That's why I'm focused on building platforms that don't just catalogue journalists but map the entire creator economy. From YouTube to TikTok to Instagram, brands, founders, and storytellers can see who truly moves audiences.
+              Step forward, Creators 200. We'll be tracking the top 200 across YouTube, Instagram and TikTok weekly so bookmark the site or check back often to see who's new or rising.
             </p>
             <p className="text-gray-700 leading-relaxed mb-4">
-              The future of creators isn't about follower counts, it's about influence, trust, and how effectively they can build movements around ideas.
+              As always, drop me a note by replying to this email if you have any feedback on our ranking or newsletters.
             </p>
             <p className="text-gray-700 leading-relaxed mb-6">
-              The lines between press, influencer, and entrepreneur are blurring. Tomorrow's most powerful media outlets will be individuals with a camera, a community, and a compelling story.
+              Enjoy!
             </p>
             
             <div className="mb-6">
