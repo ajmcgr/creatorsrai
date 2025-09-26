@@ -25,22 +25,28 @@ export function SubscriptionForm() {
     }
 
     setIsLoading(true);
+    
+    console.log('Starting subscription for:', email);
 
     try {
-      const response = await fetch(
-        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/subscribe`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
-            'apikey': import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
-          },
-          body: JSON.stringify({ email }),
-        }
-      );
+      const requestUrl = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/subscribe`;
+      console.log('Making request to:', requestUrl);
+      
+      const response = await fetch(requestUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+          'apikey': import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
+        },
+        body: JSON.stringify({ email }),
+      });
 
+      console.log('Response status:', response.status);
+      console.log('Response headers:', Object.fromEntries(response.headers.entries()));
+      
       const result = await response.json();
+      console.log('Response data:', result);
 
       if (result.ok) {
         setIsSubscribed(true);
@@ -56,7 +62,7 @@ export function SubscriptionForm() {
       console.error('Subscription error:', error);
       toast({
         title: "Subscription failed",
-        description: error instanceof Error ? error.message : "Please try again later.",
+        description: error instanceof Error ? error.message : "Failed to subscribe. Please try again.",
         variant: "destructive",
       });
     } finally {
