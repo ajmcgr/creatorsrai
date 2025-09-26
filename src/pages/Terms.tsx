@@ -227,12 +227,12 @@ export default function Terms() {
                 </li>
                 <li>
                   <a 
-                    href="http://x.com/creatorslb" 
+                    href="https://x.com/Creators200" 
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-gray-600 hover:text-primary transition-colors"
                   >
-                    Twitter
+                    X
                   </a>
                 </li>
               </ul>
@@ -243,7 +243,7 @@ export default function Terms() {
             <p className="text-sm text-gray-600">
               Copyright © 2025 Works App, Inc. Built with ♥️ by{" "}
               <a 
-                href="http://x.com/creatorslb" 
+                href="https://x.com/Creators200" 
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-primary hover:underline"
