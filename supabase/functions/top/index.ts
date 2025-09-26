@@ -192,7 +192,7 @@ Deno.serve(async (req) => {
   } catch (error) {
     console.error('API error:', error);
     
-    if (error.message?.includes('SocialBlade error')) {
+    if (error instanceof Error && error.message?.includes('SocialBlade error')) {
       return new Response(
         JSON.stringify({ 
           error: 'SocialBlade error', 

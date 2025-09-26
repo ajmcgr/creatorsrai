@@ -214,7 +214,7 @@ Deno.serve(async (req) => {
                 break;
               }
             } catch (queryError) {
-              console.log(`Failed to fetch with query '${query}':`, queryError.message);
+              console.log(`Failed to fetch with query '${query}':`, queryError instanceof Error ? queryError.message : String(queryError));
               continue;
             }
           }
@@ -259,7 +259,7 @@ Deno.serve(async (req) => {
     console.error('Error in avatar-enrichment function:', error);
     
     return new Response(
-      JSON.stringify({ error: error.message || 'Internal server error' }),
+      JSON.stringify({ error: error instanceof Error ? error.message : 'Internal server error' }),
       { 
         status: 500, 
         headers: { ...corsHeaders, 'Content-Type': 'application/json' } 

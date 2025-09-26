@@ -144,7 +144,7 @@ Deno.serve(async (req) => {
         console.log(`Successfully refreshed ${platform}`);
       } catch (error) {
         console.error(`Failed to refresh ${platform}:`, error);
-        errors.push(`${platform}: ${error.message}`);
+        errors.push(`${platform}: ${error instanceof Error ? error.message : String(error)}`);
       }
     }
 
@@ -165,7 +165,7 @@ Deno.serve(async (req) => {
     console.error('Error in admin-refresh-all function:', error);
     
     return new Response(
-      JSON.stringify({ error: error.message || 'Internal server error' }),
+      JSON.stringify({ error: error instanceof Error ? error.message : 'Internal server error' }),
       { 
         status: 500, 
         headers: { ...corsHeaders, 'Content-Type': 'application/json' } 

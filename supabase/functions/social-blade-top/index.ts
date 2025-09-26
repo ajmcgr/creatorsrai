@@ -56,7 +56,7 @@ function normalizeTop(platform: Platform, raw: any[]): TopItem[] {
     return 0;
   };
 
-  const src = Array.isArray(raw) ? raw : (raw?.data || []);
+  const src = Array.isArray(raw) ? raw : ((raw as any)?.data || []);
   return src.map((it: any, i: number) => {
     // Handle nested Social Blade structure
     const idObj = it.id || {};
@@ -277,7 +277,7 @@ Deno.serve(async (req) => {
       JSON.stringify({ 
         error: 'internal_error',
         items: [],
-        detail: error.message || 'Unknown error'
+        detail: error instanceof Error ? error.message : 'Unknown error'
       }),
       { 
         status: 500, 

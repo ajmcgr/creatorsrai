@@ -61,16 +61,16 @@ serve(async (req) => {
     // Send confirmation email
     try {
       await resend.emails.send({
-        from: "Creators Leaderboard <onboarding@resend.dev>",
+        from: "Creators 200 <onboarding@creators200.com>",
         to: [email],
-        subject: "Welcome to Creators Leaderboard Updates",
+        subject: "Welcome to Creators 200 Updates",
         html: `
-          <h1>Welcome to Creators Leaderboard!</h1>
+          <h1>Welcome to Creators 200!</h1>
           <p>Thank you for subscribing to our weekly updates!</p>
           <p>You'll now receive weekly emails highlighting new creators who have entered the Top 200 across YouTube, TikTok, and Instagram.</p>
           <p>Stay tuned for exciting creator insights and trending metrics!</p>
           <br>
-          <p>Best regards,<br>The Creators Leaderboard Team</p>
+          <p>Best regards,<br>The Creators 200 Team</p>
         `,
       });
       console.log('Confirmation email sent successfully');

@@ -166,7 +166,7 @@ function generateEmailHtml(newCreatorsMap: Record<string, any[]>, weekStart: str
         <div style="text-align: center;">
           <p style="color: #999; font-size: 12px; margin: 0;">
             You're receiving this because you subscribed at 
-            <a href="https://creatorsleaderboard.com" style="color: #666; text-decoration: none;">creatorsleaderboard.com</a>
+            <a href="https://creators200.com" style="color: #666; text-decoration: none;">creators200.com</a>
           </p>
           <p style="color: #999; font-size: 12px; margin: 8px 0 0 0;">
             Stay tuned for unsubscribe options in future updates.
@@ -188,7 +188,7 @@ async function sendEmail(recipients: string[], subject: string, html: string): P
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
-      from: 'Creators Leaderboard <updates@creatorsleaderboard.com>',
+      from: 'Creators 200 <updates@creators200.com>',
       to: recipients,
       subject,
       html
@@ -301,7 +301,7 @@ serve(async (req) => {
     return new Response(
       JSON.stringify({
         ok: false,
-        error: error.message || 'Internal server error'
+        error: error instanceof Error ? error.message : 'Internal server error'
       }),
       {
         status: 500,

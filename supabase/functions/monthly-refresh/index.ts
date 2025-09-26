@@ -148,7 +148,7 @@ Deno.serve(async (req) => {
     return new Response(
       JSON.stringify({ 
         error: 'refresh_failed',
-        detail: error.message || 'Unknown error',
+        detail: error instanceof Error ? error.message : 'Unknown error',
         timestamp: new Date().toISOString()
       }),
       { 
