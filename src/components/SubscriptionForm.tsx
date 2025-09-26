@@ -113,7 +113,7 @@ export function SubscriptionForm() {
           
           <Button 
             type="submit" 
-            disabled={isLoading || !email}
+            disabled={isLoading}
             className="w-auto px-6 bg-[#ff8642] text-white hover:bg-[#e67538] disabled:bg-[#ff8642]/50 disabled:cursor-not-allowed"
           >
             {isLoading ? 'Subscribing...' : 'Subscribe to Weekly Updates'}
