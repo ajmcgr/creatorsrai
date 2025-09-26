@@ -13,7 +13,7 @@ export function Header() {
         {/* Logo */}
         <Link to="/" className="flex items-center space-x-3 group">
           <img src={logo} alt="Creators" className="h-8" />
-          <span className="text-muted-foreground font-medium text-3xl">200</span>
+          <span className="text-muted-foreground font-medium text-2xl">200</span>
         </Link>
 
         {/* Navigation */}
