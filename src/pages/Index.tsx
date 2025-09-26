@@ -164,6 +164,14 @@ const Index = () => {
                   </Link>
                 </li>
                 <li>
+                  <Link 
+                    to="/updates" 
+                    className="text-gray-600 hover:text-primary transition-colors text-sm"
+                  >
+                    Updates
+                  </Link>
+                </li>
+                <li>
                   <a 
                     href="mailto:alex@creators200.com?subject=Creators%20200%20Advertising" 
                     className="text-gray-600 hover:text-primary transition-colors text-sm"

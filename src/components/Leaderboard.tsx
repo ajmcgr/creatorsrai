@@ -7,7 +7,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Play, Camera, Video, Users } from "lucide-react";
 import { formatNumber } from "@/lib/formatNumber";
 import { useAvatarEnrichment } from "@/hooks/useAvatarEnrichment";
-import { SubscriptionForm } from "@/components/SubscriptionForm";
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 import diamondIcon from "@/assets/diamond-icon.png";
 
@@ -381,10 +380,7 @@ export function Leaderboard() {
         </Card>
       )}
 
-      {/* Subscription Form */}
-      <div className="mt-12 pt-8 border-t border-border">
-        <SubscriptionForm />
-      </div>
+      {/* Remove subscription form from here since it's now on the Updates page */}
     </div>
   );
 }

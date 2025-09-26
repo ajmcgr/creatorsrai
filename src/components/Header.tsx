@@ -30,6 +30,12 @@ export function Header() {
           >
             About
           </Link>
+          <Link 
+            to="/updates" 
+            className="text-sm font-medium text-foreground hover:text-primary transition-colors duration-200"
+          >
+            Updates
+          </Link>
         </nav>
 
         {/* Mobile Menu */}
@@ -66,6 +72,13 @@ export function Header() {
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 About
+              </Link>
+              <Link 
+                to="/updates" 
+                className="text-sm font-medium text-foreground hover:text-primary transition-colors duration-200"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Updates
               </Link>
             </div>
           </nav>
