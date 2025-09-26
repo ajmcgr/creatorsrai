@@ -37,7 +37,7 @@ verify_jwt = false
 [functions.subscribe]
 verify_jwt = false
 
-[functions.weekly-diff-email]
+[functions.weekly-data-sync]
 verify_jwt = false
 
 [functions.weekly-refresh]

@@ -12,7 +12,7 @@ const SB_CLIENT_ID = Deno.env.get("SB_CLIENT_ID")!;
 const SB_TOKEN = Deno.env.get("SB_TOKEN")!;
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY")!;
+// Removed RESEND_API_KEY since we're not sending emails anymore
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 const PLATFORMS = ["youtube", "tiktok", "instagram"] as const;
@@ -97,137 +97,9 @@ function createTableRows(platform: string, creators: any[]): string {
   }).join('');
 }
 
-async function generateEmailHtml(newCreatorsMap: Record<string, any[]>, weekStart: string): Promise<string> {
-  // Fetch email template from database
-  const { data: templateData } = await supabase
-    .from('email_templates')
-    .select('*')
-    .eq('name', 'weekly_creators_update')
-    .eq('is_active', true)
-    .maybeSingle();
-
-  if (!templateData) {
-    throw new Error('Email template not found');
-  }
-
-  // Fetch active advertisers for this template
-  const { data: advertisers } = await supabase
-    .from('email_template_advertisers')
-    .select(`
-      position,
-      ad_content,
-      advertiser:advertisers(
-        name,
-        logo_url,
-        website_url,
-        description
-      )
-    `)
-    .eq('email_template_id', templateData.id)
-    .eq('is_active', true)
-    .order('position');
-
-  // Generate advertiser content
-  let advertiserContent = '';
-  if (advertisers && advertisers.length > 0) {
-    advertiserContent = advertisers.map((ad: any) => {
-      const advertiser = ad.advertiser;
-      return `
-        <div style="margin-bottom: 24px; padding: 20px; background-color: #f8f9fa; border-radius: 8px; border-left: 4px solid #007bff;">
-          <div style="display: flex; align-items: center; margin-bottom: 12px;">
-            ${advertiser.logo_url ? `<img src="${escapeHtml(advertiser.logo_url)}" alt="${escapeHtml(advertiser.name)}" style="height: 40px; margin-right: 12px;">` : ''}
-            <h4 style="margin: 0; color: #333; font-size: 18px;">Sponsored by ${escapeHtml(advertiser.name)}</h4>
-          </div>
-          ${ad.ad_content ? `<div style="color: #555; line-height: 1.5;">${ad.ad_content}</div>` : ''}
-          ${advertiser.website_url ? `<div style="margin-top: 12px;"><a href="${escapeHtml(advertiser.website_url)}" style="color: #007bff; text-decoration: none; font-weight: 500;">Learn More →</a></div>` : ''}
-        </div>
-      `;
-    }).join('');
-  }
-
-  // Generate creator content
-  const hasNewCreators = Object.values(newCreatorsMap).some(creators => creators?.length > 0);
-  
-  let creatorContent = '';
-  if (hasNewCreators) {
-    const platformSections = PLATFORMS.map(platform => {
-      const creators = newCreatorsMap[platform] || [];
-      const rows = createTableRows(platform, creators);
-      
-      return `
-        <div style="margin-bottom: 32px;">
-          <h3 style="margin: 0 0 16px 0; font-size: 20px; font-weight: 600; text-transform: uppercase; color: #333;">
-            ${platform}
-          </h3>
-          ${rows ? `
-            <table style="width: 100%; border-collapse: collapse; border: 1px solid #e0e0e0; border-radius: 8px; overflow: hidden;">
-              <thead>
-                <tr style="background-color: #f8f9fa;">
-                  <th style="padding: 12px; text-align: center; font-weight: 600; color: #666; border-bottom: 2px solid #e0e0e0;">#</th>
-                  <th style="padding: 12px; text-align: left; font-weight: 600; color: #666; border-bottom: 2px solid #e0e0e0;">Platform</th>
-                  <th style="padding: 12px; text-align: left; font-weight: 600; color: #666; border-bottom: 2px solid #e0e0e0;">Name</th>
-                  <th style="padding: 12px; text-align: left; font-weight: 600; color: #666; border-bottom: 2px solid #e0e0e0;">Handle</th>
-                  <th style="padding: 12px; text-align: right; font-weight: 600; color: #666; border-bottom: 2px solid #e0e0e0;">Audience</th>
-                </tr>
-              </thead>
-              <tbody>
-                ${rows}
-              </tbody>
-            </table>
-          ` : `
-            <p style="color: #666; font-style: italic; margin: 0;">No new creators this week for ${platform}.</p>
-          `}
-        </div>
-      `;
-    }).join('');
-    creatorContent = platformSections;
-  } else {
-    creatorContent = `
-      <div style="text-align: center; padding: 40px 0;">
-        <p style="font-size: 18px; color: #666; margin: 0;">
-          No new creators entered the Top 100 this week across any platform.
-        </p>
-        <p style="font-size: 14px; color: #999; margin: 16px 0 0 0;">
-          Check back next week for updates!
-        </p>
-      </div>
-    `;
-  }
-
-  // Replace placeholders in template
-  let emailHtml = templateData.html_content
-    .replace(/\{\{week_start\}\}/g, weekStart)
-    .replace(/\{\{advertiser_content\}\}/g, advertiserContent)
-    .replace(/\{\{creator_content\}\}/g, creatorContent);
-
-  // Replace subject placeholders
-  const subject = templateData.subject.replace(/\{\{week_start\}\}/g, weekStart);
-
-  return emailHtml;
-}
-
-async function sendEmail(recipients: string[], subject: string, html: string): Promise<void> {
-  if (!recipients.length) return;
-  
-  const response = await fetch('https://api.resend.com/emails', {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${RESEND_API_KEY}`,
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      from: 'Creators 200 <alex@creators200.com>',
-      to: recipients,
-      subject,
-      html
-    })
-  });
-  
-  if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(`Resend API error ${response.status}: ${errorText}`);
-  }
-}
+// Remove email-related functions since we're using Beehiiv manually
+// async function generateEmailHtml(...) - removed
+// async function sendEmail(...) - removed
 
 serve(async (req) => {
   // Handle CORS preflight requests
@@ -288,33 +160,13 @@ serve(async (req) => {
       }
     }
 
-    // Get subscriber emails
+    // Get subscriber count for logging purposes
     const { data: subscribers } = await supabase
       .from('subscribers')
       .select('email');
     
-    const recipients = (subscribers || [])
-      .map((sub: any) => sub.email)
-      .filter(Boolean);
-    
-    console.log(`Found ${recipients.length} subscribers`);
-
-    // Send email if there are subscribers
-    if (recipients.length > 0) {
-      // Get template with subject
-      const { data: templateData } = await supabase
-        .from('email_templates')
-        .select('subject')
-        .eq('name', 'weekly_creators_update')
-        .eq('is_active', true)
-        .maybeSingle();
-
-      const subject = templateData?.subject?.replace(/\{\{week_start\}\}/g, weekStart) || `New Creators This Week — ${weekStart}`;
-      const html = await generateEmailHtml(newCreatorsMap, weekStart);
-      
-      await sendEmail(recipients, subject, html);
-      console.log(`Email sent to ${recipients.length} subscribers`);
-    }
+    const subscriberCount = subscribers?.length || 0;
+    console.log(`Found ${subscriberCount} subscribers (emails will be sent manually via Beehiiv)`);
 
     const newCounts = Object.fromEntries(
       PLATFORMS.map(p => [p, newCreatorsMap[p]?.length || 0])
@@ -324,8 +176,9 @@ serve(async (req) => {
       JSON.stringify({
         ok: true,
         week: weekStart,
-        sent: recipients.length,
-        newCounts
+        subscribers: subscriberCount,
+        newCounts,
+        message: "Data synced successfully. Emails will be sent manually via Beehiiv."
       }),
       {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
