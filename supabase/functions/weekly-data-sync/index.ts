@@ -12,7 +12,7 @@ const SB_CLIENT_ID = Deno.env.get("SB_CLIENT_ID")!;
 const SB_TOKEN = Deno.env.get("SB_TOKEN")!;
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-// Removed RESEND_API_KEY since we're not sending emails anymore
+const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY")!;
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 const PLATFORMS = ["youtube", "tiktok", "instagram"] as const;
@@ -97,9 +97,119 @@ function createTableRows(platform: string, creators: any[]): string {
   }).join('');
 }
 
-// Remove email-related functions since we're using Beehiiv manually
-// async function generateEmailHtml(...) - removed
-// async function sendEmail(...) - removed
+async function generateDataEmail(newCreatorsMap: Record<string, any[]>, weekStart: string): Promise<string> {
+  const hasNewCreators = Object.values(newCreatorsMap).some(creators => creators?.length > 0);
+  
+  if (!hasNewCreators) {
+    return `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="utf-8">
+        <title>Weekly Creator Data - ${weekStart}</title>
+      </head>
+      <body style="margin: 0; padding: 20px; background-color: #f7f7f7; font-family: Inter, system-ui, -apple-system, sans-serif;">
+        <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; padding: 32px; border-radius: 8px;">
+          <h1 style="color: #1a1a1a; margin-bottom: 16px;">Weekly Creator Data - ${weekStart}</h1>
+          <p style="color: #666; font-size: 16px;">
+            No new creators entered the Top 200 this week across any platform.
+          </p>
+          <p style="color: #999; font-size: 14px; margin-top: 20px;">
+            This data is ready for your Beehiiv newsletter.
+          </p>
+        </div>
+      </body>
+      </html>
+    `;
+  }
+
+  const platformSections = PLATFORMS.map(platform => {
+    const creators = newCreatorsMap[platform] || [];
+    const count = creators.length;
+    
+    if (count === 0) {
+      return `
+        <div style="margin-bottom: 32px;">
+          <h3 style="margin: 0 0 16px 0; font-size: 20px; font-weight: 600; text-transform: uppercase; color: #333;">
+            ${platform} (${count} new creators)
+          </h3>
+          <p style="color: #666; font-style: italic; margin: 0;">No new creators this week.</p>
+        </div>
+      `;
+    }
+
+    const rows = createTableRows(platform, creators);
+    
+    return `
+      <div style="margin-bottom: 32px;">
+        <h3 style="margin: 0 0 16px 0; font-size: 20px; font-weight: 600; text-transform: uppercase; color: #333;">
+          ${platform} (${count} new creators)
+        </h3>
+        <table style="width: 100%; border-collapse: collapse; border: 1px solid #e0e0e0; border-radius: 8px; overflow: hidden;">
+          <thead>
+            <tr style="background-color: #f8f9fa;">
+              <th style="padding: 12px; text-align: center; font-weight: 600; color: #666; border-bottom: 2px solid #e0e0e0;">#</th>
+              <th style="padding: 12px; text-align: left; font-weight: 600; color: #666; border-bottom: 2px solid #e0e0e0;">Platform</th>
+              <th style="padding: 12px; text-align: left; font-weight: 600; color: #666; border-bottom: 2px solid #e0e0e0;">Name</th>
+              <th style="padding: 12px; text-align: left; font-weight: 600; color: #666; border-bottom: 2px solid #e0e0e0;">Handle</th>
+              <th style="padding: 12px; text-align: right; font-weight: 600; color: #666; border-bottom: 2px solid #e0e0e0;">Audience</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rows}
+          </tbody>
+        </table>
+      </div>
+    `;
+  }).join('');
+
+  return `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="utf-8">
+      <title>Weekly Creator Data - ${weekStart}</title>
+    </head>
+    <body style="margin: 0; padding: 20px; background-color: #f7f7f7; font-family: Inter, system-ui, -apple-system, sans-serif;">
+      <div style="max-width: 800px; margin: 0 auto; background-color: #ffffff; padding: 32px; border-radius: 8px;">
+        <h1 style="color: #1a1a1a; margin-bottom: 8px;">🚀 Weekly Creator Data</h1>
+        <p style="color: #666; font-size: 16px; margin-bottom: 32px;">
+          Week starting ${weekStart} • Ready for your Beehiiv newsletter
+        </p>
+        
+        ${platformSections}
+        
+        <hr style="margin: 32px 0; border: none; border-top: 1px solid #e0e0e0;">
+        
+        <p style="color: #999; font-size: 12px; margin: 0;">
+          This data was automatically generated from the weekly ranking sync.
+        </p>
+      </div>
+    </body>
+    </html>
+  `;
+}
+
+async function sendDataEmail(html: string, weekStart: string): Promise<void> {
+  const response = await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${RESEND_API_KEY}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      from: 'Creators 200 Data <alex@creators200.com>',
+      to: ['alex@creators200.com'],
+      subject: `Weekly Creator Data - ${weekStart}`,
+      html
+    })
+  });
+  
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`Resend API error ${response.status}: ${errorText}`);
+  }
+}
 
 serve(async (req) => {
   // Handle CORS preflight requests
@@ -168,6 +278,16 @@ serve(async (req) => {
     const subscriberCount = subscribers?.length || 0;
     console.log(`Found ${subscriberCount} subscribers (emails will be sent manually via Beehiiv)`);
 
+    // Send data email to alex@creators200.com for manual newsletter creation
+    try {
+      const dataEmail = await generateDataEmail(newCreatorsMap, weekStart);
+      await sendDataEmail(dataEmail, weekStart);
+      console.log('Data email sent to alex@creators200.com');
+    } catch (emailError) {
+      console.error('Failed to send data email:', emailError);
+      // Don't fail the whole function if email fails
+    }
+
     const newCounts = Object.fromEntries(
       PLATFORMS.map(p => [p, newCreatorsMap[p]?.length || 0])
     );
@@ -178,7 +298,7 @@ serve(async (req) => {
         week: weekStart,
         subscribers: subscriberCount,
         newCounts,
-        message: "Data synced successfully. Emails will be sent manually via Beehiiv."
+        message: "Data synced successfully. Data email sent to alex@creators200.com for manual Beehiiv newsletter."
       }),
       {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
