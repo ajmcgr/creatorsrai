@@ -9,7 +9,7 @@ const corsHeaders = {
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL');
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
 const BEEHIIV_API_KEY = Deno.env.get('BEEHIIV_API_KEY');
-const BEEHIIV_PUB_ID = "da8703cc-12dd-47ad-bdb7-ddaf29333bf9";
+const BEEHIIV_PUB_ID = "pub_da8703cc-12dd-47ad-bdb7-ddaf29333bf9";
 
 async function addToBeehiiv(email: string): Promise<{ success: boolean; error?: string }> {
   if (!BEEHIIV_API_KEY) {
