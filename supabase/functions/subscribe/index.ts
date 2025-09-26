@@ -8,7 +8,7 @@ const corsHeaders = {
 };
 
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL');
-const SUPABASE_ANON_KEY = Deno.env.get('SUPABASE_ANON_KEY');
+const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
 const BEEHIIV_API_KEY = Deno.env.get('BEEHIIV_API_KEY');
 const BEEHIIV_PUB_ID = "da8703cc-12dd-47ad-bdb7-ddaf29333bf9"; // Your publication ID
 const resend = new Resend(Deno.env.get('RESEND_API_KEY'));
@@ -78,7 +78,7 @@ serve(async (req) => {
       );
     }
 
-    const supabase = createClient(SUPABASE_URL!, SUPABASE_ANON_KEY!);
+    const supabase = createClient(SUPABASE_URL!, SUPABASE_SERVICE_ROLE_KEY!);
     
     const { error } = await supabase
       .from('subscribers')
