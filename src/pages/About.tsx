@@ -30,7 +30,7 @@ const About = () => {
               Step forward, Creators 200. We'll be tracking the top 200 across YouTube, Instagram and TikTok weekly so bookmark the site or check back often to see who's new or rising.
             </p>
             <p className="text-gray-700 leading-relaxed mb-4">
-              As always, drop me a note by replying to this email if you have any feedback on our ranking or newsletters.
+              As always, drop me a note by email or DM if you have any feedback on our ranking or newsletters.
             </p>
             <p className="text-gray-700 leading-relaxed mb-6">
               Enjoy!
