@@ -46,6 +46,9 @@ verify_jwt = false
 [functions.health]
 verify_jwt = false
 
+[functions.sync-beehiiv]
+verify_jwt = false
+
 [db]
 port = 54322
 

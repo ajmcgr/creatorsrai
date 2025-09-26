@@ -9,7 +9,44 @@ const corsHeaders = {
 
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL');
 const SUPABASE_ANON_KEY = Deno.env.get('SUPABASE_ANON_KEY');
+const BEEHIIV_API_KEY = Deno.env.get('BEEHIIV_API_KEY');
+const BEEHIIV_PUB_ID = "da8703cc-12dd-47ad-bdb7-ddaf29333bf9"; // Your publication ID
 const resend = new Resend(Deno.env.get('RESEND_API_KEY'));
+
+async function addToBeehiiv(email: string): Promise<boolean> {
+  if (!BEEHIIV_API_KEY) {
+    console.warn('Beehiiv API key not configured');
+    return false;
+  }
+
+  try {
+    const response = await fetch(`https://api.beehiiv.com/v2/publications/${BEEHIIV_PUB_ID}/subscriptions`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${BEEHIIV_API_KEY}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        email: email,
+        reactivate_existing: false,
+        send_welcome_email: false,
+        utm_source: 'creators200.com'
+      })
+    });
+
+    if (response.ok) {
+      console.log(`Successfully added ${email} to Beehiiv`);
+      return true;
+    } else {
+      const errorText = await response.text();
+      console.error(`Beehiiv API error for ${email}:`, response.status, errorText);
+      return false;
+    }
+  } catch (error) {
+    console.error(`Error adding ${email} to Beehiiv:`, error);
+    return false;
+  }
+}
 
 function validEmail(email: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -58,6 +95,12 @@ serve(async (req) => {
       );
     }
 
+    // Add to Beehiiv (don't fail if this fails)
+    const beehiivSuccess = await addToBeehiiv(email);
+    if (!beehiivSuccess) {
+      console.warn(`Failed to add ${email} to Beehiiv, but local subscription succeeded`);
+    }
+
     // Send confirmation email
     try {
       await resend.emails.send({
@@ -80,7 +123,10 @@ serve(async (req) => {
     }
 
     return new Response(
-      JSON.stringify({ ok: true }), 
+      JSON.stringify({ 
+        ok: true, 
+        synced_to_beehiiv: beehiivSuccess 
+      }), 
       { 
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       }
