@@ -188,7 +188,7 @@ async function sendEmail(recipients: string[], subject: string, html: string): P
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
-      from: 'Creators 200 <updates@creators200.com>',
+      from: 'Creators 200 <alex@creators200.com>',
       to: recipients,
       subject,
       html

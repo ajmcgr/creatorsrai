@@ -61,7 +61,7 @@ serve(async (req) => {
     // Send confirmation email
     try {
       await resend.emails.send({
-        from: "Creators 200 <onboarding@creators200.com>",
+        from: "Creators 200 <alex@creators200.com>",
         to: [email],
         subject: "Welcome to Creators 200 Updates",
         html: `
