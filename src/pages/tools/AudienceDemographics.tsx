@@ -431,7 +431,7 @@ export default function AudienceDemographics() {
                 </li>
                 <li>
                   <a 
-                    href="mailto:alex@creatorsleaderboard.com" 
+                    href="mailto:alex@creators200.com" 
                     className="text-gray-600 hover:text-primary transition-colors"
                   >
                     Contact Us
