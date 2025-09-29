@@ -17,44 +17,26 @@ export function Header() {
         </Link>
 
         {/* Navigation */}
-        <div className="hidden md:flex items-center space-x-6">
-          <nav className="flex items-center space-x-6">
-            <Link 
-              to="/" 
-              className="text-sm font-medium text-foreground hover:text-primary transition-colors duration-200"
-            >
-              Ranking
-            </Link>
-            <Link 
-              to="/about" 
-              className="text-sm font-medium text-foreground hover:text-primary transition-colors duration-200"
-            >
-              About
-            </Link>
-            <Link 
-              to="/updates" 
-              className="text-sm font-medium text-foreground hover:text-primary transition-colors duration-200"
-            >
-              Updates
-            </Link>
-          </nav>
-          
-          {/* Product Hunt Badge */}
-          <a 
-            href="https://www.producthunt.com/products/creators-leaderboard?embed=true&utm_source=badge-featured&utm_medium=badge&utm_source=badge-creators%E2%80%94200" 
-            target="_blank"
-            rel="noopener noreferrer"
-            className="ml-4"
+        <nav className="hidden md:flex items-center space-x-6">
+          <Link 
+            to="/" 
+            className="text-sm font-medium text-foreground hover:text-primary transition-colors duration-200"
           >
-            <img 
-              src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1019497&theme=light&t=1759139445174" 
-              alt="Creators 200 - Forbes List for Creators | Product Hunt" 
-              className="w-[200px] h-[43px]"
-              width="200" 
-              height="43" 
-            />
-          </a>
-        </div>
+            Ranking
+          </Link>
+          <Link 
+            to="/about" 
+            className="text-sm font-medium text-foreground hover:text-primary transition-colors duration-200"
+          >
+            About
+          </Link>
+          <Link 
+            to="/updates" 
+            className="text-sm font-medium text-foreground hover:text-primary transition-colors duration-200"
+          >
+            Updates
+          </Link>
+        </nav>
 
         {/* Mobile Menu */}
         <div className="md:hidden">

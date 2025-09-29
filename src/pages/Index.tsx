@@ -11,9 +11,29 @@ const Index = () => {
       
       <main className="container mx-auto px-4 sm:px-6 py-8 sm:py-12 max-w-5xl">
         <div className="mb-6 sm:mb-8">
-          <h2 className="text-2xl sm:text-3xl font-reckless font-medium mb-2 text-gray-900">
-            The World's Most Popular Creators Ranked
-          </h2>
+          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-2">
+            <h2 className="text-2xl sm:text-3xl font-reckless font-medium text-gray-900">
+              The World's Most Popular Creators Ranked
+            </h2>
+            
+            {/* Product Hunt Badge */}
+            <div className="hidden sm:block">
+              <a 
+                href="https://www.producthunt.com/products/creators-leaderboard?embed=true&utm_source=badge-featured&utm_medium=badge&utm_source=badge-creators%E2%80%94200" 
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <img 
+                  src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1019497&theme=light&t=1759139445174" 
+                  alt="Creators 200 - Forbes List for Creators | Product Hunt" 
+                  className="w-[200px] h-[43px]"
+                  width="200" 
+                  height="43" 
+                />
+              </a>
+            </div>
+          </div>
+          
           <p className="text-sm sm:text-base text-gray-600">
             Real-time ranking showing the most followed creators across platforms (
             <Link to="/about" className="text-primary underline hover:no-underline">learn more</Link>
