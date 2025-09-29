@@ -170,7 +170,7 @@ export default function Terms() {
       
       <footer className="border-t bg-white py-12 mt-20">
         <div className="container mx-auto px-4 max-w-5xl">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
             <div>
               <h3 className="font-semibold text-gray-900 mb-4">About</h3>
               <ul className="space-y-2">
