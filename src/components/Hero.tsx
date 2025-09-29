@@ -38,6 +38,23 @@ export function Hero() {
       </div>
 
       <div className="container mx-auto px-4 relative">
+        {/* Product Hunt Badge */}
+        <div className="absolute top-4 right-4 z-10 hidden md:block">
+          <a 
+            href="https://www.producthunt.com/products/creators-leaderboard?embed=true&utm_source=badge-featured&utm_medium=badge&utm_source=badge-creators%E2%80%94200" 
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img 
+              src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1019497&theme=light&t=1759139445174" 
+              alt="Creators 200 - Forbes List for Creators | Product Hunt" 
+              className="w-[250px] h-[54px]"
+              width="250" 
+              height="54" 
+            />
+          </a>
+        </div>
+        
         <div className="text-center max-w-4xl mx-auto">
           {/* Main Headline */}
           <h1 className="text-5xl md:text-7xl font-reckless font-medium mb-6 animate-fade-in">
