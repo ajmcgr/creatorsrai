@@ -173,6 +173,16 @@ const Index = () => {
             </div>
           </div>
         </div>
+        
+        {/* About Creators 200 Section */}
+        <div className="mt-12 sm:mt-16">
+          <h2 className="text-2xl sm:text-3xl font-reckless font-medium mb-4 text-gray-900">
+            About Creators 200
+          </h2>
+          <p className="text-gray-700 text-sm sm:text-base leading-relaxed">
+            Discover the most followed people online. Weekly updated rankings tracking top 200 creator growth across YouTube, Instagram, TikTok, and more.
+          </p>
+        </div>
       </main>
       
       <footer className="border-t bg-white py-12 mt-20">
