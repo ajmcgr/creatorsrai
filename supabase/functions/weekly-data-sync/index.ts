@@ -26,24 +26,58 @@ function weekStartUTC(d = new Date()): string {
   return monday.toISOString().slice(0, 10);
 }
 
-function sbTopUrl(platform: string): string {
+// Generate Social Blade API URL
+function sbTopUrl(platform: string, page: number): string {
   const query = platform === 'youtube' ? 'subscribers' : 'followers';
-  return `${SB_BASE_URL}/${platform}/top?query=${query}&page=1`;
+  return `${SB_BASE_URL}/${platform}/top?query=${query}&page=${page}`;
 }
 
+// Fetch top 200 data for a platform (merge page 1 + page 2)
 async function fetchTop(platform: string): Promise<any[]> {
-  const response = await fetch(sbTopUrl(platform), {
+  console.log(`Fetching ${platform} Top-200 from Social Blade...`);
+  
+  // Fetch page 1
+  const r1 = await fetch(sbTopUrl(platform, 1), {
     headers: {
       clientid: SB_CLIENT_ID,
       token: SB_TOKEN
     }
   });
   
-  if (!response.ok) {
-    throw new Error(`Social Blade API error for ${platform}: ${response.status}`);
+  if (!r1.ok) {
+    console.error(`Social Blade ${platform} page 1 failed: ${r1.status}`);
+    const errorText = await r1.text();
+    console.error(`Error details: ${errorText}`);
+    throw new Error(`Social Blade API error for ${platform} page 1: ${r1.status}`);
   }
   
-  return await response.json();
+  const json1 = await r1.json();
+  
+  // Fetch page 2
+  const r2 = await fetch(sbTopUrl(platform, 2), {
+    headers: {
+      clientid: SB_CLIENT_ID,
+      token: SB_TOKEN
+    }
+  });
+  
+  if (!r2.ok) {
+    console.error(`Social Blade ${platform} page 2 failed: ${r2.status}`);
+    const errorText = await r2.text();
+    console.error(`Error details: ${errorText}`);
+    throw new Error(`Social Blade API error for ${platform} page 2: ${r2.status}`);
+  }
+  
+  const json2 = await r2.json();
+  
+  // Handle both array responses and {data: [...]} responses
+  const arr1 = Array.isArray(json1) ? json1 : (json1?.data || []);
+  const arr2 = Array.isArray(json2) ? json2 : (json2?.data || []);
+  const merged = arr1.concat(arr2).slice(0, 200);
+  
+  console.log(`Fetched ${platform}: ${arr1.length} + ${arr2.length} = ${merged.length} items`);
+  
+  return merged;
 }
 
 function idOf(platform: string, item: any): string {
@@ -51,6 +85,10 @@ function idOf(platform: string, item: any): string {
 }
 
 function diffNew(platform: string, previous: any[], current: any[]): any[] {
+  // Ensure both are arrays
+  if (!Array.isArray(previous)) previous = [];
+  if (!Array.isArray(current)) current = [];
+  
   const prevSet = new Set(previous.map((x: any) => idOf(platform, x)));
   const newCreators = [];
   
@@ -225,10 +263,38 @@ serve(async (req) => {
 
     // Fetch current top lists from Social Blade
     const currentData: Record<string, any[]> = {};
+    const fetchErrors: string[] = [];
+    
     for (const platform of PLATFORMS) {
       console.log(`Fetching current data for ${platform}...`);
-      currentData[platform] = await fetchTop(platform);
-      console.log(`Fetched ${currentData[platform]?.length || 0} items for ${platform}`);
+      try {
+        currentData[platform] = await fetchTop(platform);
+        console.log(`Fetched ${currentData[platform]?.length || 0} items for ${platform}`);
+        
+        if (!currentData[platform] || currentData[platform].length === 0) {
+          fetchErrors.push(`${platform}: No data returned from Social Blade API`);
+        }
+      } catch (error) {
+        console.error(`Failed to fetch ${platform}:`, error);
+        currentData[platform] = [];
+        fetchErrors.push(`${platform}: ${error.message}`);
+      }
+    }
+    
+    // If all platforms failed, return error
+    if (fetchErrors.length === PLATFORMS.length) {
+      return new Response(
+        JSON.stringify({
+          ok: false,
+          error: 'All Social Blade API calls failed',
+          details: fetchErrors,
+          message: 'Please check Social Blade API credentials (SB_CLIENT_ID, SB_TOKEN) and API limits'
+        }),
+        {
+          status: 500,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        }
+      );
     }
 
     // Load previous snapshots for comparison
