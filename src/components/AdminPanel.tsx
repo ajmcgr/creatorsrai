@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { RefreshCw, Lock } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { MonthlyRefreshTrigger } from "@/components/MonthlyRefreshTrigger";
+import { WeeklyDataSyncTrigger } from "@/components/WeeklyDataSyncTrigger";
 import { useToast } from "@/hooks/use-toast";
 
 type Platform = 'youtube' | 'tiktok' | 'instagram';
@@ -122,6 +123,7 @@ export function AdminPanel() {
       </CardHeader>
       <CardContent className="space-y-6">
         <MonthlyRefreshTrigger />
+        <WeeklyDataSyncTrigger />
         
         <div className="bg-green-50 p-4 rounded-lg border border-green-200">
           <h4 className="font-semibold mb-3 text-green-800">🚀 Manual Data Refresh</h4>
