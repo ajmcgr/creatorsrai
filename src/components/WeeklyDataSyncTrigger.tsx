@@ -35,20 +35,20 @@ export const WeeklyDataSyncTrigger = () => {
   };
 
   return (
-    <div className="mb-4 p-4 bg-card border rounded-lg">
+    <div className="p-4 bg-purple-50 border border-purple-200 rounded-lg">
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="font-medium">Weekly Data Sync & Email</h3>
-          <p className="text-sm text-muted-foreground">
+          <h3 className="font-medium text-purple-800">📧 Weekly Data Sync & Email</h3>
+          <p className="text-sm text-purple-700">
             Sends weekly new creators email to alex@creators200.com (runs automatically every Monday at 9 AM UTC)
           </p>
         </div>
         <Button 
           onClick={triggerSync} 
           disabled={isSyncing}
-          variant="outline"
+          className="bg-purple-600 hover:bg-purple-700"
         >
-          {isSyncing ? 'Syncing...' : 'Test Now'}
+          {isSyncing ? 'Syncing...' : 'Test Email Now'}
         </Button>
       </div>
     </div>
