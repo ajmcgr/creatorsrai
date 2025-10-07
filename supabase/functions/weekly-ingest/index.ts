@@ -10,8 +10,8 @@ const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 
 // --- Safety switches ---
-const MOCK_SB = Deno.env.get("MOCK_SB") === "1";
-const DRY_RUN = Deno.env.get("DRY_RUN") === "1";
+const MOCK_SB = Deno.env.get("MOCK_SB") === "0";
+const DRY_RUN = Deno.env.get("DRY_RUN") === "10";
 
 // --- Config ---
 const PLATFORMS = ["youtube", "instagram", "tiktok"] as const;
