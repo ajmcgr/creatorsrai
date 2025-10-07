@@ -176,6 +176,87 @@ export type Database = {
         }
         Relationships: []
       }
+      sb_new_entries: {
+        Row: {
+          created_at: string
+          display_name: string | null
+          handle: string | null
+          id: number
+          metrics: Json | null
+          platform: string
+          profile_id: string
+          rank: number | null
+          run_at: string
+        }
+        Insert: {
+          created_at?: string
+          display_name?: string | null
+          handle?: string | null
+          id?: number
+          metrics?: Json | null
+          platform: string
+          profile_id: string
+          rank?: number | null
+          run_at: string
+        }
+        Update: {
+          created_at?: string
+          display_name?: string | null
+          handle?: string | null
+          id?: number
+          metrics?: Json | null
+          platform?: string
+          profile_id?: string
+          rank?: number | null
+          run_at?: string
+        }
+        Relationships: []
+      }
+      sb_rollups: {
+        Row: {
+          created_at: string
+          id: number
+          notes: string | null
+          run_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          notes?: string | null
+          run_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          notes?: string | null
+          run_at?: string
+        }
+        Relationships: []
+      }
+      sb_snapshots: {
+        Row: {
+          created_at: string
+          id: number
+          items: Json
+          platform: string
+          run_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          items: Json
+          platform: string
+          run_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          items?: Json
+          platform?: string
+          run_at?: string
+        }
+        Relationships: []
+      }
       subscribers: {
         Row: {
           created_at: string

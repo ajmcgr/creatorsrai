@@ -49,6 +49,12 @@ verify_jwt = false
 [functions.sync-beehiiv]
 verify_jwt = false
 
+[functions.weekly-ingest]
+verify_jwt = false
+
+[functions.email-weekly-new]
+verify_jwt = false
+
 [db]
 port = 54322
 

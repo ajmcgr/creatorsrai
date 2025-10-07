@@ -232,15 +232,12 @@ export function Leaderboard() {
         })}
       </div>
 
-      {/* Last Updated Info */}
-      {lastUpdated && (
-        <div className="text-sm text-muted-foreground mb-6 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
-          <span>Last updated: {formatTimeAgo(lastUpdated)}</span>
-          <span className="text-xs">
-            Showing {data.length} creators • Page {page} of {totalPages}
-          </span>
-        </div>
-      )}
+      {/* Page info only - no timestamp */}
+      <div className="text-sm text-muted-foreground mb-6 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
+        <span className="text-xs">
+          Showing {data.length} creators • Page {page} of {totalPages}
+        </span>
+      </div>
 
       {/* Ranking */}
       <div className="space-y-3">
