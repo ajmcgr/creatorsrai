@@ -48,7 +48,7 @@ function generateEmailHtml(entries: Record<Platform, any[]>, runAt: string): str
           <h2 style="margin: 0 0 12px 0; font-size: 20px; font-weight: 600; text-transform: uppercase; color: #333;">
             ${platform.toUpperCase()} — 0 new entrants
           </h2>
-          <p style="color: #666; font-style: italic;">No new creators this week.</p>
+          <p style="color: #666; font-style: italic;">No new creators this month.</p>
         </div>
       `;
     }
@@ -112,7 +112,7 @@ function generateEmailHtml(entries: Record<Platform, any[]>, runAt: string): str
     day: 'numeric' 
   });
   
-    return `
+  return `
     <!DOCTYPE html>
     <html>
     <head>
@@ -149,7 +149,7 @@ serve(async (req) => {
     const { to } = await req.json();
     const toEmail = to || "alex@creators200.com";
     
-    console.log(`Generating weekly email for ${toEmail}...`);
+    console.log(`Generating monthly email for ${toEmail}...`);
     
     // Get latest rollup
     const { data: rollup, error: rollupError } = await supabase
@@ -160,7 +160,7 @@ serve(async (req) => {
       .single();
     
     if (rollupError || !rollup) {
-      throw new Error('No rollup data found - weekly-ingest may not have run yet');
+      throw new Error('No rollup data found - monthly-ingest may not have run yet');
     }
     
     const runAt = rollup.run_at;
@@ -245,7 +245,7 @@ serve(async (req) => {
     );
     
   } catch (error) {
-    console.error('Email weekly new error:', error);
+    console.error('Email monthly new error:', error);
     return new Response(
       JSON.stringify({
         success: false,

@@ -52,7 +52,7 @@ verify_jwt = false
 [functions.weekly-ingest]
 verify_jwt = false
 
-[functions.email-weekly-new]
+[functions.email-monthly-new]
 verify_jwt = false
 
 [db]
