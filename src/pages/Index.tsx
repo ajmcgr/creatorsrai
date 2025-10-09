@@ -167,7 +167,7 @@ const Index = () => {
                   <span className="text-gray-500 group-open:rotate-90 transition-transform">▶</span>
                 </summary>
                 <div className="px-3 sm:px-4 pb-3 sm:pb-4 text-gray-700 text-sm sm:text-base">
-                  This site was built by <a href="https://x.com/Creators200" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Alex</a> and Works.xyz, a creative PR and influence platform. We use official APIs to power the data, but the design and presentation are our own.
+                  This site was built by <a href="https://x.com/trycreators" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Alex</a> and Works.xyz, a creative PR and influence platform. We use official APIs to power the data, but the design and presentation are our own.
                 </div>
               </details>
             </div>
@@ -262,7 +262,7 @@ const Index = () => {
                 </li>
                 <li>
                   <a 
-                    href="https://x.com/Creators200" 
+                    href="https://x.com/trycreators" 
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-gray-600 hover:text-primary transition-colors text-sm"

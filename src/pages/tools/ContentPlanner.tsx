@@ -279,7 +279,7 @@ export default function ContentPlanner() {
                 </li>
                 <li>
                   <a 
-                    href="https://x.com/Creators200" 
+                    href="https://x.com/trycreators" 
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-gray-600 hover:text-primary transition-colors"
@@ -303,7 +303,7 @@ export default function ContentPlanner() {
             <p className="text-sm text-gray-600">
               Copyright © 2025 Works App, Inc. Built with ♥️ by{" "}
               <a 
-                href="https://x.com/Creators200" 
+                href="https://x.com/trycreators" 
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-primary hover:underline"
