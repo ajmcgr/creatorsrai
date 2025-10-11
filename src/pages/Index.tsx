@@ -247,6 +247,16 @@ const Index = () => {
                     Media Kit Creator ↗
                   </a>
                 </li>
+                <li>
+                  <a 
+                    href="https://trycreators.ai/" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="text-gray-600 hover:text-primary transition-colors text-sm"
+                  >
+                    Creators CRM ↗
+                  </a>
+                </li>
                 <li><Link to="/tools/engagement-calculator" className="text-gray-600 hover:text-primary transition-colors text-sm">Engagement Calculator</Link></li>
                 <li><Link to="/tools/hashtag-generator" className="text-gray-600 hover:text-primary transition-colors text-sm">Hashtag Generator</Link></li>
                 <li><Link to="/tools/content-planner" className="text-gray-600 hover:text-primary transition-colors text-sm">Content Planner</Link></li>
