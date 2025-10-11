@@ -36,14 +36,6 @@ export function Header() {
           >
             Updates
           </Link>
-          <a 
-            href="https://creatorsmediakit.com/" 
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-sm font-medium text-foreground hover:text-primary transition-colors duration-200"
-          >
-            Free Tools ↗
-          </a>
         </nav>
 
         {/* Mobile Menu */}
@@ -88,15 +80,6 @@ export function Header() {
               >
                 Updates
               </Link>
-              <a 
-                href="https://creatorsmediakit.com/" 
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-sm font-medium text-foreground hover:text-primary transition-colors duration-200"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                Free Tools ↗
-              </a>
             </div>
           </nav>
         </div>

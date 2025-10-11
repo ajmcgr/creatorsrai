@@ -237,6 +237,16 @@ const Index = () => {
             <div>
               <h3 className="font-semibold text-gray-900 mb-4">Free Tools</h3>
               <ul className="space-y-2">
+                <li>
+                  <a 
+                    href="https://creatorsmediakit.com/" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="text-gray-600 hover:text-primary transition-colors text-sm"
+                  >
+                    Media Kit Creator ↗
+                  </a>
+                </li>
                 <li><Link to="/tools/engagement-calculator" className="text-gray-600 hover:text-primary transition-colors text-sm">Engagement Calculator</Link></li>
                 <li><Link to="/tools/hashtag-generator" className="text-gray-600 hover:text-primary transition-colors text-sm">Hashtag Generator</Link></li>
                 <li><Link to="/tools/content-planner" className="text-gray-600 hover:text-primary transition-colors text-sm">Content Planner</Link></li>
