@@ -6,7 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Play, Camera, Video, Users } from "lucide-react";
 import { formatNumber } from "@/lib/formatNumber";
-import { useAvatarEnrichment } from "@/hooks/useAvatarEnrichment";
+// import { useAvatarEnrichment } from "@/hooks/useAvatarEnrichment"; // Disabled to save API credits
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 import diamondIcon from "@/assets/diamond-icon.png";
 
@@ -66,8 +66,10 @@ export function Leaderboard() {
   const start = (currentPage - 1) * pageSize;
   const pagedData = data.slice(start, start + pageSize);
   
-  // Use avatar enrichment hook for progressive loading on the current page only
-  const { items: enrichedPageData, loading: avatarLoading } = useAvatarEnrichment(pagedData, selectedPlatform);
+  // Avatar enrichment disabled to save API credits
+  // const { items: enrichedPageData, loading: avatarLoading } = useAvatarEnrichment(pagedData, selectedPlatform);
+  const enrichedPageData = pagedData;
+  const avatarLoading = false;
 
   console.log(`Pagination: total=${total}, currentPage=${currentPage}, totalPages=${totalPages}`);
   console.log(`Data length: raw=${data.length}, enriched=${enrichedPageData.length}`);
