@@ -37,22 +37,16 @@ verify_jwt = false
 [functions.subscribe]
 verify_jwt = false
 
-[functions.weekly-data-sync]
-verify_jwt = false
-
-[functions.weekly-refresh]
-verify_jwt = false
-
 [functions.health]
 verify_jwt = false
 
 [functions.sync-beehiiv]
 verify_jwt = false
 
-[functions.weekly-ingest]
+[functions.email-monthly-new]
 verify_jwt = false
 
-[functions.email-monthly-new]
+[functions.monthly-refresh]
 verify_jwt = false
 
 [db]
