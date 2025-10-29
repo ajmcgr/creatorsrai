@@ -3,7 +3,7 @@ import { LogOut, Zap, Settings } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import logo from "@/assets/logo.png";
+import logo from "@/assets/creators-logo-full.png";
 
 interface AuthHeaderProps {
   showUpgrade?: boolean;
@@ -29,7 +29,7 @@ const AuthHeader = ({ showUpgrade = false, showSettings = false, showReturnToDas
       <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
         <div className="flex items-center gap-6">
           <Link to="/dashboard" className="flex items-center gap-2">
-            <img src={logo} alt="Creators" className="h-8" />
+            <img src={logo} alt="Creators" className="h-10" />
           </Link>
           {showReturnToDashboard && (
             <Link to="/dashboard" className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors">
