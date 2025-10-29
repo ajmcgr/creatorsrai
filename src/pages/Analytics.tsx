@@ -86,10 +86,10 @@ const Analytics = () => {
               ) : (
                 <div className="space-y-4">
                   {mediaKits.map((kit) => {
-                    const displayName = kit.social_stats?.instagram?.display_name || 
+                    const displayName = kit.name ||
+                                       kit.social_stats?.instagram?.display_name || 
                                        kit.social_stats?.youtube?.display_name || 
                                        kit.social_stats?.tiktok?.display_name || 
-                                       kit.title || 
                                        'Media Kit';
                     
                     return (
