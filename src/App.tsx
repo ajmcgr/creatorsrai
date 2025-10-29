@@ -53,7 +53,7 @@ const App = () => (
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/choose-template" element={<ChooseTemplate />} />
           <Route path="/create-media-kit" element={<CreateMediaKit />} />
-          <Route path="/editor/:id" element={<Editor />} />
+          <Route path="/editor" element={<Editor />} />
           <Route path="/kit/:slug" element={<PublicKit />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/billing" element={<Billing />} />
