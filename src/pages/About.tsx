@@ -1,11 +1,11 @@
-import Header from "@/components/Header";
+import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import founderPhoto from "@/assets/founder-photo.png";
 
 const About = () => {
   return (
     <div className="min-h-screen bg-gradient-subtle">
-      <Header />
+      <Navbar />
 
       {/* About Content */}
       <section className="container mx-auto px-4 py-20">
