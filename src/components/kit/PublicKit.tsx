@@ -58,9 +58,9 @@ export default function PublicKit({ data }: { data: PublicKitData }) {
     link.href = href;
   }, [selectedFont]);
 
-  const variant = (data as any).buttonVariant || 'solid';
-  const btnBgColor = (data as any).buttonColor;
-  const btnTextColor = (data as any).buttonTextColor || '#ffffff';
+  const variant = theme?.buttonVariant || 'solid';
+  const btnBgColor = theme?.buttonColor;
+  const btnTextColor = theme?.buttonTextColor || '#ffffff';
   const solidStyle: React.CSSProperties = { background: btnBgColor || 'rgba(0,0,0,0.1)' };
   const outlineStyle: React.CSSProperties = { background: 'transparent', borderColor: btnBgColor || 'currentColor', borderWidth: 2, borderStyle: 'solid' };
   const glassStyle: React.CSSProperties = { background: btnBgColor ? `${btnBgColor}26` : 'rgba(0,0,0,0.08)', borderColor: btnBgColor ? `${btnBgColor}40` : 'transparent', borderWidth: 1, borderStyle: 'solid', backdropFilter: 'blur(6px)' };
@@ -144,7 +144,7 @@ export default function PublicKit({ data }: { data: PublicKitData }) {
           const items = (section as any)?.data?.items || [];
           return items.length > 0 ? (
             <div className="space-y-4 max-w-xl mx-auto">
-              <h2 className="text-xl md:text-2xl font-semibold text-center">Portfolio</h2>
+              <h2 className="text-xl md:text-2xl font-semibold text-center" style={{ fontFamily: 'Inter, system-ui, -apple-system, sans-serif' }}>Portfolio</h2>
               <div className="space-y-2">
                 {items.map((doc: any, i: number) => (
                   <a
@@ -154,9 +154,9 @@ export default function PublicKit({ data }: { data: PublicKitData }) {
                     rel="noopener noreferrer"
                     className="flex items-center justify-between px-4 py-3 rounded-lg transition-all hover:scale-[1.02]"
                     style={{ 
-                      background: (data as any).buttonColor ? `${(data as any).buttonColor}15` : 'rgba(0,0,0,0.05)',
-                      borderColor: (data as any).buttonColor || 'transparent',
-                      borderWidth: (data as any).buttonColor ? '1px' : '0'
+                      background: theme?.buttonColor ? `${theme.buttonColor}15` : 'rgba(0,0,0,0.05)',
+                      borderColor: theme?.buttonColor || 'transparent',
+                      borderWidth: theme?.buttonColor ? '1px' : '0'
                     }}
                   >
                     <span className="font-medium">{doc.name || doc.title}</span>
@@ -176,7 +176,7 @@ export default function PublicKit({ data }: { data: PublicKitData }) {
           const items = (section as any)?.data?.items || [];
           return items.length > 0 ? (
             <div className="space-y-4 max-w-2xl mx-auto">
-              <h2 className="text-xl md:text-2xl font-semibold text-center">Clients</h2>
+              <h2 className="text-xl md:text-2xl font-semibold text-center" style={{ fontFamily: 'Inter, system-ui, -apple-system, sans-serif' }}>Clients</h2>
               <div className="flex flex-wrap justify-center gap-6">
                 {items.map((client: any, i: number) => (
                   <div key={i} className="flex flex-col items-center gap-2">
@@ -204,7 +204,7 @@ export default function PublicKit({ data }: { data: PublicKitData }) {
           const items = (section as any)?.data?.items || [];
           return items.length > 0 ? (
             <div className="space-y-3 max-w-xl mx-auto">
-              <h2 className="text-xl md:text-2xl font-semibold text-center">Collaboration Rates</h2>
+              <h2 className="text-xl md:text-2xl font-semibold text-center" style={{ fontFamily: 'Inter, system-ui, -apple-system, sans-serif' }}>Collaboration Rates</h2>
               {items.map((rate: any, i: number) => (
                 <div key={i} className="flex justify-between py-3 border-b border-current/10">
                   <span className="font-medium">{rate.label}</span>
