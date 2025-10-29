@@ -25,34 +25,39 @@ const Index = () => {
       <Navbar />
       
       {/* Hero Section */}
-      <section className="pt-32 pb-20 px-4 bg-gradient-to-b from-background via-primary/5 to-background">
-        <div className="container mx-auto max-w-6xl text-center">
-          <Badge variant="secondary" className="mb-6 text-sm px-4 py-2">
-            <Sparkles className="w-4 h-4 mr-2 inline" />
-            Your AI-Powered Media Kit Page Creator
-          </Badge>
-          
-          <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
-            Land Brand Deals In Minutes,{" "}
-            <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-              Not Months
-            </span>
-          </h1>
-          
-          <p className="text-xl md:text-2xl text-muted-foreground mb-8 max-w-3xl mx-auto">
-            Create a professional media kit page and get discovered by brands all from one simple platform.
-          </p>
-          
-          <Link to="/auth?mode=signup">
-            <Button variant="hero" size="lg" className="text-lg px-8 py-6 h-auto">
-              Create Your Media Kit Page
-              <ArrowRight className="ml-2 w-5 h-5" />
-            </Button>
-          </Link>
-          
-          <p className="text-sm text-muted-foreground mt-4">
-            Monthly subscription • Cancel anytime • Secure checkout with Stripe
-          </p>
+      <section className="pt-32 pb-20 px-4 bg-background">
+        <div className="container mx-auto max-w-6xl">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <div className="text-left">
+              <Badge variant="secondary" className="mb-6 text-sm px-4 py-2">
+                <Sparkles className="w-4 h-4 mr-2 inline" />
+                Your AI-Powered Media Kit Page Creator
+              </Badge>
+              
+              <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
+                Land Brand Deals In Minutes, Not Months
+              </h1>
+              
+              <p className="text-xl md:text-2xl text-muted-foreground mb-8">
+                Create a professional media kit page and get discovered by brands all from one simple platform.
+              </p>
+              
+              <Link to="/auth?mode=signup">
+                <Button size="lg" className="text-lg px-8 py-6 h-auto">
+                  Create Your Media Kit Page
+                  <ArrowRight className="ml-2 w-5 h-5" />
+                </Button>
+              </Link>
+              
+              <p className="text-sm text-muted-foreground mt-4">
+                Monthly subscription • Cancel anytime • Secure checkout with Stripe
+              </p>
+            </div>
+            
+            <div>
+              <div className="senja-embed" data-id="2b0d90f5-363c-454e-bdf7-d065138f5b73" data-mode="shadow" data-lazyload="false"></div>
+            </div>
+          </div>
           
           <div className="mt-12 max-w-5xl mx-auto">
             <img 
@@ -368,13 +373,12 @@ const Index = () => {
           <h2 className="text-4xl md:text-5xl font-bold mb-12 text-center">
             Loved by Creators
           </h2>
-          <div className="senja-embed" data-id="2b0d90f5-363c-454e-bdf7-d065138f5b73" data-mode="shadow" data-lazyload="false"></div>
         </div>
       </section>
 
       {/* CTA */}
-      <section className="py-20 px-4 bg-gradient-to-r from-primary to-accent">
-        <div className="container mx-auto max-w-4xl text-center text-white">
+      <section className="py-20 px-4 bg-primary text-white">
+        <div className="container mx-auto max-w-4xl text-center">
           <h2 className="text-4xl md:text-5xl font-bold mb-6">
             Ready to Land More Brand Deals?
           </h2>

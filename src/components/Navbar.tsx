@@ -1,12 +1,13 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import creatorsLogo from "@/assets/creators-logo.png";
 
 const Navbar = () => {
   return (
-    <nav className="sticky top-0 z-50 bg-background/80 backdrop-blur-sm border-b border-border">
-      <div className="container mx-auto px-4 h-16 flex items-center justify-between">
+    <nav className="sticky top-0 z-50 bg-background/80 backdrop-blur-sm">
+      <div className="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-2">
-          <img src="/src/assets/logo.png" alt="Creators Logo" className="h-8" />
+          <img src={creatorsLogo} alt="Creators Logo" className="h-8" />
         </Link>
         
         <div className="flex items-center gap-6">

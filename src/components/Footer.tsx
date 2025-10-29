@@ -11,15 +11,15 @@ const Footer = () => {
               <li><Link to="/about" className="text-sm text-muted-foreground hover:text-foreground transition-colors">About</Link></li>
               <li><a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Blog</a></li>
               <li><a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Community</a></li>
-              <li><a href="mailto:alex@trycreators.ai" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Support</a></li>
             </ul>
           </div>
           
           <div>
-            <h3 className="font-bold mb-4">Legal</h3>
+            <h3 className="font-bold mb-4">Support</h3>
             <ul className="space-y-2">
               <li><Link to="/privacy" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Privacy Policy</Link></li>
               <li><Link to="/terms" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Terms of Service</Link></li>
+              <li><a href="mailto:alex@trycreators.ai" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Support</a></li>
             </ul>
           </div>
           
@@ -53,7 +53,7 @@ const Footer = () => {
         </div>
         
         <div className="mt-12 pt-8 border-t border-border text-center text-sm text-muted-foreground">
-          <p>© {new Date().getFullYear()} Works App, Inc. All rights reserved.</p>
+          <p>Copyright © {new Date().getFullYear()} Works App, Inc. Built with ♥️ by <a href="https://alexmacgregor.com" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors">Alex</a> and <a href="https://works.xyz/" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors">Works</a>.</p>
         </div>
       </div>
     </footer>
