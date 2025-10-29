@@ -7,7 +7,7 @@ import Footer from "@/components/Footer";
 import { Check } from "lucide-react";
 import { Link, useSearchParams } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase, supabaseUrl, supabaseAnonKey } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useState, useEffect } from "react";
 
@@ -150,14 +150,38 @@ const Upgrade = () => {
 
     const run = async () => {
       try {
-        const { data, error } = await supabase.functions.invoke('verify-payment', {
-          body: { session_id: sid },
-        });
-        if (!error && data?.success) {
+        // Try supabase client first
+        let ok = false;
+        try {
+          const res = await supabase.functions.invoke('verify-payment', {
+            body: { session_id: sid },
+          });
+          if (!res.error && res.data?.success) ok = true;
+        } catch (_) {
+          // ignore
+        }
+
+        if (!ok) {
+          // Fallback direct fetch
+          const resp = await fetch(`${supabaseUrl}/functions/v1/verify-payment`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'apikey': supabaseAnonKey,
+            },
+            body: JSON.stringify({ session_id: sid })
+          });
+          if (resp.ok) {
+            const data = await resp.json();
+            ok = !!data?.success;
+          }
+        }
+
+        if (ok) {
           setUserPlan('pro');
           toast.success('Payment verified — you are now Pro');
         } else {
-          console.error('Verify payment failed', data || error);
+          console.error('Verify payment failed');
         }
       } catch (e) {
         console.error('Verify payment error', e);

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase, supabaseUrl, supabaseAnonKey } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Check, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -23,15 +23,31 @@ const PaymentSuccess = () => {
       }
 
       try {
-        const { data, error } = await supabase.functions.invoke("verify-payment", {
-          body: { session_id: sessionId },
-        });
-
-        if (error) throw error;
+        // First try via supabase client
+        let data: any;
+        try {
+          const res = await supabase.functions.invoke("verify-payment", {
+            body: { session_id: sessionId },
+          });
+          data = res.data;
+          if (res.error) throw res.error;
+        } catch (clientErr) {
+          // Fallback: direct fetch to edge function full URL
+          const resp = await fetch(`${supabaseUrl}/functions/v1/verify-payment`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'apikey': supabaseAnonKey,
+            },
+            body: JSON.stringify({ session_id: sessionId })
+          });
+          if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+          data = await resp.json();
+        }
 
         if (data?.success) {
           toast.success("Payment verified! Your account has been upgraded to Pro.");
-          setTimeout(() => navigate("/dashboard"), 2000);
+          setTimeout(() => navigate("/upgrade"), 1200);
         } else {
           setError(data?.message || "Payment verification failed");
         }
@@ -73,7 +89,7 @@ const PaymentSuccess = () => {
             </div>
             <h1 className="text-2xl font-bold mb-2">Payment Successful! 🎉</h1>
             <p className="text-muted-foreground mb-6">
-              Your account has been upgraded to Pro. Redirecting to dashboard...
+              Your account has been upgraded to Pro.
             </p>
             <Button onClick={() => navigate("/dashboard")}>Go to Dashboard</Button>
           </>
