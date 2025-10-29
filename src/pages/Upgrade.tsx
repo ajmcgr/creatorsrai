@@ -9,7 +9,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const plans = [
   {
@@ -29,7 +29,7 @@ const plans = [
     ctaLink: "/auth?mode=signup",
     variant: "outline" as const,
     highlighted: true,
-    isCurrent: true,
+    planKey: "free",
   },
   {
     name: "Pro Plan",
@@ -53,6 +53,7 @@ const plans = [
     highlighted: false,
     badge: "Most Popular",
     showStripe: true,
+    planKey: "pro",
   },
   {
     name: "Business Plan",
@@ -80,6 +81,7 @@ const plans = [
     variant: "default" as const,
     highlighted: false,
     showStripe: true,
+    planKey: "business",
   },
 ];
 
@@ -114,6 +116,32 @@ const Upgrade = () => {
   const { user, session } = useAuth();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [userPlan, setUserPlan] = useState<string | null>(null);
+
+  // Fetch user's current plan
+  useEffect(() => {
+    const fetchPlan = async () => {
+      if (!user) {
+        setUserPlan('free');
+        return;
+      }
+      
+      try {
+        const { data } = await supabase
+          .from('profiles')
+          .select('plan')
+          .eq('user_id', user.id)
+          .maybeSingle();
+        
+        setUserPlan(data?.plan || 'free');
+      } catch (err) {
+        console.error("Error fetching plan:", err);
+        setUserPlan('free');
+      }
+    };
+    
+    fetchPlan();
+  }, [user]);
 
   const handleUpgrade = async (plan: "pro" | "business") => {
     if (!session) {
@@ -155,78 +183,81 @@ const Upgrade = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-24">
-          {plans.map((plan) => (
-            <Card
-              key={plan.name}
-              className={`hover:shadow-lg transition-all relative ${
-                plan.highlighted ? "border-2 border-primary" : ""
-              }`}
-            >
-              {plan.badge && (
-                <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground">
-                  {plan.badge}
-                </Badge>
-              )}
-              <CardContent className="p-8">
-                <h3 className="text-2xl font-semibold mb-2">{plan.name}</h3>
-                <p className="text-muted-foreground text-sm mb-6">{plan.description}</p>
-                
-                <div className="mb-2">
-                  <span className="text-5xl font-bold">{plan.price}</span>
-                  <span className="text-muted-foreground text-lg">{plan.period}</span>
-                </div>
-                <p className="text-sm text-muted-foreground mb-6">{plan.billingInfo}</p>
+          {plans.map((plan) => {
+            const isCurrent = userPlan === plan.planKey;
+            return (
+              <Card
+                key={plan.name}
+                className={`hover:shadow-lg transition-all relative ${
+                  plan.highlighted ? "border-2 border-primary" : ""
+                }`}
+              >
+                {plan.badge && (
+                  <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground">
+                    {plan.badge}
+                  </Badge>
+                )}
+                <CardContent className="p-8">
+                  <h3 className="text-2xl font-semibold mb-2">{plan.name}</h3>
+                  <p className="text-muted-foreground text-sm mb-6">{plan.description}</p>
+                  
+                  <div className="mb-2">
+                    <span className="text-5xl font-bold">{plan.price}</span>
+                    <span className="text-muted-foreground text-lg">{plan.period}</span>
+                  </div>
+                  <p className="text-sm text-muted-foreground mb-6">{plan.billingInfo}</p>
 
-                {plan.isCurrent ? (
-                  <Button variant={plan.variant} className="w-full h-11 mb-8" disabled>
-                    {plan.cta}
-                  </Button>
-                ) : plan.name === "Pro Plan" ? (
-                  <Button 
-                    variant={plan.variant} 
-                    className="w-full h-11 mb-8"
-                    onClick={() => handleUpgrade("pro")}
-                    disabled={loading}
-                  >
-                    {loading ? "Loading..." : plan.cta}
-                  </Button>
-                ) : plan.name === "Business Plan" ? (
-                  <Button 
-                    variant={plan.variant} 
-                    className="w-full h-11 mb-8"
-                    onClick={() => handleUpgrade("business")}
-                    disabled={loading}
-                  >
-                    {loading ? "Loading..." : plan.cta}
-                  </Button>
-                ) : (
-                  <Link to={plan.ctaLink} className="block mb-8">
-                    <Button variant={plan.variant} className="w-full h-11">
-                      {plan.cta}
+                  {isCurrent ? (
+                    <Button variant="outline" className="w-full h-11 mb-8" disabled>
+                      Current Plan
                     </Button>
-                  </Link>
-                )}
+                  ) : plan.name === "Pro Plan" ? (
+                    <Button 
+                      variant={plan.variant} 
+                      className="w-full h-11 mb-8"
+                      onClick={() => handleUpgrade("pro")}
+                      disabled={loading}
+                    >
+                      {loading ? "Loading..." : plan.cta}
+                    </Button>
+                  ) : plan.name === "Business Plan" ? (
+                    <Button 
+                      variant={plan.variant} 
+                      className="w-full h-11 mb-8"
+                      onClick={() => handleUpgrade("business")}
+                      disabled={loading}
+                    >
+                      {loading ? "Loading..." : plan.cta}
+                    </Button>
+                  ) : (
+                    <Link to={plan.ctaLink} className="block mb-8">
+                      <Button variant={plan.variant} className="w-full h-11">
+                        {plan.cta}
+                      </Button>
+                    </Link>
+                  )}
 
-                <div className="border-t pt-6">
-                  <h4 className="font-semibold mb-4">{plan.featuresHeader || "What's Included"}</h4>
-                  <ul className="space-y-3">
-                    {plan.features.map((feature) => (
-                      <li key={feature} className="flex items-start gap-2">
-                        <Check className="h-5 w-5 text-primary shrink-0 mt-0.5" />
-                        <span className="text-sm">{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+                  <div className="border-t pt-6">
+                    <h4 className="font-semibold mb-4">{plan.featuresHeader || "What's Included"}</h4>
+                    <ul className="space-y-3">
+                      {plan.features.map((feature) => (
+                        <li key={feature} className="flex items-start gap-2">
+                          <Check className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+                          <span className="text-sm">{feature}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
 
-                {plan.showStripe && (
-                  <p className="text-xs text-muted-foreground text-center mt-6">
-                    Secure checkout powered by Stripe
-                  </p>
-                )}
-              </CardContent>
-            </Card>
-          ))}
+                  {plan.showStripe && (
+                    <p className="text-xs text-muted-foreground text-center mt-6">
+                      Secure checkout powered by Stripe
+                    </p>
+                  )}
+                </CardContent>
+              </Card>
+            );
+          })}
         </div>
 
         <div className="max-w-4xl mx-auto">
