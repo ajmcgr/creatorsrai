@@ -230,9 +230,17 @@ const Upgrade = () => {
                   <p className="text-sm text-muted-foreground mb-6">{plan.billingInfo}</p>
 
                   {isCurrent ? (
-                    <Button variant="outline" className="w-full h-11 mb-8" disabled>
-                      Current Plan
-                    </Button>
+                    plan.planKey !== 'free' ? (
+                      <a href="https://billing.stripe.com/p/login/7sYeVfd7g1Zl8rod0rg3600" target="_blank" rel="noopener noreferrer" className="block mb-8">
+                        <Button variant="outline" className="w-full h-11">
+                          Manage Subscription
+                        </Button>
+                      </a>
+                    ) : (
+                      <Button variant="outline" className="w-full h-11 mb-8" disabled>
+                        Current Plan
+                      </Button>
+                    )
                   ) : plan.ctaLink.startsWith("http") ? (
                     <a href={plan.ctaLink} target="_blank" rel="noopener noreferrer" className="block mb-8">
                       <Button variant={plan.variant} className="w-full h-11">
