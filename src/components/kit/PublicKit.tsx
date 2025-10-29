@@ -92,7 +92,7 @@ export default function PublicKit({ data }: { data: PublicKitData }) {
           )}
           
           {/* Name */}
-          <h1 className="text-3xl md:text-4xl font-black" style={{ fontFamily: 'Inter, system-ui, -apple-system, sans-serif', fontWeight: 800 }}>{data.name}</h1>
+          <h1 className="text-3xl md:text-4xl font-black" style={{ fontWeight: 800 }}>{data.name}</h1>
           
           {/* Bio */}
           {data.bio && (
@@ -144,7 +144,7 @@ export default function PublicKit({ data }: { data: PublicKitData }) {
           const items = (section as any)?.data?.items || [];
           return items.length > 0 ? (
             <div className="space-y-4 max-w-xl mx-auto">
-              <h2 className="text-xl md:text-2xl font-semibold text-center" style={{ fontFamily: 'Inter, system-ui, -apple-system, sans-serif' }}>Portfolio</h2>
+              <h2 className="text-xl md:text-2xl font-semibold text-center">Portfolio</h2>
               <div className="space-y-2">
                 {items.map((doc: any, i: number) => (
                   <a
@@ -176,7 +176,7 @@ export default function PublicKit({ data }: { data: PublicKitData }) {
           const items = (section as any)?.data?.items || [];
           return items.length > 0 ? (
             <div className="space-y-4 max-w-2xl mx-auto">
-              <h2 className="text-xl md:text-2xl font-semibold text-center" style={{ fontFamily: 'Inter, system-ui, -apple-system, sans-serif' }}>Clients</h2>
+              <h2 className="text-xl md:text-2xl font-semibold text-center">Clients</h2>
               <div className="flex flex-wrap justify-center gap-6">
                 {items.map((client: any, i: number) => (
                   <div key={i} className="flex flex-col items-center gap-2">
@@ -204,7 +204,7 @@ export default function PublicKit({ data }: { data: PublicKitData }) {
           const items = (section as any)?.data?.items || [];
           return items.length > 0 ? (
             <div className="space-y-3 max-w-xl mx-auto">
-              <h2 className="text-xl md:text-2xl font-semibold text-center" style={{ fontFamily: 'Inter, system-ui, -apple-system, sans-serif' }}>Collaboration Rates</h2>
+              <h2 className="text-xl md:text-2xl font-semibold text-center">Collaboration Rates</h2>
               {items.map((rate: any, i: number) => (
                 <div key={i} className="flex justify-between py-3 border-b border-current/10">
                   <span className="font-medium">{rate.label}</span>
