@@ -1,10 +1,10 @@
-import Navbar from "@/components/Navbar";
+import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
 const Terms = () => {
   return (
-    <div className="min-h-screen">
-      <Navbar />
+    <div className="min-h-screen bg-gradient-subtle">
+      <Header />
       
       <main className="pt-24 pb-20 px-4">
         <div className="container mx-auto max-w-4xl">

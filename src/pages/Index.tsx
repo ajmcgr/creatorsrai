@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Check, ArrowRight, Sparkles, Target, TrendingUp } from "lucide-react";
-import Navbar from "@/components/Navbar";
+import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import heroDashboard from "@/assets/hero-dashboard.png";
 import mediakitPreview from "@/assets/mediakit-preview.png";
@@ -21,8 +21,8 @@ const Index = () => {
   }, []);
 
   return (
-    <div className="min-h-screen">
-      <Navbar />
+    <div className="min-h-screen bg-gradient-subtle">
+      <Header />
       
       {/* Hero Section */}
       <section className="pt-32 pb-20 px-4 bg-background">

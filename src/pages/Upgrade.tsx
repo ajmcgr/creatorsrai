@@ -1,7 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import Navbar from "@/components/Navbar";
+import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Check } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -92,8 +92,8 @@ const faqs = [
 
 const Upgrade = () => {
   return (
-    <div className="min-h-screen bg-background">
-      <Navbar />
+    <div className="min-h-screen bg-gradient-subtle">
+      <Header />
       
       <div className="container mx-auto px-4 py-24 max-w-7xl">
         <div className="text-center mb-16">
