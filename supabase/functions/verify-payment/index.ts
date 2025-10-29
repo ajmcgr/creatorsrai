@@ -1,6 +1,6 @@
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.7";
-import Stripe from "https://esm.sh/stripe@14.21.0";
+import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
+import Stripe from "https://esm.sh/stripe@18.0.0";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -12,81 +12,108 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
+  const supabaseClient = createClient(
+    Deno.env.get("SUPABASE_URL") ?? "",
+    Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
+  );
+
   try {
-    const authHeader = req.headers.get("Authorization");
-    if (!authHeader) {
-      return new Response(
-        JSON.stringify({ error: "Unauthorized" }),
-        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
+    const { session_id } = await req.json();
+
+    if (!session_id) {
+      throw new Error("Session ID is required");
     }
 
-    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
-    const supabaseKey = Deno.env.get("SUPABASE_ANON_KEY")!;
-    const supabase = createClient(supabaseUrl, supabaseKey, {
-      global: { headers: { Authorization: authHeader } },
+    const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
+      apiVersion: "2025-08-27.basil",
     });
 
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
-    if (authError || !user) {
-      return new Response(
-        JSON.stringify({ error: "Unauthorized" }),
-        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
-
-    const { sessionId } = await req.json();
-
-    if (!sessionId) {
-      return new Response(
-        JSON.stringify({ error: "Session ID is required" }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
-
-    const stripeKey = Deno.env.get("STRIPE_SECRET_KEY");
-    if (!stripeKey) {
-      console.error("Stripe secret key not configured");
-      return new Response(
-        JSON.stringify({ error: "Payment system not configured" }),
-        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
-
-    const stripe = new Stripe(stripeKey, {
-      apiVersion: "2023-10-16",
-    });
-
-    console.log("Verifying payment session:", sessionId);
-
-    const session = await stripe.checkout.sessions.retrieve(sessionId);
+    // Retrieve the checkout session
+    const session = await stripe.checkout.sessions.retrieve(session_id);
 
     if (session.payment_status === "paid") {
-      console.log("Payment verified successfully");
-      
+      const customerEmail = session.customer_email || session.customer_details?.email;
+
+      if (!customerEmail) {
+        throw new Error("No customer email found");
+      }
+
+      // Find user by email
+      const { data: users, error: userError } = await supabaseClient.auth.admin.listUsers();
+      if (userError) throw userError;
+
+      const user = users.users.find(u => u.email === customerEmail);
+      if (!user) {
+        throw new Error("User not found");
+      }
+
+      // Update user's plan to 'pro' in profiles table
+      await supabaseClient
+        .from("profiles")
+        .upsert(
+          { user_id: user.id, plan: "pro", updated_at: new Date().toISOString() },
+          { onConflict: "user_id" }
+        );
+
+      // Update all unpaid media kits for this user
+      const { data: kits, error: updateError } = await supabaseClient
+        .from("media_kits")
+        .update({
+          paid: true,
+          stripe_payment_intent_id: session.payment_intent as string,
+        })
+        .eq("user_id", user.id)
+        .eq("paid", false)
+        .select();
+
+      if (updateError) throw updateError;
+
+      // Generate public slugs for newly paid kits
+      for (const kit of (kits || [])) {
+        if (!kit.public_url_slug && kit.name) {
+          const slug = await supabaseClient.rpc("generate_unique_slug", {
+            base_name: kit.name,
+          });
+
+          if (slug.data) {
+            await supabaseClient
+              .from("media_kits")
+              .update({ public_url_slug: slug.data })
+              .eq("id", kit.id);
+          }
+        }
+      }
+
       return new Response(
-        JSON.stringify({ 
-          verified: true, 
-          status: session.payment_status,
-          customerId: session.customer,
-          subscriptionId: session.subscription,
+        JSON.stringify({
+          success: true,
+          message: "Payment verified and media kits unlocked"
         }),
-        { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        {
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+          status: 200,
+        }
+      );
+    } else {
+      return new Response(
+        JSON.stringify({
+          success: false,
+          message: "Payment not completed"
+        }),
+        {
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+          status: 400,
+        }
       );
     }
-
-    return new Response(
-      JSON.stringify({ 
-        verified: false, 
-        status: session.payment_status 
-      }),
-      { headers: { ...corsHeaders, "Content-Type": "application/json" } }
-    );
   } catch (error) {
-    console.error("Error in verify-payment function:", error);
+    console.error("Verify payment error:", error);
     return new Response(
-      JSON.stringify({ error: error instanceof Error ? error.message : 'Unknown error' }),
-      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      JSON.stringify({ error: error instanceof Error ? error.message : "Unknown error" }),
+      {
+        status: 500,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      }
     );
   }
 });

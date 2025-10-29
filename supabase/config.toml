@@ -1,11 +1,28 @@
-[functions.social-blade]
+project_id = "owahoewxipxhlbmfykmf"
+
+[functions.create-payment]
+verify_jwt = true
+
+[functions.ai-helper]
+verify_jwt = true
+
+[functions.verify-payment]
 verify_jwt = false
 
-[functions.fetch-media-kit-public]
-verify_jwt = false
+[functions.fetch-social-blade]
+verify_jwt = true
+
+[functions.fetch-social-blade-gated]
+verify_jwt = true
 
 [functions.fetch-social-stats]
-verify_jwt = false
+verify_jwt = true
 
 [functions.sync-hubspot-contact]
+verify_jwt = true
+
+[functions.customer-portal]
+verify_jwt = true
+
+[functions.fetch-media-kit-public]
 verify_jwt = false
