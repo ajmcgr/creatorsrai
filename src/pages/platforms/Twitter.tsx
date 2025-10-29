@@ -23,7 +23,7 @@ const Twitter = () => {
               Build a professional Twitter/X media kit featuring your follower count, engagement rate, and tweet performance.
             </p>
             <Link to="/auth?mode=signup">
-              <Button variant="hero" size="lg">
+              <Button size="lg">
                 Create Your Twitter Media Kit
                 <ArrowRight className="ml-2 w-5 h-5" />
               </Button>

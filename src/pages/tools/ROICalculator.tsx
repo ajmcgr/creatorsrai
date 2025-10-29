@@ -67,7 +67,7 @@ const ROICalculator = () => {
                 />
               </div>
 
-              <Button onClick={calculateROI} className="w-full" variant="hero">
+              <Button onClick={calculateROI} className="w-full">
                 Calculate ROI
               </Button>
 

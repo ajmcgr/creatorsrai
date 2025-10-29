@@ -94,7 +94,7 @@ const EngagementCalculator = () => {
                 />
               </div>
 
-              <Button onClick={calculateEngagement} className="w-full" variant="hero">
+              <Button onClick={calculateEngagement} className="w-full">
                 Calculate Engagement Rate
               </Button>
 

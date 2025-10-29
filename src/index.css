@@ -26,10 +26,10 @@ All colors MUST be HSL.
     --secondary-foreground: 240 10% 10%;
 
     --muted: 240 5% 96%;
-    --muted-foreground: 240 5% 46%;
+    --muted-foreground: 240 4% 46%;
 
     --accent: 22 100% 95%;
-    --accent-foreground: 22 100% 20%;
+    --accent-foreground: 22 100% 63%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
@@ -76,10 +76,10 @@ All colors MUST be HSL.
     --secondary-foreground: 0 0% 98%;
 
     --muted: 240 5% 15%;
-    --muted-foreground: 240 5% 65%;
+    --muted-foreground: 240 5% 64%;
 
-    --accent: 22 80% 20%;
-    --accent-foreground: 0 0% 98%;
+    --accent: 22 100% 95%;
+    --accent-foreground: 22 100% 63%;
 
     --destructive: 0 63% 31%;
     --destructive-foreground: 0 0% 98%;
@@ -114,6 +114,13 @@ All colors MUST be HSL.
   
   @font-face {
     font-family: 'Reckless';
+    src: url('/fonts/RecklessNeue-Medium.woff2') format('woff2');
+    font-weight: 500;
+    font-display: swap;
+  }
+  
+  @font-face {
+    font-family: 'Reckless';
     src: url('/fonts/RecklessNeue-Bold.woff2') format('woff2');
     font-weight: 700;
     font-display: swap;
@@ -125,10 +132,12 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 16px;
   }
   
   h1, h2, h3, h4, h5, h6 {
     font-family: 'Reckless', Georgia, serif;
+    font-weight: 500;
   }
 }

@@ -81,7 +81,7 @@ const InfluencerRateCalculator = () => {
                 />
               </div>
 
-              <Button onClick={calculateRate} className="w-full" variant="hero">
+              <Button onClick={calculateRate} className="w-full">
                 Calculate Rate
               </Button>
 

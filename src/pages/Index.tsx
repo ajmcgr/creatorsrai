@@ -26,38 +26,34 @@ const Index = () => {
       
       {/* Hero Section */}
       <section className="pt-32 pb-20 px-4 bg-background">
-        <div className="container mx-auto max-w-6xl">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div className="text-left">
-              <Badge variant="secondary" className="mb-6 text-sm px-4 py-2">
-                <Sparkles className="w-4 h-4 mr-2 inline" />
-                Your AI-Powered Media Kit Page Creator
-              </Badge>
-              
-              <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
-                Land Brand Deals In Minutes, Not Months
-              </h1>
-              
-              <p className="text-xl md:text-2xl text-muted-foreground mb-8">
-                Create a professional media kit page and get discovered by brands all from one simple platform.
-              </p>
-              
-              <Link to="/auth?mode=signup">
-                <Button size="lg" className="text-lg px-8 py-6 h-auto">
-                  Create Your Media Kit Page
-                  <ArrowRight className="ml-2 w-5 h-5" />
-                </Button>
-              </Link>
-              
-              <p className="text-sm text-muted-foreground mt-4">
-                Monthly subscription • Cancel anytime • Secure checkout with Stripe
-              </p>
-            </div>
+        <div className="container mx-auto max-w-6xl text-center">
+          <Badge variant="secondary" className="mb-6 text-sm px-4 py-2">
+            <Sparkles className="w-4 h-4 mr-2 inline" />
+            Your AI-Powered Media Kit Page Creator
+          </Badge>
+          
+          <h1 className="text-5xl md:text-7xl mb-6 leading-tight">
+            Land Brand Deals In Minutes, Not Months
+          </h1>
+          
+          <p className="text-xl md:text-2xl text-muted-foreground mb-8 max-w-3xl mx-auto">
+            Create a professional media kit page and get discovered by brands all from one simple platform.
+          </p>
+          
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mb-4">
+            <Link to="/auth?mode=signup">
+              <Button size="lg" className="text-lg px-8 py-6 h-auto">
+                Create Your Media Kit Page
+                <ArrowRight className="ml-2 w-5 h-5" />
+              </Button>
+            </Link>
             
-            <div>
-              <div className="senja-embed" data-id="2b0d90f5-363c-454e-bdf7-d065138f5b73" data-mode="shadow" data-lazyload="false"></div>
-            </div>
+            <div className="senja-embed" data-id="2b0d90f5-363c-454e-bdf7-d065138f5b73" data-mode="shadow" data-lazyload="false"></div>
           </div>
+          
+          <p className="text-sm text-muted-foreground">
+            Monthly subscription • Cancel anytime • Secure checkout with Stripe
+          </p>
           
           <div className="mt-12 max-w-5xl mx-auto">
             <img 
@@ -281,7 +277,7 @@ const Index = () => {
                   </li>
                 </ul>
                 <a href="https://buy.stripe.com/test_4gw3eI2Wm0xw8TK3cc" target="_blank" rel="noopener noreferrer">
-                  <Button variant="hero" className="w-full">Upgrade to Pro</Button>
+                  <Button className="w-full">Upgrade to Pro</Button>
                 </a>
               </CardContent>
             </Card>

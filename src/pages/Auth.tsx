@@ -108,7 +108,7 @@ const Auth = () => {
                   />
                 </div>
                 
-                <Button type="submit" className="w-full" variant="hero" disabled={loading}>
+                <Button type="submit" className="w-full" disabled={loading}>
                   {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                   {isSignUp ? "Sign Up" : "Sign In"}
                 </Button>

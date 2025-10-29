@@ -24,7 +24,7 @@ const Instagram = () => {
               Create a professional Instagram media kit page in minutes. Showcase your Instagram stats, engagement rate, and brand collaborations all in one place.
             </p>
             <Link to="/auth?mode=signup">
-              <Button variant="hero" size="lg">
+              <Button size="lg">
                 Create Your Instagram Media Kit
                 <ArrowRight className="ml-2 w-5 h-5" />
               </Button>

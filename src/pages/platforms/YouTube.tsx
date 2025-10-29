@@ -23,7 +23,7 @@ const YouTube = () => {
               Build a professional YouTube media kit featuring your subscriber count, watch time, and collaboration history.
             </p>
             <Link to="/auth?mode=signup">
-              <Button variant="hero" size="lg">
+              <Button size="lg">
                 Create Your YouTube Media Kit
                 <ArrowRight className="ml-2 w-5 h-5" />
               </Button>

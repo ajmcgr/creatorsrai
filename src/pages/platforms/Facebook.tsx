@@ -23,7 +23,7 @@ const Facebook = () => {
               Create a professional Facebook media kit showcasing your page followers, reach, and engagement.
             </p>
             <Link to="/auth?mode=signup">
-              <Button variant="hero" size="lg">
+              <Button size="lg">
                 Create Your Facebook Media Kit
                 <ArrowRight className="ml-2 w-5 h-5" />
               </Button>

@@ -23,7 +23,7 @@ const TikTok = () => {
               Create a professional TikTok media kit page showcasing your viral content, follower growth, and engagement metrics.
             </p>
             <Link to="/auth?mode=signup">
-              <Button variant="hero" size="lg">
+              <Button size="lg">
                 Create Your TikTok Media Kit
                 <ArrowRight className="ml-2 w-5 h-5" />
               </Button>
