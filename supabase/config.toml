@@ -6,3 +6,6 @@ verify_jwt = false
 
 [functions.fetch-social-stats]
 verify_jwt = false
+
+[functions.sync-hubspot-contact]
+verify_jwt = false
