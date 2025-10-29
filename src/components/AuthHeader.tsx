@@ -29,7 +29,7 @@ const AuthHeader = ({ showUpgrade = false, showSettings = false, showReturnToDas
       <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
         <div className="flex items-center gap-6">
           <Link to="/dashboard" className="flex items-center gap-2">
-            <img src={logo} alt="Creators" className="h-10" />
+            <img src={logo} alt="Creators" className="h-8" />
           </Link>
           {showReturnToDashboard && (
             <Link to="/dashboard" className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors">
