@@ -5,7 +5,7 @@ import AuthHeader from "@/components/AuthHeader";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Check } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -141,22 +141,31 @@ const Upgrade = () => {
     fetchPlan();
   }, [user]);
 
-  // Auto-sync plan from Stripe if still free
+  const [searchParams] = useSearchParams();
+
+  // If returning from Stripe with a session_id, verify and upgrade immediately
   useEffect(() => {
-    const sync = async () => {
-      if (!user || userPlan !== 'free') return;
+    const sid = searchParams.get('session_id');
+    if (!sid) return;
+
+    const run = async () => {
       try {
-        const { data, error } = await supabase.functions.invoke('sync-stripe-status');
+        const { data, error } = await supabase.functions.invoke('verify-payment', {
+          body: { session_id: sid },
+        });
         if (!error && data?.success) {
-          setUserPlan(data.plan || 'pro');
-          toast.success('Plan synced from Stripe');
+          setUserPlan('pro');
+          toast.success('Payment verified — you are now Pro');
+        } else {
+          console.error('Verify payment failed', data || error);
         }
       } catch (e) {
-        console.error('Stripe sync error', e);
+        console.error('Verify payment error', e);
       }
     };
-    sync();
-  }, [user, userPlan]);
+
+    run();
+  }, [searchParams]);
 
   return (
     <div className="min-h-screen bg-gradient-subtle">
