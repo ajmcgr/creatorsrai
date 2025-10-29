@@ -81,6 +81,22 @@ const Settings = () => {
     window.open("https://billing.stripe.com/p/login/7sYeVfd7g1Zl8rod0rg3600", "_blank");
   };
 
+  const handleSyncSubscription = async () => {
+    setLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('sync-stripe-status');
+      if (error) throw error;
+      if (data?.success) {
+        toast.success(`Subscription synced${data.plan ? `: ${data.plan}` : ''}`);
+      } else {
+        toast.error(data?.message || 'Unable to sync subscription');
+      }
+    } catch (e: any) {
+      toast.error(e.message || 'Failed to sync subscription');
+    } finally {
+      setLoading(false);
+    }
+  };
   const handleDeleteAccount = async () => {
     const confirmed = window.confirm(
       "Are you sure you want to delete your account? This action cannot be undone."
@@ -176,6 +192,9 @@ const Settings = () => {
               <div className="flex gap-3">
                 <Button onClick={handleManageBilling}>
                   Manage Billing
+                </Button>
+                <Button variant="outline" onClick={handleSyncSubscription} disabled={loading}>
+                  {loading ? 'Syncing…' : 'Refresh Status'}
                 </Button>
                 <Button variant="outline" asChild>
                   <Link to="/upgrade">

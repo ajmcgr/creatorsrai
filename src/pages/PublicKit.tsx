@@ -39,10 +39,23 @@ const PublicMediaKit = () => {
         if (error) throw error;
         if (!data) throw new Error('Media kit not found');
 
+        // Try to refresh latest public data via edge function (ensures fresh 'paid' flag)
+        let kitRow: any = data;
+        try {
+          const resp = await supabase.functions.invoke('fetch-media-kit-public', {
+            body: { kit_id: data.id },
+          });
+          if (resp.data?.ok && resp.data.kit) {
+            kitRow = resp.data.kit;
+          }
+        } catch (_) {
+          // ignore if edge function fails; fallback to direct row
+        }
+
         // Track view asynchronously (fire and forget)
         try {
           await supabase.from('media_kit_views').insert({
-            media_kit_id: data.id,
+            media_kit_id: kitRow.id,
             viewer_device: navigator.userAgent,
             referrer: document.referrer || 'direct',
           });
@@ -51,7 +64,7 @@ const PublicMediaKit = () => {
         }
 
         // Use unified mapper - it handles published_json if present
-        const publicData = mapKitToPublicData(data);
+        const publicData = mapKitToPublicData(kitRow);
         setKitData(publicData);
       } catch (err: any) {
         console.error('[PublicMediaKit] load error', err);
