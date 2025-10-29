@@ -281,7 +281,6 @@ const Editor = () => {
 
       if (error) throw error;
 
-      await refetch();
       toast.success("Changes saved");
     } catch (error: any) {
       console.error("Auto-save error:", error);
@@ -385,7 +384,7 @@ const Editor = () => {
           })
           .eq("id", mediaKit.id);
         if (!error) {
-          await refetch();
+          toast.success("Changes synced", { duration: 2000 });
         }
       } catch (e) {
         console.warn('[Editor] Force-sync arrays failed', e);
