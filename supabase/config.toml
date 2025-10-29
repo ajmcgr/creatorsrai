@@ -1,2 +1,8 @@
 [functions.social-blade]
 verify_jwt = false
+
+[functions.fetch-social-blade]
+verify_jwt = false
+
+[functions.fetch-media-kit-public]
+verify_jwt = false
