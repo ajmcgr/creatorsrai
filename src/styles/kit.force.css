@@ -1,0 +1,30 @@
+/* Kit-specific styles that override other CSS */
+
+.kit-root {
+  font-family: var(--kit-font, Inter, system-ui, sans-serif);
+  color: var(--kit-text, #111111);
+}
+
+.kit-root [data-bg="color"] {
+  background: var(--kit-bg-color, #ffffff);
+}
+
+.kit-root [data-bg="gradient"] {
+  background: var(--kit-bg-gradient);
+}
+
+.kit-root [data-bg="wallpaper"] {
+  background-image: var(--kit-bg-wallpaper);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.kit-button {
+  color: var(--kit-button-text, inherit);
+}
+
+.themed-card {
+  border-radius: 0.75rem;
+  border: 1px solid;
+}
