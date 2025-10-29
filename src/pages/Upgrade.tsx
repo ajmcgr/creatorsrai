@@ -113,9 +113,7 @@ const faqs = [
 ];
 
 const Upgrade = () => {
-  const { user, session } = useAuth();
-  const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
+  const { user } = useAuth();
   const [userPlan, setUserPlan] = useState<string | null>(null);
 
   // Fetch user's current plan
@@ -142,33 +140,6 @@ const Upgrade = () => {
     
     fetchPlan();
   }, [user]);
-
-  const handleUpgrade = async (plan: "pro" | "business") => {
-    if (!session) {
-      toast.error("Please sign in to upgrade");
-      navigate("/auth");
-      return;
-    }
-
-    setLoading(true);
-    try {
-      const { data, error } = await supabase.functions.invoke("create-payment", {
-        body: { plan },
-      });
-
-      if (error) throw error;
-
-      if (data?.url) {
-        window.location.href = data.url;
-      } else {
-        throw new Error("No checkout URL received");
-      }
-    } catch (err: any) {
-      console.error("Upgrade error:", err);
-      toast.error(err.message || "Failed to start checkout");
-      setLoading(false);
-    }
-  };
 
   return (
     <div className="min-h-screen bg-gradient-subtle">
@@ -211,24 +182,12 @@ const Upgrade = () => {
                     <Button variant="outline" className="w-full h-11 mb-8" disabled>
                       Current Plan
                     </Button>
-                  ) : plan.name === "Pro Plan" ? (
-                    <Button 
-                      variant={plan.variant} 
-                      className="w-full h-11 mb-8"
-                      onClick={() => handleUpgrade("pro")}
-                      disabled={loading}
-                    >
-                      {loading ? "Loading..." : plan.cta}
-                    </Button>
-                  ) : plan.name === "Business Plan" ? (
-                    <Button 
-                      variant={plan.variant} 
-                      className="w-full h-11 mb-8"
-                      onClick={() => handleUpgrade("business")}
-                      disabled={loading}
-                    >
-                      {loading ? "Loading..." : plan.cta}
-                    </Button>
+                  ) : plan.ctaLink.startsWith("http") ? (
+                    <a href={plan.ctaLink} target="_blank" rel="noopener noreferrer" className="block mb-8">
+                      <Button variant={plan.variant} className="w-full h-11">
+                        {plan.cta}
+                      </Button>
+                    </a>
                   ) : (
                     <Link to={plan.ctaLink} className="block mb-8">
                       <Button variant={plan.variant} className="w-full h-11">
