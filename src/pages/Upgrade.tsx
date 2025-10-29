@@ -1,10 +1,12 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import AuthHeader from "@/components/AuthHeader";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Check } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
 
 const plans = [
   {
@@ -106,9 +108,11 @@ const faqs = [
 ];
 
 const Upgrade = () => {
+  const { user } = useAuth();
+
   return (
     <div className="min-h-screen bg-gradient-subtle">
-      <Header />
+      {user ? <AuthHeader showSettings showUpgrade={false} /> : <Header />}
       
       <div className="container mx-auto px-4 py-24 max-w-7xl">
         <div className="text-center mb-16">
