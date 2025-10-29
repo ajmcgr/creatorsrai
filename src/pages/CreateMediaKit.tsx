@@ -7,12 +7,17 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import AuthHeader from "@/components/AuthHeader";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
+import { toast as sonnerToast } from "sonner";
 
 const CreateMediaKit = () => {
   const [searchParams] = useSearchParams();
   const template = searchParams.get("template");
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { user } = useAuth();
+  const [loading, setLoading] = useState(false);
   
   const [formData, setFormData] = useState({
     title: "",
@@ -22,13 +27,55 @@ const CreateMediaKit = () => {
     youtube: "",
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    toast({
-      title: "Media kit created!",
-      description: "Your media kit has been created successfully.",
-    });
-    navigate("/dashboard");
+    
+    if (!user) {
+      sonnerToast.error("You must be logged in to create a media kit");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      // Generate a unique URL slug from the title
+      const slug = formData.title
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-|-$/g, '') + '-' + Date.now();
+
+      // Prepare social data
+      const socialData = {
+        instagram: formData.instagram ? { handle: formData.instagram } : null,
+        tiktok: formData.tiktok ? { handle: formData.tiktok } : null,
+        youtube: formData.youtube ? { channel: formData.youtube } : null,
+      };
+
+      // Insert the media kit into the database
+      const { data, error } = await supabase
+        .from('media_kits')
+        .insert({
+          user_id: user.id,
+          name: formData.title,
+          bio: formData.bio,
+          public_url_slug: slug,
+          social_data: socialData,
+        })
+        .select()
+        .single();
+
+      if (error) {
+        throw error;
+      }
+
+      sonnerToast.success("Media kit created successfully!");
+      navigate("/dashboard");
+    } catch (error: any) {
+      console.error("Error creating media kit:", error);
+      sonnerToast.error(error.message || "Failed to create media kit");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -101,7 +148,9 @@ const CreateMediaKit = () => {
                   />
                 </div>
 
-                <Button type="submit" className="w-full">Create Media Kit</Button>
+                <Button type="submit" className="w-full" disabled={loading}>
+                  {loading ? "Creating..." : "Create Media Kit"}
+                </Button>
               </form>
             </CardContent>
           </Card>
