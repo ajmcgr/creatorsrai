@@ -33,6 +33,8 @@ import AudienceDemographics from "./pages/tools/AudienceDemographics";
 import CampaignTracker from "./pages/tools/CampaignTracker";
 import ContentPlanner from "./pages/tools/ContentPlanner";
 import HashtagGenerator from "./pages/tools/HashtagGenerator";
+import PaymentSuccess from "./pages/PaymentSuccess";
+import PaymentCancel from "./pages/PaymentCancel";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -59,6 +61,8 @@ const App = () => (
           <Route path="/billing" element={<Billing />} />
           <Route path="/upgrade" element={<Upgrade />} />
           <Route path="/analytics" element={<Analytics />} />
+          <Route path="/success" element={<PaymentSuccess />} />
+          <Route path="/cancel" element={<PaymentCancel />} />
           
           {/* Platform Pages */}
           <Route path="/platforms/instagram" element={<Instagram />} />
