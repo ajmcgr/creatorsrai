@@ -6,7 +6,7 @@ const Footer = () => {
       <div className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
           <div>
-            <h3 className="font-bold mb-4">Company</h3>
+            <h3 className="font-medium mb-4" style={{ fontFamily: 'Inter, system-ui, sans-serif' }}>Company</h3>
             <ul className="space-y-2">
               <li><Link to="/about" className="text-sm text-muted-foreground hover:text-foreground transition-colors">About</Link></li>
               <li><a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Blog</a></li>
@@ -15,7 +15,7 @@ const Footer = () => {
           </div>
           
           <div>
-            <h3 className="font-bold mb-4">Support</h3>
+            <h3 className="font-medium mb-4" style={{ fontFamily: 'Inter, system-ui, sans-serif' }}>Support</h3>
             <ul className="space-y-2">
               <li><Link to="/privacy" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Privacy Policy</Link></li>
               <li><Link to="/terms" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Terms of Service</Link></li>
@@ -24,7 +24,7 @@ const Footer = () => {
           </div>
           
           <div>
-            <h3 className="font-bold mb-4">Platforms</h3>
+            <h3 className="font-medium mb-4" style={{ fontFamily: 'Inter, system-ui, sans-serif' }}>Platforms</h3>
             <ul className="space-y-2">
               <li><Link to="/platforms/instagram" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Instagram</Link></li>
               <li><Link to="/platforms/tiktok" className="text-sm text-muted-foreground hover:text-foreground transition-colors">TikTok</Link></li>
@@ -39,7 +39,7 @@ const Footer = () => {
           </div>
           
           <div>
-            <h3 className="font-bold mb-4">Free Tools</h3>
+            <h3 className="font-medium mb-4" style={{ fontFamily: 'Inter, system-ui, sans-serif' }}>Free Tools</h3>
             <ul className="space-y-2">
               <li><Link to="/tools/influencer-rate-calculator" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Influencer Rate Calculator</Link></li>
               <li><Link to="/tools/engagement-calculator" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Engagement Calculator</Link></li>

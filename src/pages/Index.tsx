@@ -33,7 +33,7 @@ const Index = () => {
           </Badge>
           
           <h1 className="text-5xl md:text-7xl mb-6 leading-tight">
-            Land Brand Deals In Minutes, Not Months
+            Land Brand Deals In<br />Minutes, Not Months
           </h1>
           
           <p className="text-xl md:text-2xl text-muted-foreground mb-8 max-w-3xl mx-auto">
@@ -42,7 +42,7 @@ const Index = () => {
           
           <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mb-4">
             <Link to="/auth?mode=signup">
-              <Button size="lg" className="text-lg px-8 py-6 h-auto">
+              <Button size="lg" className="h-11 px-8">
                 Create Your Media Kit Page
                 <ArrowRight className="ml-2 w-5 h-5" />
               </Button>
@@ -193,10 +193,10 @@ const Index = () => {
       </section>
 
       {/* Pricing */}
-      <section className="py-20 px-4">
-        <div className="container mx-auto max-w-6xl">
+      <section className="py-24 px-4">
+        <div className="container mx-auto max-w-7xl">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold mb-4">
+            <h2 className="text-4xl md:text-5xl mb-4">
               Simple, Transparent Pricing
             </h2>
             <p className="text-xl text-muted-foreground">
@@ -204,169 +204,193 @@ const Index = () => {
             </p>
           </div>
           
-          <div className="grid md:grid-cols-3 gap-8">
-            <Card className="relative">
-              <CardContent className="p-8">
-                <h3 className="text-2xl font-bold mb-2">Free Plan</h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <Card className="hover:shadow-lg transition-all">
+              <CardContent className="p-6">
+                <h3 className="text-2xl mb-2">Free</h3>
                 <div className="mb-6">
-                  <span className="text-4xl font-bold">$0</span>
+                  <span className="text-4xl">$0</span>
                   <span className="text-muted-foreground">/month</span>
                 </div>
                 <ul className="space-y-3 mb-8">
                   <li className="flex items-start gap-2">
                     <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                    <span>1 media kit</span>
+                    <span className="text-sm">1 media kit</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                    <span>Professional template designs</span>
+                    <span className="text-sm">Basic analytics</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                    <span>Custom branded URL</span>
+                    <span className="text-sm">Social media integration</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                    <span>Mobile-responsive design</span>
+                    <span className="text-sm">PDF export</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                    <span>ROI & rate calculators</span>
+                    <span className="text-sm">Email support</span>
                   </li>
                 </ul>
                 <Link to="/auth?mode=signup">
-                  <Button variant="outline" className="w-full">Get Started</Button>
+                  <Button variant="ghost" className="w-full h-11">Get Started</Button>
                 </Link>
               </CardContent>
             </Card>
             
-            <Card className="relative border-2 border-primary shadow-lg scale-105">
-              <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-primary to-accent">
+            <Card className="border-2 border-primary shadow-lg hover:scale-105 transition-all relative">
+              <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground">
                 Most Popular
               </Badge>
-              <CardContent className="p-8">
-                <h3 className="text-2xl font-bold mb-2">Pro Plan</h3>
+              <CardContent className="p-6">
+                <h3 className="text-2xl mb-2">Pro</h3>
                 <div className="mb-6">
-                  <span className="text-4xl font-bold">$19</span>
+                  <span className="text-4xl">$19</span>
                   <span className="text-muted-foreground">/month</span>
                 </div>
                 <ul className="space-y-3 mb-8">
                   <li className="flex items-start gap-2">
                     <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                    <span>Up to 5 media kits</span>
+                    <span className="text-sm">Unlimited media kits</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                    <span>Professional template designs</span>
+                    <span className="text-sm">Advanced analytics</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                    <span>Custom branded URL</span>
+                    <span className="text-sm">Custom branding</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                    <span>Real-time analytics & view tracking</span>
+                    <span className="text-sm">Priority support</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                    <span>PDF export & Canva integration</span>
+                    <span className="text-sm">Collaboration tools</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                    <span>Remove Creators branding</span>
+                    <span className="text-sm">API access</span>
                   </li>
                 </ul>
                 <a href="https://buy.stripe.com/test_4gw3eI2Wm0xw8TK3cc" target="_blank" rel="noopener noreferrer">
-                  <Button className="w-full">Upgrade to Pro</Button>
+                  <Button className="w-full h-11">Start Free Trial</Button>
                 </a>
               </CardContent>
             </Card>
             
-            <Card className="relative">
-              <CardContent className="p-8">
-                <h3 className="text-2xl font-bold mb-2">Business Plan</h3>
+            <Card className="hover:shadow-lg transition-all">
+              <CardContent className="p-6">
+                <h3 className="text-2xl mb-2">Business</h3>
                 <div className="mb-6">
-                  <span className="text-4xl font-bold">$49</span>
+                  <span className="text-4xl">$49</span>
                   <span className="text-muted-foreground">/month</span>
                 </div>
                 <ul className="space-y-3 mb-8">
                   <li className="flex items-start gap-2">
                     <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                    <span>Up to 20 media kits</span>
+                    <span className="text-sm">Everything in Pro</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                    <span>All Pro features</span>
+                    <span className="text-sm">White-label solution</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                    <span>Priority support</span>
+                    <span className="text-sm">Dedicated account manager</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                    <span>Dedicated account manager</span>
+                    <span className="text-sm">Custom integrations</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+                    <span className="text-sm">SLA guarantee</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+                    <span className="text-sm">Team training</span>
                   </li>
                 </ul>
                 <a href="https://buy.stripe.com/test_5kA9D6aSYdkg0nr5kl" target="_blank" rel="noopener noreferrer">
-                  <Button variant="outline" className="w-full">Upgrade to Business</Button>
+                  <Button variant="secondary" className="w-full h-11">Contact Sales</Button>
                 </a>
               </CardContent>
             </Card>
           </div>
         </div>
       </section>
-
       {/* FAQ */}
-      <section className="py-20 px-4 bg-muted/30">
-        <div className="container mx-auto max-w-4xl">
-          <h2 className="text-4xl md:text-5xl font-bold mb-12 text-center">
+      <section className="py-24 px-4 bg-muted/30">
+        <div className="container mx-auto max-w-7xl">
+          <h2 className="text-4xl md:text-5xl mb-12 text-center">
             Frequently Asked Questions
           </h2>
           
-          <div className="space-y-6">
+          <div className="grid gap-6 max-w-4xl mx-auto">
             <Card>
               <CardContent className="p-6">
-                <h3 className="text-xl font-bold mb-2">What is a media kit page?</h3>
+                <h3 className="text-xl mb-2">Can I change plans at any time?</h3>
                 <p className="text-muted-foreground">
-                  A media kit page is a professional webpage that showcases your social media stats, audience demographics, past collaborations, and rates. It helps brands quickly understand your value as a creator.
+                  Yes, upgrade or downgrade anytime. Changes take effect immediately.
                 </p>
               </CardContent>
             </Card>
             
             <Card>
               <CardContent className="p-6">
-                <h3 className="text-xl font-bold mb-2">How do I get paid?</h3>
+                <h3 className="text-xl mb-2">Is there a free trial?</h3>
                 <p className="text-muted-foreground">
-                  We use Stripe for secure payment processing. You can cancel anytime.
+                  Pro plan includes 14-day free trial. No credit card required.
                 </p>
               </CardContent>
             </Card>
             
             <Card>
               <CardContent className="p-6">
-                <h3 className="text-xl font-bold mb-2">Can I export my media kit?</h3>
+                <h3 className="text-xl mb-2">What payment methods do you accept?</h3>
                 <p className="text-muted-foreground">
-                  Yes! Pro and Business users can export their media kits as PDF or integrate with Canva.
+                  All major credit cards, PayPal, and bank transfers for Business plan.
                 </p>
               </CardContent>
             </Card>
             
             <Card>
               <CardContent className="p-6">
-                <h3 className="text-xl font-bold mb-2">Do you offer refunds?</h3>
+                <h3 className="text-xl mb-2">Can I cancel my subscription?</h3>
                 <p className="text-muted-foreground">
-                  Yes, we offer a 30-day money-back guarantee if you're not satisfied.
+                  Yes, cancel anytime. No long-term contracts or cancellation fees.
+                </p>
+              </CardContent>
+            </Card>
+            
+            <Card>
+              <CardContent className="p-6">
+                <h3 className="text-xl mb-2">Do you offer refunds?</h3>
+                <p className="text-muted-foreground">
+                  30-day money-back guarantee on all paid plans.
+                </p>
+              </CardContent>
+            </Card>
+            
+            <Card>
+              <CardContent className="p-6">
+                <h3 className="text-xl mb-2">Is my data secure?</h3>
+                <p className="text-muted-foreground">
+                  Enterprise-grade encryption. SOC 2 Type II certified.
                 </p>
               </CardContent>
             </Card>
           </div>
         </div>
       </section>
-
       {/* Testimonials */}
       <section className="py-20 px-4">
         <div className="container mx-auto max-w-6xl">
-          <h2 className="text-4xl md:text-5xl font-bold mb-12 text-center">
+          <h2 className="text-4xl md:text-5xl mb-12 text-center">
             Loved by Creators
           </h2>
         </div>
@@ -375,14 +399,14 @@ const Index = () => {
       {/* CTA */}
       <section className="py-20 px-4 bg-primary text-white">
         <div className="container mx-auto max-w-4xl text-center">
-          <h2 className="text-4xl md:text-5xl font-bold mb-6">
+          <h2 className="text-4xl md:text-5xl mb-6">
             Ready to Land More Brand Deals?
           </h2>
           <p className="text-xl mb-8 opacity-90">
             Join thousands of creators who've already created their professional media kit pages
           </p>
           <Link to="/auth?mode=signup">
-            <Button variant="secondary" size="lg" className="text-lg px-8 py-6 h-auto">
+            <Button variant="secondary" size="lg" className="h-11 px-8">
               Create Your Media Kit Page Now
               <ArrowRight className="ml-2 w-5 h-5" />
             </Button>
