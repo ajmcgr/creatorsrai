@@ -31,7 +31,8 @@ const plans = [
     description: "Most popular for growing creators",
     trial: "7-day free trial",
     features: [
-      "Unlimited media kits",
+      "5 media kits",
+      "Custom URL",
       "Advanced analytics",
       "Custom branding",
       "Priority support",
@@ -51,7 +52,8 @@ const plans = [
     description: "For professional creators & agencies",
     trial: "7-day free trial",
     features: [
-      "Everything in Pro",
+      "20 media kits",
+      "Custom URL",
       "White-label solution",
       "Dedicated account manager",
       "Custom integrations",
