@@ -92,7 +92,7 @@ export default function PublicKit({ data }: { data: PublicKitData }) {
           )}
           
           {/* Name */}
-          <h1 className="text-3xl md:text-4xl font-bold">{data.name}</h1>
+          <h1 className="text-3xl md:text-4xl font-bold" style={{ fontFamily: 'Inter, system-ui, -apple-system, sans-serif' }}>{data.name}</h1>
           
           {/* Bio */}
           {data.bio && (

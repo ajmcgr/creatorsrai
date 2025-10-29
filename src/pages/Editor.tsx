@@ -1396,20 +1396,10 @@ const Editor = () => {
                   </div>
 
                   <div className="border-t pt-5">
-                    <Dialog open={styleDialogOpen} onOpenChange={setStyleDialogOpen}>
-                      <DialogTrigger asChild>
-                        <Button variant="outline" className="w-full">
-                          <Palette className="h-4 w-4 mr-2" />
-                          Edit Themes & Colors
-                        </Button>
-                      </DialogTrigger>
-                      <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
-                        <DialogHeader>
-                          <DialogTitle>Themes & Colors</DialogTitle>
-                        </DialogHeader>
-                        <div className="space-y-6 py-4">
-                          <div>
-                            <Label className="mb-3 block">Template Presets</Label>
+                    <Label className="text-xl font-semibold mb-4 block">Themes & Colors</Label>
+                    <div className="space-y-6">
+                      <div>
+                        <Label className="mb-3 block">Template Presets</Label>
                             <div className="grid grid-cols-3 gap-3">
                               {templates.map(template => (
                                 <Button
@@ -1700,11 +1690,9 @@ const Editor = () => {
                               </SelectContent>
                             </Select>
                           </div>
-                        </div>
-                      </DialogContent>
-                    </Dialog>
+                      </div>
+                    </div>
                   </div>
-                </div>
               </Card>
             </div>
           )}

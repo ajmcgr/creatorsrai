@@ -81,6 +81,7 @@ const App = () => (
           <Route path="/tools/hashtag-generator" element={<HashtagGenerator />} />
           
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+          <Route path="/:username" element={<PublicKit />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
