@@ -14,7 +14,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import Footer from "@/components/Footer";
-import logo from "@/assets/logo.png";
+import logo from "@/assets/creators-logo.png";
 import { SocialHandlesInput } from "@/components/SocialHandlesInput";
 import { useMediaKit } from "@/hooks/useMediaKit";
 import type { SocialBundle } from "@/types/social";
