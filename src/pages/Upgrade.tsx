@@ -141,6 +141,23 @@ const Upgrade = () => {
     fetchPlan();
   }, [user]);
 
+  // Auto-sync plan from Stripe if still free
+  useEffect(() => {
+    const sync = async () => {
+      if (!user || userPlan !== 'free') return;
+      try {
+        const { data, error } = await supabase.functions.invoke('sync-stripe-status');
+        if (!error && data?.success) {
+          setUserPlan(data.plan || 'pro');
+          toast.success('Plan synced from Stripe');
+        }
+      } catch (e) {
+        console.error('Stripe sync error', e);
+      }
+    };
+    sync();
+  }, [user, userPlan]);
+
   return (
     <div className="min-h-screen bg-gradient-subtle">
       {user ? <AuthHeader showSettings showUpgrade={false} /> : <Header />}

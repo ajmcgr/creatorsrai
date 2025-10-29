@@ -26,3 +26,6 @@ verify_jwt = true
 
 [functions.fetch-media-kit-public]
 verify_jwt = false
+
+[functions.sync-stripe-status]
+verify_jwt = true
