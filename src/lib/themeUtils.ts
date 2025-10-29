@@ -78,3 +78,57 @@ export const defaultTheme: Theme = {
   badge_style: 'subtle',
   button_style: 'solid',
 };
+
+// Apply theme values as CSS custom properties and data-attributes for live preview
+export function applyThemeVars(theme: Theme) {
+  if (typeof document === 'undefined') return;
+  const root = document.documentElement;
+  const set = (name: string, value: string | number | boolean | undefined | null) => {
+    if (value === undefined || value === null) return;
+    root.style.setProperty(name, String(value));
+  };
+  set('--kit-card-bg', theme.card_bg);
+  set('--kit-card-border-color', theme.card_border_color);
+  set('--kit-content-color', theme.content_color);
+  set('--kit-accent', theme.accent);
+  set('--kit-font-family', theme.font_family);
+  set('--kit-heading-weight', theme.heading_weight);
+  set('--kit-link-decoration', theme.link_decoration);
+  set('--kit-card-radius', theme.card_radius);
+
+  // Data attributes for non-color theme options
+  root.setAttribute('data-layout-density', theme.layout_density);
+  root.setAttribute('data-card-shadow', String(theme.card_shadow));
+  root.setAttribute('data-badge-style', theme.badge_style);
+  root.setAttribute('data-button-style', theme.button_style);
+}
+
+// Build a Theme object from a loose custom styles record
+export function themeFromCustomStyles(custom: Record<string, any> | undefined | null): Theme {
+  if (!custom) return { ...defaultTheme };
+  const t: Theme = { ...defaultTheme };
+  const pick = (key: keyof Theme, sources: string[]) => {
+    for (const s of sources) {
+      if (s in custom && custom[s] !== undefined && custom[s] !== null) {
+        (t as any)[key] = custom[s];
+        return;
+      }
+    }
+  };
+
+  pick('card_bg', ['card_bg', '--kit-card-bg']);
+  pick('card_border_color', ['card_border_color', '--kit-card-border-color']);
+  pick('content_color', ['content_color', '--kit-content-color']);
+  pick('accent', ['accent', '--kit-accent']);
+  pick('font_family', ['font_family', '--kit-font-family', 'fontFamily']);
+  pick('heading_weight', ['heading_weight', '--kit-heading-weight', 'headingWeight']);
+  pick('link_decoration', ['link_decoration', '--kit-link-decoration', 'linkDecoration']);
+  pick('card_radius', ['card_radius', '--kit-card-radius', 'radius']);
+
+  if (custom.layout_density) t.layout_density = custom.layout_density;
+  if (typeof custom.card_shadow === 'boolean') t.card_shadow = custom.card_shadow;
+  if (custom.badge_style) t.badge_style = custom.badge_style;
+  if (custom.button_style) t.button_style = custom.button_style;
+
+  return t;
+}

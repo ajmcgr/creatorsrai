@@ -34,3 +34,38 @@ export async function generatePDF(elementId: string, filename: string) {
     alert('Failed to generate PDF. Please try again.');
   }
 }
+
+// Download arbitrary JSON data as a file (used for Canva import data)
+export function downloadCanvaData(data: any, filename = 'canva-data.json') {
+  try {
+    const json = JSON.stringify(data, null, 2);
+    const blob = new Blob([json], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    a.style.display = 'none';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  } catch (e) {
+    console.warn('downloadCanvaData failed:', e);
+  }
+}
+
+// Generate a Canva create URL with embedded base64 JSON payload
+export function generateCanvaTemplateUrl(data: any, template?: string): string {
+  try {
+    const payload = template ? { ...data, template } : data;
+    const json = JSON.stringify(payload);
+    // Handle unicode safely in base64
+    const base64 = typeof window !== 'undefined'
+      ? btoa(unescape(encodeURIComponent(json)))
+      : Buffer.from(json, 'utf-8').toString('base64');
+    return `https://www.canva.com/design?create&import=${encodeURIComponent(base64)}`;
+  } catch (e) {
+    console.warn('generateCanvaTemplateUrl failed:', e);
+    return 'https://www.canva.com/design?create';
+  }
+}

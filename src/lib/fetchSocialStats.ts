@@ -22,7 +22,9 @@ type FetchResponse = SuccessResponse | ErrorResponse;
 
 export async function fetchSocialStats(
   platform: Platform,
-  input: string
+  input: string,
+  _kitId?: string,
+  _options?: { forceLive?: boolean }
 ): Promise<FetchResponse> {
   try {
     // Clean the input - extract username from URL if provided
