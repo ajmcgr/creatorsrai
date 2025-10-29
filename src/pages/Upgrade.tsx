@@ -29,6 +29,7 @@ const plans = [
     price: "$19",
     period: "/month",
     description: "Most popular for growing creators",
+    trial: "7-day free trial",
     features: [
       "Unlimited media kits",
       "Advanced analytics",
@@ -38,7 +39,7 @@ const plans = [
       "API access",
     ],
     cta: "Start Free Trial",
-    ctaLink: "https://buy.stripe.com/test_4gw3eI2Wm0xw8TK3cc",
+    ctaLink: "https://buy.stripe.com/dRm3cx1oy1Zl0YWaSjg3602",
     variant: "default" as const,
     highlighted: true,
     badge: "Most Popular",
@@ -48,6 +49,7 @@ const plans = [
     price: "$49",
     period: "/month",
     description: "For professional creators & agencies",
+    trial: "7-day free trial",
     features: [
       "Everything in Pro",
       "White-label solution",
@@ -56,9 +58,9 @@ const plans = [
       "SLA guarantee",
       "Team training",
     ],
-    cta: "Contact Sales",
-    ctaLink: "https://buy.stripe.com/test_5kA9D6aSYdkg0nr5kl",
-    variant: "secondary" as const,
+    cta: "Start Free Trial",
+    ctaLink: "https://buy.stripe.com/3cIcN78R07jF4b82lNg3603",
+    variant: "default" as const,
     highlighted: false,
   },
 ];
@@ -70,7 +72,7 @@ const faqs = [
   },
   {
     question: "Is there a free trial?",
-    answer: "Pro plan includes 14-day free trial. No credit card required.",
+    answer: "Both Pro and Business plans include a 7-day free trial. No credit card required.",
   },
   {
     question: "What payment methods do you accept?",
@@ -118,6 +120,9 @@ const Upgrade = () => {
               )}
               <CardContent className="p-6">
                 <h3 className="text-2xl mb-2">{plan.name}</h3>
+                {plan.trial && (
+                  <div className="text-sm text-primary font-medium mb-2">{plan.trial}</div>
+                )}
                 <div className="mb-6">
                   <span className="text-4xl">{plan.price}</span>
                   <span className="text-muted-foreground">{plan.period}</span>
