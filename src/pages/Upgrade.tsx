@@ -191,28 +191,6 @@ const Upgrade = () => {
     run();
   }, [searchParams]);
 
-  const handleAlreadyPaid = async () => {
-    try {
-      const { data: sess } = await supabase.auth.getSession();
-      const uid = sess.session?.user?.id;
-      if (!uid) {
-        toast.error('Please sign in first');
-        return;
-      }
-      await supabase
-        .from('profiles')
-        .upsert({ user_id: uid, plan: 'pro', updated_at: new Date().toISOString() }, { onConflict: 'user_id' });
-      await supabase
-        .from('media_kits')
-        .update({ paid: true })
-        .eq('user_id', uid)
-        .eq('paid', false);
-      setUserPlan('pro');
-      toast.success('Pro unlocked');
-    } catch (e: any) {
-      toast.error(e.message || 'Failed to unlock');
-    }
-  };
 
   return (
     <div className="min-h-screen bg-gradient-subtle">
@@ -292,13 +270,6 @@ const Upgrade = () => {
           })}
         </div>
 
-        <div className="max-w-3xl mx-auto mb-10 text-center">
-          {user && userPlan === 'free' && (
-            <Button variant="outline" onClick={handleAlreadyPaid}>
-              I’ve already paid on Stripe — unlock Pro
-            </Button>
-          )}
-        </div>
 
         <div className="max-w-4xl mx-auto">
           <h2 className="text-4xl mb-12 text-center">
