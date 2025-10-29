@@ -18,7 +18,6 @@ const Settings = () => {
   const [email, setEmail] = useState("");
   const [newEmail, setNewEmail] = useState("");
   const [newPassword, setNewPassword] = useState("");
-  const [hasStripeCustomer, setHasStripeCustomer] = useState(false);
 
   const PAYMENT_LINK = "https://buy.stripe.com/7sYeVfd7g1Zl8rod0rg3600";
 
@@ -27,18 +26,8 @@ const Settings = () => {
       navigate("/auth");
     } else if (session?.user) {
       setEmail(session.user.email || "");
-      checkStripeCustomer();
     }
   }, [session, authLoading, navigate]);
-
-  const checkStripeCustomer = async () => {
-    try {
-      const { data, error } = await supabase.functions.invoke("customer-portal");
-      setHasStripeCustomer(!error && (!!data?.url || data?.hasCustomer === true));
-    } catch {
-      setHasStripeCustomer(false);
-    }
-  };
 
   const handleUpdateEmail = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -88,36 +77,8 @@ const Settings = () => {
     }
   };
 
-  const handleManageBilling = async () => {
-    setLoading(true);
-    try {
-      const { data, error } = await supabase.functions.invoke("customer-portal");
-
-      if (error || data?.error) {
-        const errorMsg = error?.message || data?.error || "";
-        if (errorMsg.includes("No Stripe customer") || data?.hasCustomer === false) {
-          toast.error("No payment history found. Purchase a media kit first.");
-          return;
-        }
-        throw new Error(errorMsg || "Unable to open billing portal");
-      }
-
-      if (data?.url) {
-        window.location.href = data.url;
-        return;
-      }
-
-      if (data?.hasCustomer === false) {
-        toast.error("No payment history found. Purchase a media kit first.");
-        return;
-      }
-
-      throw new Error("Unexpected response from billing portal");
-    } catch (error: any) {
-      toast.error(error.message || "Failed to open billing portal");
-    } finally {
-      setLoading(false);
-    }
+  const handleManageBilling = () => {
+    window.open("https://billing.stripe.com/p/login/7sYeVfd7g1Zl8rod0rg3600", "_blank");
   };
 
   const handleDeleteAccount = async () => {
@@ -213,8 +174,8 @@ const Settings = () => {
                 Manage your subscription and billing
               </p>
               <div className="flex gap-3">
-                <Button onClick={handleManageBilling} disabled={loading}>
-                  {loading ? "Loading..." : "Manage Billing"}
+                <Button onClick={handleManageBilling}>
+                  Manage Billing
                 </Button>
                 <Button variant="outline" asChild>
                   <Link to="/upgrade">
