@@ -11,7 +11,7 @@ const Header = () => {
         </Link>
         <div className="flex items-center gap-3">
           <Button variant="ghost" asChild>
-            <a href="#pricing">Pricing</a>
+            <Link to="/upgrade">Pricing</Link>
           </Button>
           <Button variant="ghost" asChild>
             <Link to="/auth">Login</Link>
