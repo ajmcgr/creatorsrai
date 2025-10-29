@@ -197,7 +197,7 @@ const Index = () => {
         <div className="container mx-auto max-w-7xl">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl mb-4">
-              Simple, Transparent Pricing
+              Choose Your Plan
             </h2>
             <p className="text-xl text-muted-foreground">
               Start free or upgrade for advanced features
@@ -205,119 +205,183 @@ const Index = () => {
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <Card className="hover:shadow-lg transition-all">
-              <CardContent className="p-6">
-                <h3 className="text-2xl mb-2">Free</h3>
-                <div className="mb-6">
-                  <span className="text-4xl">$0</span>
-                  <span className="text-muted-foreground">/month</span>
+            <Card className="border-2 border-primary hover:shadow-lg transition-all">
+              <CardContent className="p-8">
+                <h3 className="text-2xl font-semibold mb-2">Free Plan</h3>
+                <p className="text-muted-foreground text-sm mb-6">Perfect to get started</p>
+                
+                <div className="mb-2">
+                  <span className="text-5xl font-bold">$0</span>
+                  <span className="text-muted-foreground text-lg">/month</span>
                 </div>
-                <ul className="space-y-3 mb-8">
-                  <li className="flex items-start gap-2">
-                    <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                    <span className="text-sm">1 media kit</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                    <span className="text-sm">Basic analytics</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                    <span className="text-sm">Social media integration</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                    <span className="text-sm">PDF export</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                    <span className="text-sm">Email support</span>
-                  </li>
-                </ul>
-                <Link to="/auth?mode=signup">
-                  <Button variant="ghost" className="w-full h-11">Get Started</Button>
+                <p className="text-sm text-muted-foreground mb-6">Forever free</p>
+
+                <Link to="/auth?mode=signup" className="block mb-8">
+                  <Button variant="outline" className="w-full h-11">Get Started</Button>
                 </Link>
+
+                <div className="border-t pt-6">
+                  <h4 className="font-semibold mb-4">What's Included</h4>
+                  <ul className="space-y-3">
+                    <li className="flex items-start gap-2">
+                      <Check className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+                      <span className="text-sm">1 media kit</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <Check className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+                      <span className="text-sm">Professional media kit page builder</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <Check className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+                      <span className="text-sm">Custom branded URL</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <Check className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+                      <span className="text-sm">ROI & rate calculators</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <Check className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+                      <span className="text-sm">Email sharing</span>
+                    </li>
+                  </ul>
+                </div>
               </CardContent>
             </Card>
             
-            <Card className="border-2 border-primary shadow-lg hover:scale-105 transition-all relative">
+            <Card className="hover:shadow-lg transition-all relative">
               <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground">
                 Most Popular
               </Badge>
-              <CardContent className="p-6">
-                <h3 className="text-2xl mb-2">Pro</h3>
-                <div className="mb-6">
-                  <span className="text-4xl">$19</span>
-                  <span className="text-muted-foreground">/month</span>
+              <CardContent className="p-8">
+                <h3 className="text-2xl font-semibold mb-2">Pro Plan</h3>
+                <p className="text-muted-foreground text-sm mb-6">Everything you need to land brand deals</p>
+                
+                <div className="mb-2">
+                  <span className="text-5xl font-bold">$19</span>
+                  <span className="text-muted-foreground text-lg">/month</span>
                 </div>
-                <ul className="space-y-3 mb-8">
-                  <li className="flex items-start gap-2">
-                    <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                    <span className="text-sm">Unlimited media kits</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                    <span className="text-sm">Advanced analytics</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                    <span className="text-sm">Custom branding</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                    <span className="text-sm">Priority support</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                    <span className="text-sm">Collaboration tools</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                    <span className="text-sm">API access</span>
-                  </li>
-                </ul>
-                <a href="https://buy.stripe.com/test_4gw3eI2Wm0xw8TK3cc" target="_blank" rel="noopener noreferrer">
-                  <Button className="w-full h-11">Start Free Trial</Button>
+                <p className="text-sm text-muted-foreground mb-6">Cancel anytime • Billed monthly</p>
+
+                <a href="https://buy.stripe.com/dRm3cx1oy1Zl0YWaSjg3602" target="_blank" rel="noopener noreferrer" className="block mb-8">
+                  <Button className="w-full h-11">Upgrade Now</Button>
                 </a>
+
+                <div className="border-t pt-6">
+                  <h4 className="font-semibold mb-4">What's Included</h4>
+                  <ul className="space-y-3">
+                    <li className="flex items-start gap-2">
+                      <Check className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+                      <span className="text-sm">Up to 5 media kits</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <Check className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+                      <span className="text-sm">Professional template designs</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <Check className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+                      <span className="text-sm">Custom branded URL</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <Check className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+                      <span className="text-sm">Mobile-responsive design</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <Check className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+                      <span className="text-sm">Real-time analytics & view tracking</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <Check className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+                      <span className="text-sm">PDF export & Canva integration</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <Check className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+                      <span className="text-sm">Unlimited stats refreshes</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <Check className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+                      <span className="text-sm">Remove Creators branding</span>
+                    </li>
+                  </ul>
+                </div>
+
+                <p className="text-xs text-muted-foreground text-center mt-6">
+                  Secure checkout powered by Stripe
+                </p>
               </CardContent>
             </Card>
             
             <Card className="hover:shadow-lg transition-all">
-              <CardContent className="p-6">
-                <h3 className="text-2xl mb-2">Business</h3>
-                <div className="mb-6">
-                  <span className="text-4xl">$49</span>
-                  <span className="text-muted-foreground">/month</span>
+              <CardContent className="p-8">
+                <h3 className="text-2xl font-semibold mb-2">Business Plan</h3>
+                <p className="text-muted-foreground text-sm mb-6">For agencies & serious creators</p>
+                
+                <div className="mb-2">
+                  <span className="text-5xl font-bold">$49</span>
+                  <span className="text-muted-foreground text-lg">/month</span>
                 </div>
-                <ul className="space-y-3 mb-8">
-                  <li className="flex items-start gap-2">
-                    <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                    <span className="text-sm">Everything in Pro</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                    <span className="text-sm">White-label solution</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                    <span className="text-sm">Dedicated account manager</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                    <span className="text-sm">Custom integrations</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                    <span className="text-sm">SLA guarantee</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                    <span className="text-sm">Team training</span>
-                  </li>
-                </ul>
-                <a href="https://buy.stripe.com/test_5kA9D6aSYdkg0nr5kl" target="_blank" rel="noopener noreferrer">
-                  <Button variant="secondary" className="w-full h-11">Contact Sales</Button>
+                <p className="text-sm text-muted-foreground mb-6">Cancel anytime • Billed monthly</p>
+
+                <a href="https://buy.stripe.com/3cIcN78R07jF4b82lNg3603" target="_blank" rel="noopener noreferrer" className="block mb-8">
+                  <Button className="w-full h-11">Upgrade Now</Button>
                 </a>
+
+                <div className="border-t pt-6">
+                  <h4 className="font-semibold mb-4">Everything in Pro, plus:</h4>
+                  <ul className="space-y-3">
+                    <li className="flex items-start gap-2">
+                      <Check className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+                      <span className="text-sm">Up to 20 media kits</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <Check className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+                      <span className="text-sm">Professional template designs</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <Check className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+                      <span className="text-sm">Custom branded URL</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <Check className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+                      <span className="text-sm">Mobile-responsive design</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <Check className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+                      <span className="text-sm">Real-time analytics & view tracking</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <Check className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+                      <span className="text-sm">PDF export & Canva integration</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <Check className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+                      <span className="text-sm">Unlimited stats refreshes</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <Check className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+                      <span className="text-sm">Remove Creators branding</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <Check className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+                      <span className="text-sm">Priority support</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <Check className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+                      <span className="text-sm">Dedicated account manager</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <Check className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+                      <span className="text-sm">Advanced analytics dashboard</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <Check className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+                      <span className="text-sm">Custom domain support</span>
+                    </li>
+                  </ul>
+                </div>
+
+                <p className="text-xs text-muted-foreground text-center mt-6">
+                  Secure checkout powered by Stripe
+                </p>
               </CardContent>
             </Card>
           </div>
@@ -344,7 +408,7 @@ const Index = () => {
               <CardContent className="p-6">
                 <h3 className="text-xl mb-2">Is there a free trial?</h3>
                 <p className="text-muted-foreground">
-                  Pro plan includes 14-day free trial. No credit card required.
+                  Both Pro and Business plans include a 7-day free trial. No credit card required.
                 </p>
               </CardContent>
             </Card>
