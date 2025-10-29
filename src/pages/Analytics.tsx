@@ -1,5 +1,6 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import AuthHeader from "@/components/AuthHeader";
+import SocialBladeStats from "@/components/SocialBladeStats";
 import { Eye, Users, TrendingUp, MousePointerClick } from "lucide-react";
 
 const Analytics = () => {
@@ -40,7 +41,9 @@ const Analytics = () => {
             })}
           </div>
 
-          <Card>
+          <SocialBladeStats />
+
+          <Card className="mt-6">
             <CardHeader>
               <CardTitle>Media Kit Performance</CardTitle>
               <CardDescription>View detailed analytics for your media kits</CardDescription>
