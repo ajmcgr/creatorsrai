@@ -5,6 +5,15 @@
   color: var(--kit-text, #111111);
 }
 
+.kit-root h1,
+.kit-root h2,
+.kit-root h3,
+.kit-root h4,
+.kit-root h5,
+.kit-root h6 {
+  font-family: var(--kit-font, Inter, system-ui, sans-serif) !important;
+}
+
 .kit-root [data-bg="color"] {
   background: var(--kit-bg-color, #ffffff);
 }
