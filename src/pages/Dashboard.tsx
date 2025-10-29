@@ -3,8 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Plus, FileText, LogOut } from "lucide-react";
-import Navbar from "@/components/Navbar";
+import { Plus, FileText } from "lucide-react";
+import AuthHeader from "@/components/AuthHeader";
 import { toast } from "sonner";
 import type { User } from "@supabase/supabase-js";
 
@@ -35,12 +35,6 @@ const Dashboard = () => {
     return () => subscription.unsubscribe();
   }, [navigate]);
 
-  const handleSignOut = async () => {
-    await supabase.auth.signOut();
-    toast.success("Signed out successfully");
-    navigate("/");
-  };
-
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -50,20 +44,14 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background via-primary/5 to-background">
-      <Navbar />
+    <div className="min-h-screen bg-background">
+      <AuthHeader />
       
-      <main className="pt-24 pb-20 px-4">
+      <main className="pt-8 pb-20 px-4">
         <div className="container mx-auto max-w-6xl">
-          <div className="flex justify-between items-center mb-8">
-            <div>
-              <h1 className="text-4xl font-bold mb-2">Dashboard</h1>
-              <p className="text-muted-foreground">Welcome back, {user?.email}</p>
-            </div>
-            <Button variant="outline" onClick={handleSignOut}>
-              <LogOut className="mr-2 w-4 h-4" />
-              Sign Out
-            </Button>
+          <div className="mb-8">
+            <h1 className="text-4xl font-bold mb-2">Dashboard</h1>
+            <p className="text-muted-foreground">Welcome back, {user?.email}</p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-6 mb-12">
@@ -104,7 +92,7 @@ const Dashboard = () => {
             <p className="text-muted-foreground mb-6">
               Create your first media kit to start showcasing your work to brands
             </p>
-            <Button variant="hero" size="lg">
+            <Button size="lg" onClick={() => navigate("/choose-template")}>
               <Plus className="mr-2 w-5 h-5" />
               Create Your First Media Kit
             </Button>
