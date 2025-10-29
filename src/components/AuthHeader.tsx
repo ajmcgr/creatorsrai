@@ -1,49 +1,66 @@
-import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { LogOut, Zap, Settings } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { LogOut, Settings, TrendingUp } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
-import creatorsLogo from "@/assets/creators-logo.png";
+import { toast } from "sonner";
+import logo from "@/assets/logo.png";
 
-const AuthHeader = () => {
+interface AuthHeaderProps {
+  showUpgrade?: boolean;
+  showSettings?: boolean;
+  showReturnToDashboard?: boolean;
+}
+
+const AuthHeader = ({ showUpgrade = false, showSettings = false, showReturnToDashboard = true }: AuthHeaderProps) => {
   const navigate = useNavigate();
-  const { toast } = useToast();
 
   const handleLogout = async () => {
-    await supabase.auth.signOut();
-    toast({
-      title: "Logged out successfully",
-    });
-    navigate("/");
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      toast.error("Failed to log out");
+    } else {
+      toast.success("Logged out successfully");
+      navigate("/");
+    }
   };
 
   return (
-    <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-sm">
-      <div className="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
-        <Link to="/dashboard" className="flex items-center gap-2">
-          <img src={creatorsLogo} alt="Creators Logo" className="h-8" />
-        </Link>
-        
+    <nav className="border-b border-border/50 bg-background/80 backdrop-blur-sm sticky top-0 z-50">
+      <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+        <div className="flex items-center gap-6">
+          <Link to="/dashboard" className="flex items-center gap-2">
+            <img src={logo} alt="Creators" className="h-8" />
+          </Link>
+          {showReturnToDashboard && (
+            <Link to="/dashboard" className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors">
+              Return to Dashboard
+            </Link>
+          )}
+        </div>
         <div className="flex items-center gap-3">
-          <Link to="/upgrade">
-            <Button variant="ghost" size="sm">
-              <TrendingUp className="h-4 w-4 mr-2" />
-              Upgrade
+          {showUpgrade && (
+            <Button variant="ghost" asChild>
+              <Link to="/upgrade">
+                <Zap className="h-4 w-4 mr-2" />
+                Upgrade
+              </Link>
             </Button>
-          </Link>
-          <Link to="/settings">
-            <Button variant="ghost" size="sm">
-              <Settings className="h-4 w-4 mr-2" />
-              Settings
+          )}
+          {showSettings && (
+            <Button variant="ghost" asChild>
+              <Link to="/settings">
+                <Settings className="h-4 w-4 mr-2" />
+                Settings
+              </Link>
             </Button>
-          </Link>
-          <Button variant="ghost" size="sm" onClick={handleLogout}>
+          )}
+          <Button variant="ghost" onClick={handleLogout}>
             <LogOut className="h-4 w-4 mr-2" />
             Logout
           </Button>
         </div>
       </div>
-    </header>
+    </nav>
   );
 };
 
