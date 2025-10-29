@@ -8,62 +8,73 @@ import { Link } from "react-router-dom";
 
 const plans = [
   {
-    name: "Free",
+    name: "Free Plan",
     price: "$0",
     period: "/month",
-    description: "Perfect for getting started",
+    description: "Perfect to get started",
+    billingInfo: "Forever free",
     features: [
       "1 media kit",
-      "Basic analytics",
-      "Social media integration",
-      "PDF export",
-      "Email support",
+      "Professional media kit page builder",
+      "Custom branded URL",
+      "ROI & rate calculators",
+      "Email sharing",
     ],
-    cta: "Get Started",
+    cta: "Current Plan",
     ctaLink: "/auth?mode=signup",
-    variant: "ghost" as const,
-    highlighted: false,
+    variant: "outline" as const,
+    highlighted: true,
+    isCurrent: true,
   },
   {
-    name: "Pro",
+    name: "Pro Plan",
     price: "$19",
     period: "/month",
-    description: "Most popular for growing creators",
-    trial: "7-day free trial",
+    description: "Everything you need to land brand deals",
+    billingInfo: "Cancel anytime • Billed monthly",
     features: [
-      "5 media kits",
-      "Custom URL",
-      "Advanced analytics",
-      "Custom branding",
-      "Priority support",
-      "Collaboration tools",
-      "API access",
+      "Up to 5 media kits",
+      "Professional template designs",
+      "Custom branded URL",
+      "Mobile-responsive design",
+      "Real-time analytics & view tracking",
+      "PDF export & Canva integration",
+      "Unlimited stats refreshes",
+      "Remove Creators branding",
     ],
-    cta: "Start Free Trial",
+    cta: "Upgrade Now",
     ctaLink: "https://buy.stripe.com/dRm3cx1oy1Zl0YWaSjg3602",
     variant: "default" as const,
-    highlighted: true,
+    highlighted: false,
     badge: "Most Popular",
+    showStripe: true,
   },
   {
-    name: "Business",
+    name: "Business Plan",
     price: "$49",
     period: "/month",
-    description: "For professional creators & agencies",
-    trial: "7-day free trial",
+    description: "For agencies & serious creators",
+    billingInfo: "Cancel anytime • Billed monthly",
+    featuresHeader: "Everything in Pro, plus:",
     features: [
-      "20 media kits",
-      "Custom URL",
-      "White-label solution",
+      "Up to 20 media kits",
+      "Professional template designs",
+      "Custom branded URL",
+      "Mobile-responsive design",
+      "Real-time analytics & view tracking",
+      "PDF export & Canva integration",
+      "Unlimited stats refreshes",
+      "Remove Creators branding",
+      "Priority support",
       "Dedicated account manager",
-      "Custom integrations",
-      "SLA guarantee",
-      "Team training",
+      "Advanced analytics dashboard",
+      "Custom domain support",
     ],
-    cta: "Start Free Trial",
+    cta: "Upgrade Now",
     ctaLink: "https://buy.stripe.com/3cIcN78R07jF4b82lNg3603",
     variant: "default" as const,
     highlighted: false,
+    showStripe: true,
   },
 ];
 
@@ -101,7 +112,7 @@ const Upgrade = () => {
       
       <div className="container mx-auto px-4 py-24 max-w-7xl">
         <div className="text-center mb-16">
-          <h1 className="text-5xl mb-4">Simple, Transparent Pricing</h1>
+          <h1 className="text-5xl mb-4">Choose Your Plan</h1>
           <p className="text-xl text-muted-foreground">
             Start free or upgrade for advanced features
           </p>
@@ -112,7 +123,7 @@ const Upgrade = () => {
             <Card
               key={plan.name}
               className={`hover:shadow-lg transition-all relative ${
-                plan.highlighted ? "border-2 border-primary shadow-lg hover:scale-105" : ""
+                plan.highlighted ? "border-2 border-primary" : ""
               }`}
             >
               {plan.badge && (
@@ -120,35 +131,50 @@ const Upgrade = () => {
                   {plan.badge}
                 </Badge>
               )}
-              <CardContent className="p-6">
-                <h3 className="text-2xl mb-2">{plan.name}</h3>
-                {plan.trial && (
-                  <div className="text-sm text-primary font-medium mb-2">{plan.trial}</div>
-                )}
-                <div className="mb-6">
-                  <span className="text-4xl">{plan.price}</span>
-                  <span className="text-muted-foreground">{plan.period}</span>
+              <CardContent className="p-8">
+                <h3 className="text-2xl font-semibold mb-2">{plan.name}</h3>
+                <p className="text-muted-foreground text-sm mb-6">{plan.description}</p>
+                
+                <div className="mb-2">
+                  <span className="text-5xl font-bold">{plan.price}</span>
+                  <span className="text-muted-foreground text-lg">{plan.period}</span>
                 </div>
-                <ul className="space-y-3 mb-8">
-                  {plan.features.map((feature) => (
-                    <li key={feature} className="flex items-start gap-2">
-                      <Check className="h-5 w-5 text-primary shrink-0 mt-0.5" />
-                      <span className="text-sm">{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-                {plan.ctaLink.startsWith("http") ? (
-                  <a href={plan.ctaLink} target="_blank" rel="noopener noreferrer">
+                <p className="text-sm text-muted-foreground mb-6">{plan.billingInfo}</p>
+
+                {plan.isCurrent ? (
+                  <Button variant={plan.variant} className="w-full h-11 mb-8" disabled>
+                    {plan.cta}
+                  </Button>
+                ) : plan.ctaLink.startsWith("http") ? (
+                  <a href={plan.ctaLink} target="_blank" rel="noopener noreferrer" className="block mb-8">
                     <Button variant={plan.variant} className="w-full h-11">
                       {plan.cta}
                     </Button>
                   </a>
                 ) : (
-                  <Link to={plan.ctaLink}>
+                  <Link to={plan.ctaLink} className="block mb-8">
                     <Button variant={plan.variant} className="w-full h-11">
                       {plan.cta}
                     </Button>
                   </Link>
+                )}
+
+                <div className="border-t pt-6">
+                  <h4 className="font-semibold mb-4">{plan.featuresHeader || "What's Included"}</h4>
+                  <ul className="space-y-3">
+                    {plan.features.map((feature) => (
+                      <li key={feature} className="flex items-start gap-2">
+                        <Check className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+                        <span className="text-sm">{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                {plan.showStripe && (
+                  <p className="text-xs text-muted-foreground text-center mt-6">
+                    Secure checkout powered by Stripe
+                  </p>
                 )}
               </CardContent>
             </Card>
