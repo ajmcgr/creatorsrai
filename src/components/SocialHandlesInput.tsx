@@ -2,12 +2,12 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Plus, X, Instagram, Youtube, Music, Twitter, Facebook, Linkedin, Twitch, Camera, Pin, AtSign } from "lucide-react";
+import { Plus, X, Instagram, Youtube, Music, Twitter, Facebook, Linkedin, Twitch, Camera, Pin, AtSign, Music2 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 
 interface SocialHandle {
   id: string;
-  platform: 'instagram' | 'youtube' | 'tiktok' | 'twitter' | 'facebook' | 'linkedin' | 'twitch' | 'snapchat' | 'pinterest' | 'threads';
+  platform: 'instagram' | 'youtube' | 'tiktok' | 'twitter' | 'facebook' | 'linkedin' | 'twitch' | 'snapchat' | 'pinterest' | 'threads' | 'spotify';
   username: string;
   followerCount?: number;
   manualEntry?: boolean;
@@ -28,7 +28,8 @@ const platformConfig = {
   twitch: { icon: Twitch, label: "Twitch", placeholder: "@username or channel URL" },
   snapchat: { icon: Camera, label: "Snapchat", placeholder: "@username" },
   pinterest: { icon: Pin, label: "Pinterest", placeholder: "@username or profile URL" },
-  threads: { icon: AtSign, label: "Threads", placeholder: "@username" }
+  threads: { icon: AtSign, label: "Threads", placeholder: "@username" },
+  spotify: { icon: Music2, label: "Spotify", placeholder: "Artist or profile URL" }
 };
 
 export function SocialHandlesInput({ value, onChange }: SocialHandlesInputProps) {
@@ -133,6 +134,7 @@ export function SocialHandlesInput({ value, onChange }: SocialHandlesInputProps)
               <option value="snapchat">Snapchat</option>
               <option value="pinterest">Pinterest</option>
               <option value="threads">Threads</option>
+              <option value="spotify">Spotify</option>
             </select>
           </div>
           <div className="flex gap-3">

@@ -34,7 +34,7 @@ const CreateMediaKit = () => {
 
   const [socialHandles, setSocialHandles] = useState<Array<{
     id: string;
-    platform: 'instagram' | 'youtube' | 'tiktok' | 'twitter' | 'facebook' | 'linkedin' | 'twitch' | 'snapchat' | 'pinterest' | 'threads';
+    platform: 'instagram' | 'youtube' | 'tiktok' | 'twitter' | 'facebook' | 'linkedin' | 'twitch' | 'snapchat' | 'pinterest' | 'threads' | 'spotify';
     username: string;
     followerCount?: number;
     manualEntry?: boolean;
