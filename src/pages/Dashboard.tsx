@@ -31,6 +31,7 @@ const Dashboard = () => {
       const { data } = await supabase
         .from('media_kits')
         .select('id,name,bio,public_url_slug,followers_total,avg_engagement_rate,avatar_url,updated_at,social_data,social_stats,custom_styles')
+        .eq('user_id', session.user.id)
         .order('updated_at', { ascending: false });
       setKits(data || []);
 
