@@ -15,12 +15,18 @@ const AuthHeader = ({ showUpgrade = false, showSettings = false, showReturnToDas
   const navigate = useNavigate();
 
   const handleLogout = async () => {
-    const { error } = await supabase.auth.signOut();
-    if (error) {
-      toast.error("Failed to log out");
-    } else {
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) {
+        console.error("Logout error:", error);
+        toast.error(`Failed to log out: ${error.message}`);
+        return;
+      }
       toast.success("Logged out successfully");
       navigate("/");
+    } catch (err: any) {
+      console.error("Logout exception:", err);
+      toast.error(`Logout failed: ${err.message}`);
     }
   };
 
