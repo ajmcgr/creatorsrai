@@ -18,6 +18,9 @@ const Settings = () => {
   const [email, setEmail] = useState("");
   const [newEmail, setNewEmail] = useState("");
   const [newPassword, setNewPassword] = useState("");
+  const [testEmail, setTestEmail] = useState("");
+  const [testName, setTestName] = useState("Test User");
+  const [sendingTest, setSendingTest] = useState(false);
 
   const PAYMENT_LINK = "https://buy.stripe.com/7sYeVfd7g1Zl8rod0rg3600";
 
@@ -25,7 +28,9 @@ const Settings = () => {
     if (!authLoading && !session) {
       navigate("/auth");
     } else if (session?.user) {
-      setEmail(session.user.email || "");
+      const userEmail = session.user.email || "";
+      setEmail(userEmail);
+      setTestEmail(userEmail);
     }
   }, [session, authLoading, navigate]);
 
@@ -74,6 +79,26 @@ const Settings = () => {
       toast.error(error.message || "Failed to update password");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleSendTestEmail = async () => {
+    if (!testEmail || !testEmail.includes("@")) {
+      toast.error("Enter a valid email");
+      return;
+    }
+    setSendingTest(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("send-test-email", {
+        body: { name: testName || "Test User", email: testEmail },
+      });
+      if ((error as any)) throw error;
+      toast.success("Test email sent! Check your inbox.");
+    } catch (err: any) {
+      console.error("[send-test-email] error", err);
+      toast.error(err?.message || "Failed to send test email");
+    } finally {
+      setSendingTest(false);
     }
   };
 
@@ -184,6 +209,39 @@ const Settings = () => {
                   </Link>
                 </Button>
               </div>
+            </div>
+          </Card>
+
+          {/* Email Test (Resend) */}
+          <Card className="p-6 shadow-card">
+            <h2 className="text-2xl font-bold mb-4">Email Test (Resend)</h2>
+            <div className="space-y-4">
+              <div className="grid md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="testName">Name</Label>
+                  <Input
+                    id="testName"
+                    value={testName}
+                    onChange={(e) => setTestName(e.target.value)}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="testEmail">Email</Label>
+                  <Input
+                    id="testEmail"
+                    type="email"
+                    placeholder="you@example.com"
+                    value={testEmail}
+                    onChange={(e) => setTestEmail(e.target.value)}
+                  />
+                </div>
+              </div>
+              <Button onClick={handleSendTestEmail} disabled={sendingTest || !testEmail}>
+                {sendingTest ? "Sending..." : "Send Test Email"}
+              </Button>
+              <p className="text-sm text-muted-foreground">
+                We'll send a simple confirmation to verify your Resend setup.
+              </p>
             </div>
           </Card>
 
