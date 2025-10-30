@@ -36,7 +36,7 @@ const Index = () => {
               </Badge>
               
               <h1 className="text-5xl md:text-7xl mb-6 leading-tight">
-                Land Brand Deals In<br /><span className="text-primary">Minutes, Not Months</span>
+                Land Brand Deals In <span className="text-primary">Minutes, Not Months</span>
               </h1>
               
               <p className="text-lg md:text-xl text-muted-foreground mb-8">
