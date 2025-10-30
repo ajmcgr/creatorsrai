@@ -109,38 +109,39 @@ export default function PublicKit({ data }: { data: PublicKitData }) {
           )}
         </div>
 
-        {/* Total follower count */}
-        {(data as any).totalFollowers && (data as any).totalFollowers > 0 && (
-          <div className="text-center py-6">
-            <div className="text-5xl md:text-6xl font-bold">{(data as any).totalFollowers.toLocaleString()}</div>
-            <div className="text-sm md:text-base opacity-70 mt-2">Total Followers</div>
-          </div>
-        )}
+        {/* Total follower count and social icons */}
+        <div className="space-y-4">
+          {(data as any).totalFollowers && (data as any).totalFollowers > 0 && (
+            <div className="text-center">
+              <div className="text-5xl md:text-6xl font-bold">{(data as any).totalFollowers.toLocaleString()}</div>
+              <div className="text-sm md:text-base opacity-70 mt-2">Total Followers</div>
+            </div>
+          )}
 
-        {/* Social icons with follower counts */}
-        {data.socials?.length ? (
-          <div className="flex flex-wrap items-center justify-center gap-6 md:gap-8">
-            {data.socials.map((s, i) => (
-              <a 
-                key={`${s.platform}-${i}`} 
-                href={s.url} 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                aria-label={s.platform}
-                className="flex flex-col items-center gap-2 group"
-              >
-                <div className="p-3 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 transition-colors">
-                  <Icon platform={s.platform} />
-                </div>
-                {s.followers && (
-                  <span className="text-xs md:text-sm font-medium opacity-70 group-hover:opacity-100 transition-opacity">
-                    {s.followers.toLocaleString()}
-                  </span>
-                )}
-              </a>
-            ))}
-          </div>
-        ) : null}
+          {data.socials?.length ? (
+            <div className="flex flex-wrap items-center justify-center gap-6 md:gap-8">
+              {data.socials.map((s, i) => (
+                <a 
+                  key={`${s.platform}-${i}`} 
+                  href={s.url} 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  aria-label={s.platform}
+                  className="flex flex-col items-center gap-2 group"
+                >
+                  <div className="p-3 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 transition-colors">
+                    <Icon platform={s.platform} />
+                  </div>
+                  {s.followers && (
+                    <span className="text-xs md:text-sm font-medium opacity-70 group-hover:opacity-100 transition-opacity">
+                      {s.followers.toLocaleString()}
+                    </span>
+                  )}
+                </a>
+              ))}
+            </div>
+          ) : null}
+        </div>
 
         {/* Portfolio section */}
         {data.sections?.find(s => (s as any).kind === 'portfolio') && (() => {
