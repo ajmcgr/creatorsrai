@@ -16,17 +16,16 @@ const AuthHeader = ({ showUpgrade = false, showSettings = false, showReturnToDas
 
   const handleLogout = async () => {
     try {
-      const { error } = await supabase.auth.signOut({ scope: 'local' });
-      if (error) {
-        console.error("Logout error:", error);
-        toast.error(`Failed to log out: ${error.message}`);
-        return;
-      }
-      toast.success("Logged out successfully");
-      navigate("/");
+      // Clear local session first
+      await supabase.auth.signOut({ scope: 'local' });
+      
+      // Force navigation and page reload
+      window.location.href = "/";
     } catch (err: any) {
       console.error("Logout exception:", err);
-      toast.error(`Logout failed: ${err.message}`);
+      // Even if there's an error, clear local storage and redirect
+      localStorage.clear();
+      window.location.href = "/";
     }
   };
 
