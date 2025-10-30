@@ -1,5 +1,8 @@
 project_id = "owahoewxipxhlbmfykmf"
 
+[functions.fix-user-slug]
+verify_jwt = false
+
 [functions.create-payment]
 verify_jwt = true
 

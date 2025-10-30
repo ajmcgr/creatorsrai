@@ -216,16 +216,16 @@ const CreateMediaKit = () => {
           throw new Error("No data returned from database");
         }
 
-        toast.success("Media kit created!");
-
-        // Handle public slug
+        // Handle public slug - MUST set a slug for every kit
+        let finalSlug = '';
+        
         if (formData.publicSlug) {
           // User provided custom slug - validate it's unique
           const { data: existing } = await supabase
             .from('media_kits')
             .select('id')
             .eq('public_url_slug', formData.publicSlug)
-            .single();
+            .maybeSingle();
 
           if (existing) {
             toast.error(`URL /${formData.publicSlug} is already taken. Please choose another.`);
@@ -233,18 +233,56 @@ const CreateMediaKit = () => {
             return;
           }
 
-          await supabase.from('media_kits').update({ public_url_slug: formData.publicSlug }).eq('id', mediaKit.id);
+          finalSlug = formData.publicSlug;
         } else {
           // Auto-generate slug from name
           try {
-            const { data: slug } = await supabase.rpc('generate_unique_slug', { base_name: formData.name || 'creator' });
-            if (slug) {
-              await supabase.from('media_kits').update({ public_url_slug: slug }).eq('id', mediaKit.id);
+            const { data: slug, error: rpcError } = await supabase.rpc('generate_unique_slug', { base_name: formData.name || 'creator' });
+            if (rpcError) {
+              console.warn('RPC slug generation failed, using fallback:', rpcError);
+              // Fallback: create slug from name + random string
+              const baseName = (formData.name || 'creator').toLowerCase().replace(/[^a-z0-9]+/g, '-');
+              const randomSuffix = Math.random().toString(36).substring(2, 8);
+              finalSlug = `${baseName}-${randomSuffix}`;
+            } else if (slug) {
+              finalSlug = slug;
+            } else {
+              // Another fallback
+              const baseName = (formData.name || 'creator').toLowerCase().replace(/[^a-z0-9]+/g, '-');
+              const randomSuffix = Math.random().toString(36).substring(2, 8);
+              finalSlug = `${baseName}-${randomSuffix}`;
             }
           } catch (e) {
-            console.warn('Slug generation failed', e);
+            console.warn('Slug generation exception, using fallback:', e);
+            // Fallback slug generation
+            const baseName = (formData.name || 'creator').toLowerCase().replace(/[^a-z0-9]+/g, '-');
+            const randomSuffix = Math.random().toString(36).substring(2, 8);
+            finalSlug = `${baseName}-${randomSuffix}`;
           }
         }
+
+        // Ensure we always have a slug
+        if (!finalSlug) {
+          console.error('Failed to generate slug');
+          toast.error('Failed to create public URL. Please try again.');
+          setLoading(false);
+          return;
+        }
+
+        // Update the kit with the slug
+        const { error: slugError } = await supabase
+          .from('media_kits')
+          .update({ public_url_slug: finalSlug })
+          .eq('id', mediaKit.id);
+
+        if (slugError) {
+          console.error('Failed to update slug:', slugError);
+          toast.error('Failed to set public URL. Please try again.');
+          setLoading(false);
+          return;
+        }
+
+        toast.success(`Media kit created! Available at: ${window.location.origin}/${finalSlug}`);
 
         // Fetch social stats if handles were provided
         if (socialHandles.length > 0) {
