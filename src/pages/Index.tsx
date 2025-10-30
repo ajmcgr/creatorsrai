@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Check, ArrowRight, Sparkles, Target, TrendingUp } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import heroDashboard from "@/assets/hero-dashboard.png";
+import heroMediakit from "@/assets/hero-mediakit.png";
 import mediakitPreview from "@/assets/mediakit-preview.png";
 
 const Index = () => {
@@ -55,12 +55,14 @@ const Index = () => {
             Monthly subscription • Cancel anytime • Secure checkout with Stripe
           </p>
           
-          <div className="mt-12 max-w-5xl mx-auto">
-            <img 
-              src={heroDashboard} 
-              alt="Creators dashboard showing media kit analytics" 
-              className="rounded-lg shadow-2xl border border-border"
-            />
+          <div className="mt-16 flex justify-center">
+            <div className="max-w-md mx-auto">
+              <img 
+                src={heroMediakit} 
+                alt="Professional media kit example showing social stats and portfolio" 
+                className="rounded-2xl shadow-2xl"
+              />
+            </div>
           </div>
         </div>
       </section>
