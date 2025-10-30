@@ -105,6 +105,27 @@ All colors MUST be HSL.
 }
 
 @layer base {
+  @font-face {
+    font-family: 'Reckless';
+    src: url('/fonts/Reckless-Regular.ttf') format('truetype');
+    font-weight: 400;
+    font-display: swap;
+  }
+  
+  @font-face {
+    font-family: 'Reckless';
+    src: url('/fonts/Reckless-Medium.otf') format('opentype');
+    font-weight: 500;
+    font-display: swap;
+  }
+  
+  @font-face {
+    font-family: 'Reckless';
+    src: url('/fonts/Reckless-Bold.ttf') format('truetype');
+    font-weight: 700;
+    font-display: swap;
+  }
+  
   * {
     @apply border-border;
   }
@@ -116,7 +137,7 @@ All colors MUST be HSL.
   }
   
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Playfair Display', Georgia, serif;
-    font-weight: 600 !important;
+    font-family: 'Reckless', Georgia, serif;
+    font-weight: 500 !important;
   }
 }
