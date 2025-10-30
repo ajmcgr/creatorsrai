@@ -3,7 +3,8 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Check, ArrowRight, Sparkles, Target, TrendingUp } from "lucide-react";
+import { Check, ArrowRight, Sparkles, Target, TrendingUp, Instagram, Youtube, Facebook } from "lucide-react";
+import { FaTiktok, FaWhatsapp, FaTelegram, FaTwitch, FaSnapchat, FaXTwitter } from "react-icons/fa6";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import heroMediakit from "@/assets/hero-mediakit.png";
@@ -26,42 +27,58 @@ const Index = () => {
       
       {/* Hero Section */}
       <section className="pt-32 pb-20 px-4 bg-background">
-        <div className="container mx-auto max-w-6xl text-center">
-          <Badge variant="secondary" className="mb-6 text-sm px-4 py-2">
-            <Sparkles className="w-4 h-4 mr-2 inline" />
-            Your AI-Powered Media Kit Page Creator
-          </Badge>
-          
-          <h1 className="text-5xl md:text-7xl mb-6 leading-tight">
-            Land Brand Deals In<br /><span className="text-primary">Minutes, Not Months</span>
-          </h1>
-          
-          <p className="text-xl md:text-2xl text-muted-foreground mb-8 max-w-3xl mx-auto">
-            Create a professional media kit page and get discovered by brands all from one simple platform.
-          </p>
-          
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mb-4">
-            <Link to="/auth?mode=signup">
-              <Button size="lg" className="h-11 px-8">
-                Create Your Media Kit Page
-                <ArrowRight className="ml-2 w-5 h-5" />
-              </Button>
-            </Link>
+        <div className="container mx-auto max-w-6xl">
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            <div className="text-center md:text-left">
+              <Badge variant="secondary" className="mb-6 text-sm px-4 py-2">
+                <Sparkles className="w-4 h-4 mr-2 inline" />
+                Your AI-Powered Media Kit Page Creator
+              </Badge>
+              
+              <h1 className="text-5xl md:text-7xl mb-6 leading-tight">
+                Land Brand Deals In<br /><span className="text-primary">Minutes, Not Months</span>
+              </h1>
+              
+              <p className="text-xl md:text-2xl text-muted-foreground mb-8">
+                Create a professional media kit page and get discovered by brands all from one simple platform.
+              </p>
+              
+              <div className="flex flex-col sm:flex-row items-center md:items-start justify-center md:justify-start gap-6 mb-4">
+                <Link to="/auth?mode=signup">
+                  <Button size="lg" className="h-11 px-8">
+                    Create Your Media Kit Page
+                    <ArrowRight className="ml-2 w-5 h-5" />
+                  </Button>
+                </Link>
+                
+                <div className="senja-embed" data-id="2b0d90f5-363c-454e-bdf7-d065138f5b73" data-mode="shadow" data-lazyload="false"></div>
+              </div>
+              
+              <p className="text-sm text-muted-foreground mb-4">
+                Monthly subscription • Cancel anytime • Secure checkout with Stripe
+              </p>
+              
+              <div className="flex items-center justify-center md:justify-start gap-3 flex-wrap">
+                <Instagram className="w-5 h-5 text-muted-foreground hover:text-primary transition-colors cursor-pointer" />
+                <Youtube className="w-5 h-5 text-muted-foreground hover:text-primary transition-colors cursor-pointer" />
+                <FaTiktok className="w-5 h-5 text-muted-foreground hover:text-primary transition-colors cursor-pointer" />
+                <FaXTwitter className="w-5 h-5 text-muted-foreground hover:text-primary transition-colors cursor-pointer" />
+                <FaWhatsapp className="w-5 h-5 text-muted-foreground hover:text-primary transition-colors cursor-pointer" />
+                <FaTelegram className="w-5 h-5 text-muted-foreground hover:text-primary transition-colors cursor-pointer" />
+                <FaTwitch className="w-5 h-5 text-muted-foreground hover:text-primary transition-colors cursor-pointer" />
+                <Facebook className="w-5 h-5 text-muted-foreground hover:text-primary transition-colors cursor-pointer" />
+                <FaSnapchat className="w-5 h-5 text-muted-foreground hover:text-primary transition-colors cursor-pointer" />
+              </div>
+            </div>
             
-            <div className="senja-embed" data-id="2b0d90f5-363c-454e-bdf7-d065138f5b73" data-mode="shadow" data-lazyload="false"></div>
-          </div>
-          
-          <p className="text-sm text-muted-foreground">
-            Monthly subscription • Cancel anytime • Secure checkout with Stripe
-          </p>
-          
-          <div className="mt-16 flex justify-center">
-            <div className="max-w-md mx-auto">
-              <img 
-                src={heroMediakit} 
-                alt="Professional media kit example showing social stats and portfolio" 
-                className="rounded-2xl shadow-2xl"
-              />
+            <div className="flex justify-center md:justify-end">
+              <div className="max-w-md">
+                <img 
+                  src={heroMediakit} 
+                  alt="Professional media kit example showing social stats and portfolio" 
+                  className="rounded-2xl shadow-2xl"
+                />
+              </div>
             </div>
           </div>
         </div>
