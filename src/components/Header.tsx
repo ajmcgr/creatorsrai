@@ -5,18 +5,18 @@ import logo from "@/assets/creators-logo-full.png";
 const Header = () => {
   return (
     <nav className="bg-background/80 backdrop-blur-sm sticky top-0 z-50">
-      <div className="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">
-        <Link to="/" className="flex items-center gap-2">
-          <img src={logo} alt="Creators" className="h-8" />
+      <div className="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between gap-2">
+        <Link to="/" className="flex items-center gap-2 shrink-0">
+          <img src={logo} alt="Creators" className="h-6 md:h-8" />
         </Link>
-        <div className="flex items-center gap-3">
-          <Button variant="ghost" asChild>
+        <div className="flex items-center gap-2">
+          <Button variant="ghost" asChild className="hidden sm:flex">
             <Link to="/upgrade">Pricing</Link>
           </Button>
-          <Button variant="ghost" asChild>
+          <Button variant="ghost" asChild className="text-sm sm:text-base">
             <Link to="/auth">Login</Link>
           </Button>
-          <Button asChild className="shadow-soft">
+          <Button asChild className="shadow-soft text-sm sm:text-base">
             <Link to="/auth?mode=signup">Sign Up →</Link>
           </Button>
         </div>
