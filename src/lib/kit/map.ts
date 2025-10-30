@@ -54,10 +54,10 @@ export function mapKitToPublicData(kit: any, options?: { preferSnapshot?: boolea
   const preferSnapshot = options?.preferSnapshot !== false;
   
   if (preferSnapshot && kit?.published_json && Object.keys(kit.published_json || {}).length > 0) {
-    return kit.published_json as PublicKitData;
+    return { ...kit.published_json, isPaid: kit?.paid || false } as PublicKitData;
   }
   if (preferSnapshot && kit?.draft_json && Object.keys(kit.draft_json || {}).length > 0) {
-    return kit.draft_json as PublicKitData;
+    return { ...kit.draft_json, isPaid: kit?.paid || false } as PublicKitData;
   }
 
   const s = kit?.custom_styles ?? {};
