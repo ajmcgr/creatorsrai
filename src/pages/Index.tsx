@@ -45,7 +45,7 @@ const Index = () => {
               
               <div className="flex flex-col sm:flex-row items-center md:items-start justify-center md:justify-start gap-6 mb-4">
                 <Link to="/auth?mode=signup">
-                  <Button size="lg" className="h-11 px-8">
+                  <Button size="lg" className="h-14 px-10 text-base">
                     Create Your Media Kit
                     <ArrowRight className="ml-2 w-5 h-5" />
                   </Button>
