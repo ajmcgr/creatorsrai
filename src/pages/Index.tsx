@@ -28,7 +28,7 @@ const Index = () => {
       {/* Hero Section */}
       <section className="pt-32 pb-20 px-4 bg-background">
         <div className="container mx-auto max-w-6xl">
-          <div className="grid md:grid-cols-2 gap-6 items-center">
+          <div className="grid md:grid-cols-2 gap-2 items-center">
             <div className="text-center md:text-left">
               <Badge variant="secondary" className="mb-6 text-sm px-4 py-2">
                 <Sparkles className="w-4 h-4 mr-2 inline" />
