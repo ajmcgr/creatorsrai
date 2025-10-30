@@ -71,7 +71,7 @@ const Index = () => {
               </div>
             </div>
             
-            <div className="flex justify-center md:justify-end -ml-8">
+            <div className="flex justify-center md:justify-end -ml-20">
               <div className="max-w-xs">
                 <img 
                   src={heroMediakit} 
