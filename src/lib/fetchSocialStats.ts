@@ -30,9 +30,9 @@ export async function fetchSocialStats(
     // Clean the input - extract username from URL if provided
     const username = extractUsername(platform, input);
     
-    // Call the social-blade edge function
-    const { data, error } = await supabase.functions.invoke('social-blade', {
-      body: { platform, username }
+    // Call the fetch-social-stats edge function
+    const { data, error } = await supabase.functions.invoke('fetch-social-stats', {
+      body: { platform, identifier: username }
     });
 
     if (error) {
@@ -42,20 +42,21 @@ export async function fetchSocialStats(
       };
     }
 
-    if (!data) {
+    // Handle the response from fetch-social-stats
+    if (!data || !data.ok) {
       return {
         ok: false,
-        error: 'HANDLE_NOT_FOUND',
-        reason: 'No data returned from API'
+        error: data?.error || 'HANDLE_NOT_FOUND',
+        reason: data?.reason || 'No data returned from API'
       };
     }
 
     return {
       ok: true,
       data: {
-        followers: data.subscribers || data.followers || 0,
-        engagement: data.engagements,
-        posts: data.uploads
+        followers: data.data?.followers || 0,
+        engagement: data.data?.engagement_rate,
+        posts: data.data?.posts
       },
       source: 'Social Blade API'
     };

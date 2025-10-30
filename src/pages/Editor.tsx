@@ -653,6 +653,25 @@ const Editor = () => {
           ...(clients.length > 0 ? { clients } : {}),
         },
       };
+
+      // Update public URL slug if changed
+      if (editData.public_url_slug && editData.public_url_slug !== mediaKit.public_url_slug) {
+        // Check if slug is unique
+        const { data: existing } = await supabase
+          .from('media_kits')
+          .select('id')
+          .eq('public_url_slug', editData.public_url_slug)
+          .neq('id', mediaKit.id)
+          .maybeSingle();
+
+        if (existing) {
+          toast.error(`URL /${editData.public_url_slug} is already taken. Please choose another.`);
+          setLoading(false);
+          return;
+        }
+
+        updateData.public_url_slug = editData.public_url_slug;
+      }
       
       if (manualFollowerTotal > 0) {
         updateData.followers_total = manualFollowerTotal;
@@ -1173,6 +1192,27 @@ const Editor = () => {
                       onChange={(e) => setEditData({ ...editData, email: e.target.value })}
                       className="mt-1.5"
                     />
+                  </div>
+
+                  <div>
+                    <Label htmlFor="edit-public-url">Public URL</Label>
+                    <div className="flex items-center gap-2 mt-1.5">
+                      <span className="text-sm text-muted-foreground">{window.location.origin}/</span>
+                      <Input
+                        id="edit-public-url"
+                        type="text"
+                        value={editData.public_url_slug || ""}
+                        onChange={(e) => {
+                          const slug = e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '-').replace(/--+/g, '-');
+                          setEditData({ ...editData, public_url_slug: slug });
+                        }}
+                        placeholder="your-custom-url"
+                        className="flex-1"
+                      />
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      This is the URL where your media kit will be publicly accessible
+                    </p>
                   </div>
 
                   <div>
