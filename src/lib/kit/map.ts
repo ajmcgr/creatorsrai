@@ -37,6 +37,7 @@ export interface PublicKitData {
     name: string;
     url: string;
     size?: number;
+    thumbnail?: string;
   }>;
   clients?: Array<{
     name: string;

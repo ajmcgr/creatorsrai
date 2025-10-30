@@ -146,29 +146,67 @@ export default function PublicKit({ data }: { data: PublicKitData }) {
         {data.sections?.find(s => (s as any).kind === 'portfolio') && (() => {
           const section = data.sections?.find(s => (s as any).kind === 'portfolio');
           const items = (section as any)?.data?.items || [];
+          
+          // Helper to extract YouTube ID
+          const extractYouTubeId = (url: string): string | null => {
+            if (!url) return null;
+            const patterns = [
+              /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&\?\/]+)/,
+              /youtube\.com\/shorts\/([^&\?\/]+)/,
+            ];
+            for (const pattern of patterns) {
+              const match = url.match(pattern);
+              if (match) return match[1];
+            }
+            return null;
+          };
+          
           return items.length > 0 ? (
             <div className="space-y-4 max-w-xl mx-auto">
               <h2 className="text-xl md:text-2xl font-semibold text-center">Portfolio</h2>
-              <div className="space-y-2">
-                {items.map((doc: any, i: number) => (
-                  <a
-                    key={i}
-                    href={doc.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center justify-between px-4 py-3 rounded-lg transition-all hover:scale-[1.02]"
-                    style={{ 
-                      background: theme?.buttonColor ? `${theme.buttonColor}15` : 'rgba(0,0,0,0.05)',
-                      borderColor: theme?.buttonColor || 'transparent',
-                      borderWidth: theme?.buttonColor ? '1px' : '0'
-                    }}
-                  >
-                    <span className="font-medium">{doc.name || doc.title}</span>
-                    <svg className="w-5 h-5 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                    </svg>
-                  </a>
-                ))}
+              <div className="grid grid-cols-1 gap-3">
+                {items.map((doc: any, i: number) => {
+                  const youtubeId = extractYouTubeId(doc.url);
+                  const autoThumbnail = youtubeId ? `https://img.youtube.com/vi/${youtubeId}/maxresdefault.jpg` : null;
+                  const thumbnail = doc.thumbnail || autoThumbnail;
+                  
+                  return (
+                    <a
+                      key={i}
+                      href={doc.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex gap-3 items-center px-4 py-3 rounded-lg transition-all hover:scale-[1.02]"
+                      style={{ 
+                        background: theme?.buttonColor ? `${theme.buttonColor}15` : 'rgba(0,0,0,0.05)',
+                        borderColor: theme?.buttonColor || 'transparent',
+                        borderWidth: theme?.buttonColor ? '1px' : '0'
+                      }}
+                    >
+                      {thumbnail && (
+                        <img 
+                          src={thumbnail} 
+                          alt={doc.name || doc.title}
+                          className="w-32 h-18 object-cover rounded flex-shrink-0"
+                          onError={(e) => {
+                            // Fallback if YouTube maxres doesn't exist
+                            if (autoThumbnail && e.currentTarget.src.includes('maxresdefault')) {
+                              e.currentTarget.src = autoThumbnail.replace('maxresdefault', 'hqdefault');
+                            } else {
+                              e.currentTarget.style.display = 'none';
+                            }
+                          }}
+                        />
+                      )}
+                      <div className="flex items-center justify-between flex-1">
+                        <span className="font-medium">{doc.name || doc.title}</span>
+                        <svg className="w-5 h-5 opacity-70 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                        </svg>
+                      </div>
+                    </a>
+                  );
+                })}
               </div>
             </div>
           ) : null;

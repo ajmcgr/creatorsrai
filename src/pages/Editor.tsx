@@ -32,6 +32,27 @@ const Editor = () => {
   const navigate = useNavigate();
   const formData = location.state || {};
 
+  // Helper function to extract YouTube video ID from various URL formats
+  const extractYouTubeId = (url: string): string | null => {
+    if (!url) return null;
+    const patterns = [
+      /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&\?\/]+)/,
+      /youtube\.com\/shorts\/([^&\?\/]+)/,
+    ];
+    for (const pattern of patterns) {
+      const match = url.match(pattern);
+      if (match) return match[1];
+    }
+    return null;
+  };
+
+  // Helper function to generate YouTube thumbnail URL
+  const getYouTubeThumbnail = (url: string): string | null => {
+    const videoId = extractYouTubeId(url);
+    if (!videoId) return null;
+    return `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
+  };
+
   // Always fetch from DB, not from location.state
   const search = new URLSearchParams(location.search);
   const kitId = search.get('kit_id');
@@ -62,9 +83,10 @@ const Editor = () => {
   const [showSocialEdit, setShowSocialEdit] = useState(false);
   const bgImageInputRef = useRef<HTMLInputElement>(null);
   const [rates, setRates] = useState<Array<{ label: string; price: string }>>([]);
-  const [documents, setDocuments] = useState<Array<{ name: string; url: string; size?: number }>>([]);
+  const [documents, setDocuments] = useState<Array<{ name: string; url: string; size?: number; thumbnail?: string }>>([]);
   const [clients, setClients] = useState<Array<{ name: string; logoUrl?: string }>>([]);
   const documentInputRef = useRef<HTMLInputElement>(null);
+  const thumbnailInputRefs = useRef<{ [key: number]: HTMLInputElement | null }>({});
 
   // Use DB kit as source of truth, fallback to public fetch
   const [publicKit, setPublicKit] = useState<any>(null);
@@ -501,7 +523,7 @@ const Editor = () => {
     }
 
     if (file.size > 5 * 1024 * 1024) {
-      toast.error("Image must be less than 5MB");
+      toast.error("File size must be less than 5MB");
       return;
     }
 
@@ -510,16 +532,9 @@ const Editor = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
 
-      if (mediaKit?.avatar_url) {
-        const oldPath = mediaKit.avatar_url.split('/').pop();
-        if (oldPath) {
-          await supabase.storage.from('avatars').remove([`${user.id}/${oldPath}`]);
-        }
-      }
-
       const fileExt = file.name.split('.').pop();
-      const fileName = `${Date.now()}.${fileExt}`;
-      const filePath = `${user.id}/${fileName}`;
+      const fileName = `${user.id}-${Date.now()}.${fileExt}`;
+      const filePath = fileName;
 
       const { error: uploadError } = await supabase.storage
         .from('avatars')
@@ -536,6 +551,51 @@ const Editor = () => {
     } catch (error: any) {
       console.error("Upload error:", error);
       toast.error(error.message || "Failed to upload avatar");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleThumbnailUpload = async (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      toast.error("Please upload an image file");
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("File size must be less than 5MB");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("Not authenticated");
+
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${user.id}-thumb-${Date.now()}.${fileExt}`;
+      const filePath = fileName;
+
+      const { error: uploadError } = await supabase.storage
+        .from('avatars')
+        .upload(filePath, file, { upsert: true });
+
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('avatars')
+        .getPublicUrl(filePath);
+
+      const newDocs = [...documents];
+      newDocs[index].thumbnail = publicUrl;
+      setDocuments(newDocs);
+      toast.success("Thumbnail uploaded!");
+    } catch (error: any) {
+      console.error("Upload error:", error);
+      toast.error(error.message || "Failed to upload thumbnail");
     } finally {
       setLoading(false);
     }
@@ -1312,39 +1372,96 @@ const Editor = () => {
                   <div className="border-t pt-5">
                     <Label className="mb-3 block">Portfolio</Label>
                     <div className="space-y-3">
-                      {documents.map((doc, index) => (
-                        <div key={index} className="space-y-2">
-                          <div className="flex gap-2">
+                      {documents.map((doc, index) => {
+                        const isYouTube = extractYouTubeId(doc.url);
+                        const autoThumbnail = isYouTube ? getYouTubeThumbnail(doc.url) : null;
+                        const displayThumbnail = doc.thumbnail || autoThumbnail;
+                        
+                        return (
+                          <div key={index} className="space-y-2 p-3 border rounded-lg">
+                            <div className="flex gap-2">
+                              <Input
+                                placeholder="Link name (e.g., Case Study)"
+                                value={doc.name}
+                                onChange={(e) => {
+                                  const newDocs = [...documents];
+                                  newDocs[index].name = e.target.value;
+                                  setDocuments(newDocs);
+                                }}
+                                className="flex-1"
+                              />
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => setDocuments(documents.filter((_, i) => i !== index))}
+                              >
+                                <X className="h-4 w-4" />
+                              </Button>
+                            </div>
                             <Input
-                              placeholder="Link name (e.g., Case Study)"
-                              value={doc.name}
+                              placeholder="URL (e.g., https://youtube.com/watch?v=... or https://example.com)"
+                              value={doc.url}
                               onChange={(e) => {
                                 const newDocs = [...documents];
-                                newDocs[index].name = e.target.value;
+                                newDocs[index].url = e.target.value;
+                                // Auto-clear custom thumbnail if switching to YouTube
+                                const newIsYouTube = extractYouTubeId(e.target.value);
+                                if (newIsYouTube && doc.thumbnail) {
+                                  newDocs[index].thumbnail = undefined;
+                                }
                                 setDocuments(newDocs);
                               }}
-                              className="flex-1"
                             />
-                            <Button
-                              type="button"
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => setDocuments(documents.filter((_, i) => i !== index))}
-                            >
-                              <X className="h-4 w-4" />
-                            </Button>
+                            
+                            {/* Thumbnail preview and upload */}
+                            <div className="flex items-center gap-3">
+                              {displayThumbnail && (
+                                <img 
+                                  src={displayThumbnail} 
+                                  alt="Thumbnail"
+                                  className="w-32 h-18 object-cover rounded border"
+                                  onError={(e) => {
+                                    // Fallback if YouTube maxres doesn't exist
+                                    if (autoThumbnail && e.currentTarget.src.includes('maxresdefault')) {
+                                      e.currentTarget.src = autoThumbnail.replace('maxresdefault', 'hqdefault');
+                                    }
+                                  }}
+                                />
+                              )}
+                              {!isYouTube && (
+                                <>
+                                  <input
+                                    ref={(el) => {
+                                      if (!thumbnailInputRefs.current) thumbnailInputRefs.current = {};
+                                      thumbnailInputRefs.current[index] = el;
+                                    }}
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={(e) => handleThumbnailUpload(e, index)}
+                                    className="hidden"
+                                  />
+                                  <Button
+                                    type="button"
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => thumbnailInputRefs.current[index]?.click()}
+                                    disabled={loading}
+                                  >
+                                    <Upload className="h-4 w-4 mr-2" />
+                                    {doc.thumbnail ? "Change" : "Upload"} Thumbnail
+                                  </Button>
+                                </>
+                              )}
+                              {isYouTube && (
+                                <span className="text-xs text-muted-foreground">
+                                  YouTube thumbnail auto-detected
+                                </span>
+                              )}
+                            </div>
                           </div>
-                          <Input
-                            placeholder="URL (e.g., https://example.com/portfolio.pdf)"
-                            value={doc.url}
-                            onChange={(e) => {
-                              const newDocs = [...documents];
-                              newDocs[index].url = e.target.value;
-                              setDocuments(newDocs);
-                            }}
-                          />
-                        </div>
-                      ))}
+                        );
+                      })}
                       <Button
                         type="button"
                         variant="outline"
