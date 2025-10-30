@@ -71,7 +71,7 @@ export function mapKitToPublicData(kit: any, options?: { preferSnapshot?: boolea
     if (!input) return '';
     return input
       .replace(/^https?:\/\/(www\.)?/, '')
-      .replace(/^(instagram|tiktok|youtube|twitter|x|facebook|linkedin|twitch|snapchat|pinterest|threads)\.com\//, '')
+      .replace(/^(instagram|tiktok|youtube|twitter|x|facebook|linkedin|twitch|snapchat|pinterest|threads|spotify)\.com\//, '')
       .replace(/^in\//, '')
       .replace(/^\/@/, '')
       .replace(/^@/, '')
@@ -92,7 +92,8 @@ export function mapKitToPublicData(kit: any, options?: { preferSnapshot?: boolea
       twitch: `https://twitch.tv/${cleaned}`,
       snapchat: `https://snapchat.com/add/${cleaned}`,
       pinterest: `https://pinterest.com/${cleaned}`,
-      threads: `https://threads.net/@${cleaned}`
+      threads: `https://threads.net/@${cleaned}`,
+      spotify: `https://open.spotify.com/artist/${cleaned}`
     };
     return urlMap[platform.toLowerCase()] || `https://${platform}.com/${cleaned}`;
   };
