@@ -125,12 +125,13 @@ const Upgrade = () => {
       }
       
       try {
-        const { data } = await supabase
+        const { data, error } = await supabase
           .from('profiles')
           .select('plan')
           .eq('user_id', user.id)
           .maybeSingle();
         
+        console.log('User plan from DB:', data?.plan, 'Error:', error);
         setUserPlan(data?.plan || 'free');
       } catch (err) {
         console.error("Error fetching plan:", err);
@@ -207,6 +208,7 @@ const Upgrade = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-24">
           {plans.map((plan) => {
             const isCurrent = userPlan === plan.planKey;
+            console.log(`Plan: ${plan.name}, planKey: ${plan.planKey}, userPlan: ${userPlan}, isCurrent: ${isCurrent}`);
             return (
               <Card
                 key={plan.name}
