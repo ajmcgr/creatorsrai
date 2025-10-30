@@ -142,34 +142,6 @@ const Upgrade = () => {
   }, [user]);
 
   const [searchParams] = useSearchParams();
-  const [syncing, setSyncing] = useState(false);
-
-  const handleSyncSubscription = async () => {
-    if (!user) return;
-    
-    setSyncing(true);
-    try {
-      const { data, error } = await supabase.functions.invoke('sync-stripe-status', {
-        headers: {
-          Authorization: `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`
-        }
-      });
-      
-      if (error) throw error;
-      
-      if (data?.plan) {
-        setUserPlan(data.plan);
-        toast.success(`Subscription synced - you're now on ${data.plan} plan!`);
-      } else {
-        toast.info('No active subscription found');
-      }
-    } catch (err) {
-      console.error('Sync error:', err);
-      toast.error('Failed to sync subscription status');
-    } finally {
-      setSyncing(false);
-    }
-  };
 
   // If returning from Stripe with a session_id, verify and upgrade immediately
   useEffect(() => {
@@ -230,18 +202,6 @@ const Upgrade = () => {
           <p className="text-xl text-muted-foreground">
             Start free or upgrade for advanced features
           </p>
-          
-          {user && userPlan === 'free' && (
-            <div className="mt-6">
-              <Button 
-                onClick={handleSyncSubscription} 
-                disabled={syncing}
-                variant="outline"
-              >
-                {syncing ? 'Syncing...' : 'Already paid? Sync your subscription'}
-              </Button>
-            </div>
-          )}
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-24">
