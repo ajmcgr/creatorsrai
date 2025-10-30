@@ -7,7 +7,7 @@ const Header = () => {
     <nav className="bg-background/80 backdrop-blur-sm sticky top-0 z-50">
       <div className="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-2">
-          <img src={logo} alt="Creators" className="h-10" />
+          <img src={logo} alt="Creators" className="h-8" />
         </Link>
         <div className="flex items-center gap-3">
           <Button variant="ghost" asChild>
