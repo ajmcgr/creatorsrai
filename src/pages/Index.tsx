@@ -26,7 +26,7 @@ const Index = () => {
       <Header />
       
       {/* Hero Section */}
-      <section className="pt-32 pb-20 px-4 bg-background">
+      <section className="pt-20 pb-20 px-4 bg-background">
         <div className="container mx-auto max-w-5xl">
           <div className="grid md:grid-cols-[60%_40%] gap-8 items-center">
             <div className="text-center md:text-left order-1">
