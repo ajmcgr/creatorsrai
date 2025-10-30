@@ -28,8 +28,8 @@ const Index = () => {
       {/* Hero Section */}
       <section className="pt-32 pb-20 px-4 bg-background">
         <div className="container mx-auto max-w-5xl">
-          <div className="grid md:grid-cols-[60%_40%] gap-0 items-center">
-            <div className="text-center md:text-left">
+          <div className="grid md:grid-cols-[60%_40%] gap-8 items-center">
+            <div className="text-center md:text-left order-1">
               <Badge variant="secondary" className="mb-6 text-sm px-4 py-2 font-normal">
                 <Sparkles className="w-4 h-4 mr-2 inline" />
                 Your AI-Powered Media Kit Page Creator
@@ -71,8 +71,8 @@ const Index = () => {
               </div>
             </div>
             
-            <div className="flex justify-center md:justify-end -ml-20">
-              <div className="max-w-xs">
+            <div className="flex justify-center md:justify-end order-2 md:-ml-20">
+              <div className="max-w-xs md:max-w-md">
                 <img 
                   src={heroMediakit} 
                   alt="Professional media kit example showing social stats and portfolio" 

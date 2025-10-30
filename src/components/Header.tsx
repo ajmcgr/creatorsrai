@@ -10,13 +10,13 @@ const Header = () => {
           <img src={logo} alt="Creators" className="h-6 md:h-8" />
         </Link>
         <div className="flex items-center gap-2">
-          <Button variant="ghost" asChild className="hidden sm:flex">
+          <Button variant="ghost" asChild className="text-xs sm:text-sm">
             <Link to="/upgrade">Pricing</Link>
           </Button>
-          <Button variant="ghost" asChild className="text-sm sm:text-base">
+          <Button variant="ghost" asChild className="text-xs sm:text-sm">
             <Link to="/auth">Login</Link>
           </Button>
-          <Button asChild className="shadow-soft text-sm sm:text-base">
+          <Button asChild className="shadow-soft text-xs sm:text-sm">
             <Link to="/auth?mode=signup">Sign Up →</Link>
           </Button>
         </div>
