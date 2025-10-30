@@ -54,20 +54,20 @@ const Index = () => {
                 <div className="senja-embed" data-id="2b0d90f5-363c-454e-bdf7-d065138f5b73" data-mode="shadow" data-lazyload="false"></div>
               </div>
               
-              <p className="text-sm text-muted-foreground mb-4">
+              <p className="text-sm text-muted-foreground mb-8">
                 Monthly subscription • Cancel anytime • Secure checkout with Stripe
               </p>
               
-              <div className="flex items-center justify-center md:justify-start gap-3 flex-wrap">
-                <Instagram className="w-5 h-5 text-muted-foreground hover:text-primary transition-colors cursor-pointer" />
-                <Youtube className="w-5 h-5 text-muted-foreground hover:text-primary transition-colors cursor-pointer" />
-                <FaTiktok className="w-5 h-5 text-muted-foreground hover:text-primary transition-colors cursor-pointer" />
-                <FaXTwitter className="w-5 h-5 text-muted-foreground hover:text-primary transition-colors cursor-pointer" />
-                <FaWhatsapp className="w-5 h-5 text-muted-foreground hover:text-primary transition-colors cursor-pointer" />
-                <FaTelegram className="w-5 h-5 text-muted-foreground hover:text-primary transition-colors cursor-pointer" />
-                <FaTwitch className="w-5 h-5 text-muted-foreground hover:text-primary transition-colors cursor-pointer" />
-                <Facebook className="w-5 h-5 text-muted-foreground hover:text-primary transition-colors cursor-pointer" />
-                <FaSnapchat className="w-5 h-5 text-muted-foreground hover:text-primary transition-colors cursor-pointer" />
+              <div className="flex items-center justify-center md:justify-start gap-4 flex-wrap">
+                <Instagram className="w-7 h-7 text-muted-foreground hover:text-primary transition-colors cursor-pointer" />
+                <Youtube className="w-7 h-7 text-muted-foreground hover:text-primary transition-colors cursor-pointer" />
+                <FaTiktok className="w-7 h-7 text-muted-foreground hover:text-primary transition-colors cursor-pointer" />
+                <FaXTwitter className="w-7 h-7 text-muted-foreground hover:text-primary transition-colors cursor-pointer" />
+                <FaWhatsapp className="w-7 h-7 text-muted-foreground hover:text-primary transition-colors cursor-pointer" />
+                <FaTelegram className="w-7 h-7 text-muted-foreground hover:text-primary transition-colors cursor-pointer" />
+                <FaTwitch className="w-7 h-7 text-muted-foreground hover:text-primary transition-colors cursor-pointer" />
+                <Facebook className="w-7 h-7 text-muted-foreground hover:text-primary transition-colors cursor-pointer" />
+                <FaSnapchat className="w-7 h-7 text-muted-foreground hover:text-primary transition-colors cursor-pointer" />
               </div>
             </div>
             
