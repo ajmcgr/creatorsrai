@@ -64,7 +64,7 @@ const Auth = () => {
           email,
           password,
           options: {
-            emailRedirectTo: `${window.location.origin}/editor`,
+            emailRedirectTo: `${window.location.origin}/create-media-kit`,
           },
         });
         
