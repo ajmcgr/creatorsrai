@@ -1,4 +1,4 @@
-export type Platform = 'instagram' | 'tiktok' | 'youtube' | 'twitter' | 'facebook' | 'linkedin' | 'twitch' | 'snapchat' | 'pinterest' | 'threads' | 'spotify';
+export type Platform = 'instagram' | 'tiktok' | 'youtube' | 'twitter' | 'facebook' | 'linkedin' | 'twitch' | 'snapchat' | 'pinterest' | 'threads' | 'spotify' | 'apple_podcasts';
 
 export interface SocialStats {
   platform: Platform;

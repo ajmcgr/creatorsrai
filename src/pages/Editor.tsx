@@ -54,7 +54,7 @@ const Editor = () => {
   });
   const [socialHandles, setSocialHandles] = useState<Array<{
     id: string;
-    platform: 'instagram' | 'youtube' | 'tiktok' | 'twitter' | 'facebook' | 'linkedin' | 'twitch' | 'snapchat' | 'pinterest' | 'threads' | 'spotify';
+    platform: 'instagram' | 'youtube' | 'tiktok' | 'twitter' | 'facebook' | 'linkedin' | 'twitch' | 'snapchat' | 'pinterest' | 'threads' | 'spotify' | 'apple_podcasts';
     username: string;
     followerCount?: number;
     manualEntry?: boolean;

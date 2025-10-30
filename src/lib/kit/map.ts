@@ -71,7 +71,7 @@ export function mapKitToPublicData(kit: any, options?: { preferSnapshot?: boolea
     if (!input) return '';
     return input
       .replace(/^https?:\/\/(www\.)?/, '')
-      .replace(/^(instagram|tiktok|youtube|twitter|x|facebook|linkedin|twitch|snapchat|pinterest|threads|spotify)\.com\//, '')
+      .replace(/^(instagram|tiktok|youtube|twitter|x|facebook|linkedin|twitch|snapchat|pinterest|threads|spotify|podcasts\.apple)\.com\//, '')
       .replace(/^in\//, '')
       .replace(/^\/@/, '')
       .replace(/^@/, '')
@@ -98,6 +98,22 @@ export function mapKitToPublicData(kit: any, options?: { preferSnapshot?: boolea
       
       // Default to artist for just an ID
       return `https://open.spotify.com/artist/${cleaned}`;
+    }
+    
+    // Special handling for Apple Podcasts
+    if (platform.toLowerCase() === 'apple_podcasts') {
+      // If it's already a full Apple Podcasts URL, return it as-is
+      if (handle.includes('podcasts.apple.com')) {
+        return handle.startsWith('http') ? handle : `https://${handle}`;
+      }
+      
+      // If it's just an ID, construct the URL
+      if (handle.match(/^id\d+$/)) {
+        return `https://podcasts.apple.com/us/podcast/${handle}`;
+      }
+      
+      // Otherwise, assume it's a full path
+      return `https://podcasts.apple.com/${handle}`;
     }
     
     const urlMap: Record<string, string> = {
