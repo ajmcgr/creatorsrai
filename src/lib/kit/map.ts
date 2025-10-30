@@ -81,6 +81,25 @@ export function mapKitToPublicData(kit: any, options?: { preferSnapshot?: boolea
 
   const buildUrl = (platform: string, handle: string): string => {
     const cleaned = cleanHandle(handle);
+    
+    // Special handling for Spotify - preserve the URL type (artist/show/playlist/user)
+    if (platform.toLowerCase() === 'spotify') {
+      // If it's already a full Spotify URL, return it as-is
+      if (handle.includes('open.spotify.com')) {
+        return handle.startsWith('http') ? handle : `https://${handle}`;
+      }
+      
+      // If it contains a type (show/, artist/, playlist/, user/), preserve it
+      if (handle.includes('/')) {
+        const parts = handle.split('/');
+        // Format: type/id or just use as-is
+        return `https://open.spotify.com/${handle}`;
+      }
+      
+      // Default to artist for just an ID
+      return `https://open.spotify.com/artist/${cleaned}`;
+    }
+    
     const urlMap: Record<string, string> = {
       instagram: `https://instagram.com/${cleaned}`,
       youtube: `https://youtube.com/@${cleaned}`,
@@ -93,7 +112,6 @@ export function mapKitToPublicData(kit: any, options?: { preferSnapshot?: boolea
       snapchat: `https://snapchat.com/add/${cleaned}`,
       pinterest: `https://pinterest.com/${cleaned}`,
       threads: `https://threads.net/@${cleaned}`,
-      spotify: `https://open.spotify.com/artist/${cleaned}`
     };
     return urlMap[platform.toLowerCase()] || `https://${platform}.com/${cleaned}`;
   };
