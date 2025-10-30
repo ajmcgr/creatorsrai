@@ -16,17 +16,25 @@ const AuthHeader = ({ showUpgrade = false, showSettings = false, showReturnToDas
 
   const handleLogout = async () => {
     try {
-      // Clear local session first
+      // Best-effort local sign-out (avoids 403 from global revoke)
       await supabase.auth.signOut({ scope: 'local' });
-      
-      // Force navigation and page reload
-      window.location.href = "/";
-    } catch (err: any) {
-      console.error("Logout exception:", err);
-      // Even if there's an error, clear local storage and redirect
-      localStorage.clear();
-      window.location.href = "/";
+    } catch (err) {
+      console.error('signOut local error:', err);
     }
+
+    // Hard clear any persisted Supabase auth tokens
+    try {
+      Object.keys(localStorage).forEach((k) => {
+        if (k.startsWith('sb-') || k.startsWith('supabase.')) {
+          localStorage.removeItem(k);
+        }
+      });
+    } catch (e) {
+      console.error('localStorage clear error:', e);
+    }
+
+    // Full reload to reset app state and AuthContext
+    window.location.assign('/auth');
   };
 
   return (
