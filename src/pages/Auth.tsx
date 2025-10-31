@@ -43,7 +43,7 @@ const Auth = () => {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${window.location.origin}/auth/callback`,
+          redirectTo: `${window.location.origin}/dashboard`,
         },
       });
       
@@ -64,7 +64,7 @@ const Auth = () => {
           email,
           password,
           options: {
-            emailRedirectTo: `${window.location.origin}/create-media-kit`,
+            emailRedirectTo: `${window.location.origin}/dashboard`,
           },
         });
         
