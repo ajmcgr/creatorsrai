@@ -94,10 +94,10 @@ const Auth = () => {
         <div className="container mx-auto max-w-md">
           <Card>
             <CardHeader>
-              <CardTitle className="text-3xl">{isSignUp ? "Create Account" : "Welcome Back"}</CardTitle>
+              <CardTitle className="text-3xl">{isSignUp ? "Welcome!" : "Welcome Back"}</CardTitle>
               <CardDescription>
                 {isSignUp 
-                  ? "Sign up to create your professional media kit page" 
+                  ? "Sign up to create your media kit page" 
                   : "Sign in to manage your media kit pages"}
               </CardDescription>
             </CardHeader>
