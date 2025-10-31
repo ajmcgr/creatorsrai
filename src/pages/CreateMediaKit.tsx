@@ -323,7 +323,7 @@ const CreateMediaKit = () => {
         }
 
         // Skip template selection and go straight to editor
-        navigate(`/editor?kit_id=${mediaKit.id}`, { state: { justCreated: true } });
+        navigate(`/editor?kit_id=${mediaKit.id}&edit=true`, { state: { justCreated: true } });
       } catch (error: any) {
         console.error("Save error:", error);
         toast.error(error.message || "Failed to save media kit. Please try again.");
@@ -497,7 +497,7 @@ const CreateMediaKit = () => {
       try { sessionStorage.setItem('lastSavedKitId', saved.id); } catch {}
 
       // Navigate with the saved kit ID
-      navigate(`/editor?kit_id=${saved.id}`, {
+      navigate(`/editor?kit_id=${saved.id}&edit=true`, {
         state: { justSaved: true }
       });
     } catch (error: any) {
