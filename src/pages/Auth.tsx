@@ -92,16 +92,17 @@ const Auth = () => {
       
       <main className="pt-24 pb-20 px-4">
         <div className="container mx-auto max-w-md">
+          <div className="text-center mb-8">
+            <h1 className="text-4xl font-bold mb-2">{isSignUp ? "Welcome!" : "Welcome Back"}</h1>
+            <p className="text-muted-foreground">
+              {isSignUp 
+                ? "Sign up to create your media kit page" 
+                : "Sign in to manage your media kit pages"}
+            </p>
+          </div>
+          
           <Card>
-            <CardHeader>
-              <CardTitle className="text-3xl">{isSignUp ? "Welcome!" : "Welcome Back"}</CardTitle>
-              <CardDescription>
-                {isSignUp 
-                  ? "Sign up to create your media kit page" 
-                  : "Sign in to manage your media kit pages"}
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
+            <CardContent className="space-y-6 pt-6">
               <Button
                 type="button"
                 variant="outline"
