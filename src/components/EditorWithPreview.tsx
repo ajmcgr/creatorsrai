@@ -97,7 +97,7 @@ export function EditorWithPreview({ kit, onSave }: EditorWithPreviewProps) {
     if (!kit?.id) return;
 
     try {
-      const updateData = {
+      const updateData: any = {
         name: editData.name || kit.name,
         bio: editData.bio || kit.bio,
         email: editData.email || kit.email,
@@ -113,6 +113,10 @@ export function EditorWithPreview({ kit, onSave }: EditorWithPreviewProps) {
           lastBackgroundChangeAt: new Date().toISOString()
         }
       };
+
+      if (editData.slug) {
+        updateData.slug = editData.slug;
+      }
 
       const { error } = await supabase
         .from('media_kits')
@@ -191,6 +195,19 @@ export function EditorWithPreview({ kit, onSave }: EditorWithPreviewProps) {
                 value={editData.name || ''}
                 onChange={(e) => setEditData({ ...editData, name: e.target.value })}
               />
+            </div>
+
+            <div>
+              <Label htmlFor="username">Username</Label>
+              <Input
+                id="username"
+                value={editData.slug || ''}
+                onChange={(e) => setEditData({ ...editData, slug: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '') })}
+                placeholder="yourname"
+              />
+              <p className="text-xs text-muted-foreground mt-1">
+                trycreators.ai/{editData.slug || 'yourname'}
+              </p>
             </div>
 
             <div>

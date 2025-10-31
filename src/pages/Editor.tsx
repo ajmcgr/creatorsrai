@@ -112,16 +112,49 @@ const Editor = () => {
         // If we have a previously saved kit id, prefer using it
         const lastSaved = sessionStorage.getItem('lastSavedKitId');
         if (lastSaved) {
-          navigate(`/editor?kit_id=${lastSaved}`, { replace: true });
+          navigate(`/editor?kit_id=${lastSaved}&edit=true`, { replace: true });
           return;
         }
-        // Otherwise, stay on this page and let the "Not Found" UI render instead of redirecting to an auth-protected route
+        // Auto-create a new media kit for the user
+        try {
+          const { data: { user } } = await supabase.auth.getUser();
+          if (!user) {
+            console.warn('[Editor] No user logged in');
+            navigate('/auth');
+            return;
+          }
+
+          // Create a new media kit
+          const { data: newKit, error } = await supabase
+            .from('media_kits')
+            .insert({
+              user_id: user.id,
+              name: 'My Media Kit',
+              bio: '',
+              email: user.email || '',
+              layout_style: 'minimal',
+              custom_styles: {},
+              social_data: {},
+              social_stats: {},
+            })
+            .select()
+            .single();
+
+          if (error) throw error;
+
+          sessionStorage.setItem('lastSavedKitId', newKit.id);
+          navigate(`/editor?kit_id=${newKit.id}&edit=true`, { replace: true });
+          toast.success('New media kit created!');
+        } catch (err) {
+          console.error('[Editor] Failed to create media kit:', err);
+          toast.error('Failed to create media kit');
+        }
         return;
       }
       const lastSaved = sessionStorage.getItem('lastSavedKitId');
       if (lastSaved && lastSaved !== kitId) {
         console.warn('[Editor] Kit ID mismatch. Using last saved kit.');
-        navigate(`/editor?kit_id=${lastSaved}`, { replace: true });
+        navigate(`/editor?kit_id=${lastSaved}&edit=true`, { replace: true });
       }
     };
     resolveKit();
