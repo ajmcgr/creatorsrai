@@ -23,14 +23,14 @@ const Auth = () => {
     // Check if user is already logged in
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) {
-        navigate("/editor");
+        navigate("/dashboard");
       }
     });
 
     // Listen for auth state changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === 'SIGNED_IN' && session) {
-        navigate("/editor");
+        navigate("/dashboard");
       }
     });
 
@@ -43,7 +43,7 @@ const Auth = () => {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${window.location.origin}/editor`,
+          redirectTo: `${window.location.origin}/auth?next=/dashboard`,
         },
       });
       
@@ -64,7 +64,7 @@ const Auth = () => {
           email,
           password,
           options: {
-            emailRedirectTo: `${window.location.origin}/editor`,
+            emailRedirectTo: `${window.location.origin}/auth?next=/dashboard`,
           },
         });
         
