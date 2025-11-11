@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -9,8 +9,18 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import heroMediakit from "@/assets/hero-mediakit.png";
 import mediakitPreview from "@/assets/mediakit-preview.png";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Index = () => {
+  const { user, loading } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!loading && user) {
+      navigate("/dashboard", { replace: true });
+    }
+  }, [user, loading, navigate]);
+
   useEffect(() => {
     const script = document.createElement('script');
     script.src = 'https://widget.senja.io/widget/2b0d90f5-363c-454e-bdf7-d065138f5b73/platform.js';
