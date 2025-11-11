@@ -292,7 +292,7 @@ const Index = () => {
                 <p className="text-sm text-muted-foreground mb-6">Cancel anytime • Billed monthly</p>
 
                 <a href="https://buy.stripe.com/dRm3cx1oy1Zl0YWaSjg3602" target="_blank" rel="noopener noreferrer" className="block mb-8">
-                  <Button className="w-full h-11">Upgrade Now</Button>
+                  <Button className="w-full h-11">{user ? 'Upgrade Now' : 'Get Started'}</Button>
                 </a>
 
                 <div className="border-t pt-6">
@@ -351,7 +351,7 @@ const Index = () => {
                 <p className="text-sm text-muted-foreground mb-6">Cancel anytime • Billed monthly</p>
 
                 <a href="https://buy.stripe.com/3cIcN78R07jF4b82lNg3603" target="_blank" rel="noopener noreferrer" className="block mb-8">
-                  <Button className="w-full h-11">Upgrade Now</Button>
+                  <Button className="w-full h-11">{user ? 'Upgrade Now' : 'Get Started'}</Button>
                 </a>
 
                 <div className="border-t pt-6">
