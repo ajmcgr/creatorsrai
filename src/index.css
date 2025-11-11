@@ -24,6 +24,7 @@ All colors MUST be HSL.
     
     --button-blue: 209 84% 45%;
     --button-blue-foreground: 0 0% 100%;
+    --button-blue-hover: 217 61% 50%;
 
     --secondary: 240 5% 96%;
     --secondary-foreground: 240 10% 10%;
@@ -77,6 +78,7 @@ All colors MUST be HSL.
     
     --button-blue: 209 84% 45%;
     --button-blue-foreground: 0 0% 100%;
+    --button-blue-hover: 217 61% 50%;
 
     --secondary: 240 5% 15%;
     --secondary-foreground: 0 0% 98%;
