@@ -110,11 +110,6 @@ const Footer = () => {
                   </a>
                 </li>
                 <li>
-                  <a href="https://creators200.com/" target="_blank" rel="noopener noreferrer" className="text-sm text-muted-foreground hover:text-primary transition-colors">
-                    Top 200 Creators ↗
-                  </a>
-                </li>
-                <li>
                   <Link to="/tools/engagement-calculator" className="text-sm text-muted-foreground hover:text-primary transition-colors">
                     Engagement Calculator
                   </Link>
